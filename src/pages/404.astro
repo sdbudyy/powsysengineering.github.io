@@ -1,0 +1,122 @@
+---
+/* Custom 404. Without this, GitHub Pages and Cloudflare each serve their own
+   generic error page — off-brand, and a dead end with no way back into the
+   site. This one keeps the header and footer, so every route stays reachable. */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { withBase } from '../lib/url';
+import { services, industries } from '../data/content';
+
+const destinations = [
+  { href: '/services', label: 'Services', note: 'What we do, and the full scope of each' },
+  { href: '/industries', label: 'Industries', note: 'Oil and gas, renewables, mining, utilities' },
+  { href: '/projects', label: 'Projects', note: 'Selected case studies and coverage' },
+  { href: '/knowledge-centre', label: 'Knowledge Centre', note: 'Articles, guides and field notes' },
+  { href: '/about', label: 'About', note: 'The team, the office, and how to book time' },
+  { href: '/contact', label: 'Contact', note: 'Enquiries, RFIs and RFPs' },
+];
+---
+
+<BaseLayout
+  title="Page not found | PowSys Engineering"
+  description="That page does not exist. Find PowSys Engineering's services, industries, projects and Knowledge Centre from here."
+>
+  <section class="relative isolate overflow-hidden pt-32 pb-16 lg:pt-40 lg:pb-20">
+    <div
+      class="pointer-events-none absolute -top-40 right-[-8%] -z-10 h-[42rem] w-[42rem] rounded-full opacity-70 blur-3xl"
+      style="background: radial-gradient(circle, rgba(176,208,56,0.28) 0%, transparent 68%);"
+      aria-hidden="true"
+    >
+    </div>
+
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <p class="eyebrow">Error 404</p>
+
+      <h1 class="mt-5 max-w-3xl text-[clamp(2.2rem,5vw,3.8rem)] leading-[1.05]">
+        That page isn&rsquo;t here.
+      </h1>
+
+      <p class="mt-6 max-w-xl text-lg leading-relaxed text-ink-soft">
+        The link may be out of date, or the address slightly off. Everything on
+        the site is one step away below.
+      </p>
+
+      <div class="mt-9 flex flex-wrap gap-3">
+        <a
+          href={withBase('/')}
+          class="rounded-xl bg-brand px-7 py-4 font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-brand-700"
+        >
+          Back to the homepage
+        </a>
+        <a
+          href={withBase('/contact')}
+          class="rounded-xl border border-line bg-white/70 px-7 py-4 font-semibold text-ink transition-all duration-300 hover:-translate-y-0.5 hover:border-brand-200"
+        >
+          Tell us what you were looking for
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="relative pb-20 lg:pb-28" aria-labelledby="where-heading">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <h2 id="where-heading" class="font-display text-[0.72rem] font-bold uppercase tracking-[0.14em] text-brand">
+        Where you might have been headed
+      </h2>
+
+      <ul class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {destinations.map((d) => (
+          <li>
+            <a href={withBase(d.href)} class="card group flex h-full flex-col p-6">
+              <span class="font-display text-base font-bold text-ink transition-colors group-hover:text-brand">
+                {d.label}
+              </span>
+              <span class="mt-2 flex-1 text-sm leading-relaxed text-ink-soft">{d.note}</span>
+              <span class="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-brand">
+                Go there
+                <span class="transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true">&rarr;</span>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <div class="mt-10 grid gap-8 border-t border-line pt-8 sm:grid-cols-2">
+        <div>
+          <h3 class="font-display text-[0.72rem] font-bold uppercase tracking-[0.13em] text-ink-muted">
+            Service lines
+          </h3>
+          <ul class="mt-4 flex flex-wrap gap-2">
+            {services.map((s) => (
+              <li>
+                <a
+                  href={withBase(`/services#service-${s.slug}`)}
+                  class="inline-flex rounded-full border border-line bg-white/70 px-3.5 py-1.5 text-xs font-medium text-ink-soft transition-all duration-300 hover:border-brand-200 hover:text-brand"
+                >
+                  {s.title}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="font-display text-[0.72rem] font-bold uppercase tracking-[0.13em] text-ink-muted">
+            Industries
+          </h3>
+          <ul class="mt-4 flex flex-wrap gap-2">
+            {industries.map((i) => (
+              <li>
+                <a
+                  href={withBase(`/industries/${i.slug}`)}
+                  class="inline-flex rounded-full border border-line bg-white/70 px-3.5 py-1.5 text-xs font-medium text-ink-soft transition-all duration-300 hover:border-brand-200 hover:text-brand"
+                >
+                  {i.name}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

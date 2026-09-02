@@ -136,6 +136,11 @@ const allSchema = [organizationSchema, websiteSchema, ...schema];
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content={ogImage} />
 
+    {/* Icons. BASE_URL keeps them resolving on a subpath deployment too. */}
+    <link rel="icon" href={`${import.meta.env.BASE_URL}favicon.svg`} type="image/svg+xml" />
+    <link rel="icon" href={`${import.meta.env.BASE_URL}favicon-32.png`} sizes="32x32" />
+    <link rel="apple-touch-icon" href={`${import.meta.env.BASE_URL}apple-touch-icon.png`} />
+
     {/* Fonts are same-origin but still CORS-fetched, hence crossorigin. */}
     <link rel="preload" as="font" type="font/woff2" href={interLatin} crossorigin />
     <link rel="preload" as="font" type="font/woff2" href={archivoLatin} crossorigin />
