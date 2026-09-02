@@ -231,8 +231,8 @@ export const servicePages: Record<string, ServicePage> = {
         a: 'One experienced PowSys engineer becomes part of the client core team for the duration. They attend the meetings, hold the open items, and carry enough technical authority to close questions rather than escalate them. It suits projects that have stalled on decisions and interfaces rather than on technical difficulty.',
       },
       {
-        q: 'Does PowSys work onsite or remotely?',
-        a: 'Both. Work is delivered offsite from the Calgary office, fully onsite at a client facility, or as a mix of the two, with fast response across regional, rural and remote Alberta and the wider Canadian market.',
+        q: 'How is progress reported during a project?',
+        a: 'Cost, schedule and resource status are reported against an agreed baseline rather than described narratively, with KPIs defined at the outset so that progress is measured the same way each period. Change is handled through formal change control, with the cost and schedule impact of each change stated before it is accepted rather than absorbed silently.',
       },
     ],
   },

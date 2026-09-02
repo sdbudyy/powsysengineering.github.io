@@ -234,6 +234,26 @@ emits alpha-modified colours as `oklab()`, not `rgba()`. Parsing those as RGB
 produces wildly wrong ratios — read only plain `rgb()` values and walk up to
 the nearest opaque ancestor instead.
 
+## SEO / crawl audit
+
+```bash
+npm run build && npm run seo
+```
+
+`scripts/seo-audit.mjs` builds the internal link graph from `dist/` and reports
+what actually decides whether a page can rank: pages unreachable from the
+homepage, click depth over 3, thin content, duplicate titles or descriptions,
+missing schema, and pages with fewer than two internal links pointing at them.
+
+Current state: 31 real pages, every one within 2 clicks of the homepage, no
+orphans, no duplicate titles or descriptions, 45 unique FAQ answers across 13
+pages, and a single `@id` for the company entity used 33 times.
+
+**On backlinks:** nothing in this repository can create them — they are earned
+externally. What the code does do is stop existing ones being wasted: the 301
+map preserves link equity from the old site's URLs, and the internal link graph
+spreads that authority to the pages that need it.
+
 ## Auditing
 
 ```bash

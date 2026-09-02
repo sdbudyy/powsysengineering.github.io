@@ -8,7 +8,8 @@
 PowSys delivers engineering solutions either as complete end-to-end projects or
 as a contractor, vendor or partner within a client's project. Services span
 design, development, integration, risk and relationship management, project
-planning and control.
+planning and control. Work is delivered offsite from the Calgary office, fully
+onsite at a client facility, or as a mix of both.
 
 **Credentials:** APEGA (Alberta), Engineers and Geoscientists British Columbia,
 APEGS (Saskatchewan), RCDD (Registered Communications Distribution Designer),
@@ -19,34 +20,42 @@ Alberta Fire Safety Association, ComplyWorks.
 
 ## Services
 
-- [Engineering & Design](https://powsysengineering.com/services/engineering-design): FEED, detailed engineering, arc flash and harmonic studies, protective device coordination, ground grid design, automation and control.
+- [All services](https://powsysengineering.com/services): overview of the six service lines, how a project is delivered in five stages, and sector context.
+- [Engineering & Design](https://powsysengineering.com/services/engineering-design): power system studies (arc flash, harmonic, fault, protective device coordination, TRV/RRRV, motor starting, islanding and load shedding, transient stability, ground grid), FEED, detailed engineering, design basis memoranda, automation and control.
 - [Compliance & Verification](https://powsysengineering.com/services/compliance-verification): QA/QC, FAT/SAT/IFAT testing, process safety audits, code reviews, equipment validation, written schemes of verification, HAZOPs.
-- [Project Management](https://powsysengineering.com/services/project-management): ISO 9001-aligned delivery, scope development, costing, subcontract management, cost and schedule control, risk management.
-- [Condition-Based Maintenance](https://powsysengineering.com/services/condition-based-maintenance): infrared thermography, partial discharge and tan delta testing, motor current signature analysis, rotor shorted turns detection, root cause analysis.
-- [Data Centre Solutions](https://powsysengineering.com/services/data-centres): power system studies, interconnection design, performance optimisation.
-- [Commercial Sector Solutions](https://powsysengineering.com/services/commercial-sector): life safety systems, telecommunications infrastructure, electrical assessment and design.
+- [Project Management](https://powsysengineering.com/services/project-management): ISO 9001-aligned delivery, scope development, costing, subcontract management, cost and schedule control, risk management, and an embedded single-engineer model.
+- [Condition-Based Maintenance](https://powsysengineering.com/services/condition-based-maintenance): infrared thermography, partial discharge and tan delta testing, motor current signature analysis, rotor shorted turns detection, root cause analysis, criticality analysis.
+- [Data Centre Solutions](https://powsysengineering.com/services/data-centres): power system studies, interconnection design, fault and coordination assessment across phased build-outs.
+- [Commercial Sector Solutions](https://powsysengineering.com/services/commercial-sector): life safety systems, RCDD-led telecommunications infrastructure, electrical assessment and design.
 
 ## Industries
 
+- [All industries](https://powsysengineering.com/industries)
 - [Oil & Gas](https://powsysengineering.com/industries/oil-and-gas): hazardous area (EEHA) classification, equipment selection, inspection and verification dossiers.
 - [Renewable Energy](https://powsysengineering.com/industries/renewable-energy): solar PV, wind, hydro, landfill gas, hybrid interconnection, full life-cycle power system management.
 - [Mining](https://powsysengineering.com/industries/mining): shutdowns and turnarounds, refurbishment, site audits, reliability and economic studies.
 - [Utilities & Power](https://powsysengineering.com/industries/utilities): substation automation, protection and control, transmission line switching studies.
+
+## Knowledge Centre
+
+Technical articles, guides, field notes and opinion at
+[the Knowledge Centre](https://powsysengineering.com/knowledge-centre). Topics
+include arc flash studies and CSA Z462, partial discharge testing, the
+difference between condition-based and predictive maintenance, hazardous area
+verification dossiers, solar interconnection delays, data centre rack density
+and power system limits, power system model drift, and the limits of infrared
+thermography.
+
+## Company
+
+- [About and team](https://powsysengineering.com/about): the people, the Calgary office, opening hours, and booking a meeting or office tour.
+- [Our story, vision and core principles](https://powsysengineering.com/about/our-story)
+- [Projects and case studies](https://powsysengineering.com/projects): illustrative case studies, engagement types, and coverage.
+- [Careers](https://powsysengineering.com/careers): open positions and culture.
+- [Contact](https://powsysengineering.com/contact): enquiries, RFIs and RFPs. Replies within two working days.
 
 ## Engineering tools
 
 ETAP, SKM, AutoCAD, Plant 3D, Navisworks, EMTP-RV, DIALux, Thermon CompuTrace,
 Hexagon Intergraph Smart Electrical, Hexagon Intergraph Smart Instrumentation,
 Oracle, Microsoft Project.
-
-## Knowledge Centre
-
-Articles, guides, field notes and opinion at https://powsysengineering.com/knowledge-centre — covering arc flash studies and CSA Z462, partial discharge testing, condition-based maintenance, hazardous area verification dossiers, solar interconnection, data centre power density, power system model drift, and infrared thermography.
-
-## Other pages
-
-- [About](https://powsysengineering.com/about)
-- [Projects](https://powsysengineering.com/projects)
-- [Knowledge Centre](https://powsysengineering.com/knowledge-centre)
-- [Careers](https://powsysengineering.com/careers)
-- [Contact](https://powsysengineering.com/contact)

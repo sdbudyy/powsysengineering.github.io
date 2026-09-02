@@ -72,10 +72,64 @@ const listSchema = {
         Four sectors. <span class="grad-text">One standard</span>.
       </h1>
 
-      <p class="reveal mt-6 max-w-xl text-lg leading-relaxed text-ink-soft" style="--i:3">
+      <p class="reveal mt-6 max-w-2xl text-lg leading-relaxed text-ink-soft" style="--i:3">
         The engineering discipline does not change between a wellsite and a
         substation. What changes is what has to be proven, and to whom.
       </p>
+
+      <div class="mt-10 grid gap-8 lg:grid-cols-12 lg:gap-14">
+        <div class="reveal lg:col-span-7" style="--i:4">
+          <p class="leading-relaxed text-ink-soft">
+            PowSys Engineering has delivered electrical engineering across oil and
+            gas, mining, renewable generation and utility assets since 2017, along
+            with commercial and data centre environments. The firm holds
+            professional engineering permits in Alberta, British Columbia and
+            Saskatchewan, and works across Canada and the United States.
+          </p>
+          <p class="mt-4 leading-relaxed text-ink-soft">
+            Sector experience matters less for the calculations than for knowing
+            what the calculation has to survive. An arc flash study is the same
+            piece of analysis in a gas plant and a data hall; what differs is the
+            outage window it has to fit inside, the inspection regime it feeds,
+            and who signs it off. That context is what a specialist brings, and it
+            is why we scope by consequence rather than by sector name.
+          </p>
+          <p class="mt-4 leading-relaxed text-ink-soft">
+            The through-line is that all four sectors run high-consequence
+            electrical infrastructure under external scrutiny — a regulator, an
+            insurer, an auditor or a customer with a service level agreement.
+            Experience transfers because that scrutiny is the hard part, not the
+            engineering.
+          </p>
+        </div>
+
+        <div class="reveal lg:col-span-5" style="--i:5">
+          <div class="card p-7">
+            <h2 class="font-display text-[0.72rem] font-bold uppercase tracking-[0.13em] text-brand">
+              Common across every sector
+            </h2>
+            <ul class="mt-5 space-y-2.5">
+              {[
+                'Power system studies and validated modelling',
+                'Protection coordination and arc flash assessment',
+                'Compliance evidence that survives an audit',
+                'Condition monitoring on critical assets',
+                'Work sequenced around real outage windows',
+              ].map((item) => (
+                <li class="flex gap-3 text-sm leading-relaxed text-ink-soft">
+                  <span class="mt-[0.45rem] h-1.5 w-1.5 shrink-0 rounded-full bg-lime" aria-hidden="true"></span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+            <p class="mt-5 border-t border-line-soft pt-4 text-xs leading-relaxed text-ink-muted">
+              Not listed here? Ask. We have also worked in petrochemical and power
+              generation, and we will tell you honestly whether the experience
+              transfers.
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
