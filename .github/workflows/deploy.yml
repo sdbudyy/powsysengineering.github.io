@@ -8,8 +8,7 @@ name: Deploy demo to GitHub Pages
 # /<repo-name>/. Getting that wrong means every link 404s, so the base path is
 # worked out at build time rather than hard-coded.
 #
-# PUBLIC_IS_DEMO adds a noindex tag so this copy never competes with the real
-# site in search results.
+# The deployed demo is indexable so it can be found and shared.
 
 on:
   push:
@@ -60,7 +59,6 @@ jobs:
         env:
           PUBLIC_SITE_URL: ${{ steps.target.outputs.site }}
           PUBLIC_BASE_PATH: ${{ steps.target.outputs.base }}
-          PUBLIC_IS_DEMO: 'true'
         run: npm run build
 
       - name: Check the build for crawl and accessibility regressions

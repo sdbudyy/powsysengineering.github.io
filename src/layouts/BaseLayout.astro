@@ -29,16 +29,26 @@ interface Props {
 
 const { title, description, schema = [] } = Astro.props;
 
-const canonical = new URL(Astro.url.pathname, site.url).href.replace(/\/$/, '') || site.url;
+/* Canonical must describe where this build is actually served, not where the
+   production site lives — `Astro.site` follows the deployment, `site.url` is a
+   fixed brand constant. Using the constant here pointed the GitHub Pages demo
+   at a powsysengineering.com URL that does not exist, which would have had the
+   whole demo dropped from search. `Astro.url.pathname` already carries the
+   base path, so a subpath deployment resolves correctly. */
+const origin = Astro.site?.origin ?? site.url;
+const canonical = new URL(Astro.url.pathname, origin).href.replace(/\/$/, '') || origin;
 
-/* The GitHub Pages demo is a full copy of the site. Without noindex it would
-   compete with the real domain for the same queries and split ranking signals,
-   so the demo build is excluded from search entirely. */
-const isDemo = import.meta.env.PUBLIC_IS_DEMO === 'true';
+/* Every build is indexable, including the GitHub Pages demo — it is meant to
+   be found and shared.
+
+   Worth revisiting at launch: once the real content is live on
+   powsysengineering.com, a second indexed copy competes with it for the same
+   queries. To exclude the demo then, set PUBLIC_NOINDEX=true on that build
+   only and switch the robots content below. */
 
 /* Social share card. Must be absolute — relative URLs are ignored by every
    major scraper. Regenerate with `node scripts/build-og-image.mjs`. */
-const ogImage = new URL('/og-image.jpg', site.url).href;
+const ogImage = new URL(`${import.meta.env.BASE_URL}og-image.jpg`.replace(/\/{2,}/g, '/'), origin).href;
 
 const organizationSchema = {
   '@context': 'https://schema.org',
@@ -108,12 +118,7 @@ const allSchema = [organizationSchema, websiteSchema, ...schema];
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
 
-    <meta
-      name="robots"
-      content={isDemo
-        ? 'noindex, nofollow'
-        : 'index, follow, max-image-preview:large, max-snippet:-1'}
-    />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
     <meta name="theme-color" content="#1A4194" />
     <meta name="geo.region" content="CA-AB" />
     <meta name="geo.placename" content="Calgary" />
