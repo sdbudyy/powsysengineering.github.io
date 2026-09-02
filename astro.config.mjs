@@ -19,15 +19,24 @@ const SITE = process.env.PUBLIC_SITE_URL || 'https://powsysengineering.com';
 const rawBase = (process.env.PUBLIC_BASE_PATH || '').replace(/^\/+|\/+$/g, '');
 const BASE = rawBase ? `/${rawBase}/` : '/';
 
+/* Redirect map: every URL from the OLD powsysengineering.com sitemap points at
+   its closest equivalent here, so existing rankings and inbound links survive
+   the switch instead of 404ing.
+
+   Astro applies `base` to a redirect's SOURCE path but not to its DESTINATION,
+   so on a subpath deployment every one of these would have sent visitors to a
+   404 at the domain root. The destinations are prefixed here to match. */
+const buildRedirects = (map) =>
+  Object.fromEntries(
+    Object.entries(map).map(([from, to]) => [from, `${BASE}${to}`.replace(/\/{2,}/g, '/')])
+  );
+
 export default defineConfig({
   site: SITE,
   base: BASE,
   trailingSlash: 'ignore',
 
-  // Redirect map. Every URL in the OLD powsysengineering.com sitemap points at
-  // its closest equivalent here, so existing search rankings and any inbound
-  // links survive the switch instead of landing on a 404.
-  redirects: {
+  redirects: buildRedirects({
     '/insights': '/knowledge-centre',
 
     // Old site structure
@@ -40,7 +49,7 @@ export default defineConfig({
     '/services/compliance-verification': '/services#service-compliance-verification',
     '/services/project-management': '/services#service-project-management',
     '/services/cbm': '/services#service-condition-based-maintenance',
-  },
+  }),
 
   integrations: [sitemap()],
   vite: {
