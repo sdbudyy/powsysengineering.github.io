@@ -5,13 +5,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
 import SectionHead from '../components/SectionHead.astro';
 import { site } from '../data/site';
-import { services, industries, projects, insights, tools, faqs } from '../data/content';
+import { services, industries, projects, tools, faqs } from '../data/content';
+import { sortedEntries } from '../data/knowledge';
+import EntryCard from '../components/EntryCard.astro';
 
 import imgSolar from '../assets/images/solar-team-900x600.jpg';
 import imgMining from '../assets/images/loader-900x600.jpg';
 import imgOil from '../assets/images/oil-refinery-900x600.jpg';
 import imgPower from '../assets/images/power-line-900x600.jpg';
 import imgStudy from '../assets/images/engineering-study.jpg';
+
+const latestArticles = sortedEntries.slice(0, 4);
 
 const industryImages = {
   'oil-and-gas': imgOil,
@@ -441,35 +445,17 @@ const servicesSchema = {
         eyebrow="Insights"
         title="Engineering, explained."
         lead="Technical writing on the standards, tests and studies our clients ask about most."
-        linkHref="/insights"
+        linkHref="/knowledge-centre"
         linkLabel="All articles"
       />
 
+      {/* Pulls the four newest real Knowledge Centre entries. This used to
+          render a separate placeholder list that said "Coming soon", which
+          stayed on the homepage after the articles were written. */}
       <ul class="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        {insights.map((post, i) => (
+        {latestArticles.map((entry, i) => (
           <li class="reveal" style={`--i:${i}`}>
-            <article class="card group flex h-full flex-col p-6">
-              <div class="flex items-center justify-between gap-3">
-                <span class="rounded-full bg-lime-50 px-3 py-1 text-[0.7rem] font-bold uppercase tracking-wider text-lime-deep">
-                  {post.category}
-                </span>
-                {post.status === 'planned' && (
-                  <span class="text-[0.68rem] font-semibold uppercase tracking-wider text-ink-muted">
-                    Coming soon
-                  </span>
-                )}
-              </div>
-
-              <h3 class="mt-4 font-display text-base font-bold leading-snug text-ink transition-colors group-hover:text-brand">
-                {post.title}
-              </h3>
-
-              <p class="mt-3 flex-1 text-sm leading-relaxed text-ink-soft">{post.excerpt}</p>
-
-              <p class="mt-5 border-t border-line-soft pt-4 text-xs text-ink-muted">
-                {post.readMinutes} min read
-              </p>
-            </article>
+            <EntryCard entry={entry} compact />
           </li>
         ))}
       </ul>

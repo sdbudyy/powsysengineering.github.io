@@ -105,8 +105,18 @@ file in `src/assets/images/` and update the `alt` text in `src/data/content.ts`.
 
 ## Knowledge Centre
 
-Lives at `/knowledge-centre`, with a page per entry generated from
-`src/data/knowledge.ts`. Every entry carries a **type label** (Article,
+Lives at `/knowledge-centre`, with a page per entry. Metadata is in
+`src/data/knowledge.ts`; article bodies are in `src/data/knowledge-articles.ts`.
+
+⚠️ **The articles need a P.Eng review before launch.** They are written and
+technically grounded — CSA Z462, IEEE 1584-2018, IEC 60270, IEC 60079-17,
+IEEE 519, IEEE 1547, ISO 17359, the Canadian Electrical Code — but they are
+published under PowSys's name and make assertions a client may act on.
+Standards get revised and clause references age. Bylines are team names; set
+`author` to the real writer once someone has taken ownership.
+
+Reading time is **derived from the body**, not typed by hand, so it cannot
+drift out of step after an edit. Every entry carries a **type label** (Article,
 Opinion, Guide, Field Note, Blog), a **category**, and a **read length** — all
 three show on the card and on the entry page.
 
@@ -115,14 +125,9 @@ simple blocks: `{ p }` paragraph, `{ h }` heading, `{ ul: [...] }` list,
 `{ quote }` pull quote. Set `featured: true` to promote one to the hero slot
 (only the first one found is used).
 
-⚠️ **Every entry is currently filler.** Topics are real; bodies are placeholder
-drafts. Bylines are team names — no named individual is credited with writing
-something they did not write — and dates are plausible placeholders. Each entry
-page shows a visible "Placeholder content" notice; delete that block from
-`[slug].astro` once real writing replaces the drafts.
-
-The older `insights` array in `content.ts` still feeds the homepage teaser
-section. `/insights` redirects to `/knowledge-centre`.
+The homepage teaser pulls the four newest entries directly from
+`sortedEntries`, so it can never fall out of step with what is published.
+`/insights` redirects to `/knowledge-centre`.
 
 ## Before the About page goes live
 
