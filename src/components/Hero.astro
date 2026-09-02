@@ -1,0 +1,122 @@
+---
+import { withBase } from '../lib/url';
+import { Picture } from 'astro:assets';
+import { site } from '../data/site';
+import { credentials } from '../data/content';
+import heroImage from '../assets/images/power-plant.jpg';
+---
+
+<section class="relative isolate overflow-hidden pt-32 pb-20 lg:pt-40 lg:pb-28">
+  {/* Soft brand glow behind the headline — no hard edges, so the hero melts
+      into the section that follows. */}
+  <div
+    class="pointer-events-none absolute -top-40 right-[-10%] -z-10 h-[46rem] w-[46rem] rounded-full opacity-70 blur-3xl"
+    style="background: radial-gradient(circle, rgba(176,208,56,0.30) 0%, rgba(176,208,56,0.06) 45%, transparent 70%);"
+    aria-hidden="true"
+  >
+  </div>
+  <div
+    class="pointer-events-none absolute -left-[15%] top-20 -z-10 h-[38rem] w-[38rem] rounded-full opacity-70 blur-3xl"
+    style="background: radial-gradient(circle, rgba(26,65,148,0.20) 0%, rgba(26,65,148,0.04) 48%, transparent 70%);"
+    aria-hidden="true"
+  >
+  </div>
+
+  <div class="mx-auto grid max-w-7xl items-center gap-14 px-5 lg:grid-cols-12 lg:gap-12 lg:px-8">
+    <div class="lg:col-span-7">
+      <p class="reveal eyebrow" style="--i:0">
+        Calgary, Alberta · Woman-owned · Since {site.founded}
+      </p>
+
+      <h1
+        class="reveal mt-6 text-[clamp(2.4rem,5.6vw,4.4rem)] leading-[1.04]"
+        style="--i:1"
+      >
+        Electrical engineering for energy, mining and
+        <span class="grad-text">mission-critical infrastructure</span>.
+      </h1>
+
+      <p class="reveal mt-7 max-w-xl text-lg leading-relaxed text-ink-soft" style="--i:2">
+        PowSys Engineering delivers design, compliance verification, project
+        management and condition-based maintenance across Canada and the United
+        States — as a complete end-to-end project, or as part of your team.
+      </p>
+
+      <div class="reveal mt-9 flex flex-wrap items-center gap-3" style="--i:3">
+        <a
+          href={withBase('/contact')}
+          class="group relative overflow-hidden rounded-xl bg-brand px-7 py-4 font-semibold text-white shadow-[0_10px_30px_-12px_rgba(26,65,148,0.75)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_16px_40px_-12px_rgba(26,65,148,0.85)]"
+        >
+          <span
+            class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-lime/50 to-transparent transition-transform duration-700 group-hover:translate-x-full"
+            aria-hidden="true"
+          ></span>
+          <span class="relative">Discuss your project</span>
+        </a>
+
+        <a
+          href="#services"
+          class="group inline-flex items-center gap-2 rounded-xl border border-line bg-white/70 px-7 py-4 font-semibold text-ink transition-all duration-300 hover:-translate-y-0.5 hover:border-brand-200 hover:bg-white"
+        >
+          Explore what we do
+          <span class="transition-transform duration-300 group-hover:translate-y-0.5" aria-hidden="true">&darr;</span>
+        </a>
+      </div>
+
+      {/* Credential strip */}
+      <div class="reveal mt-12" style="--i:4">
+        <p class="text-xs font-semibold uppercase tracking-[0.14em] text-ink-muted">
+          Licensed &amp; accredited
+        </p>
+        <ul class="mt-4 flex flex-wrap items-center gap-x-6 gap-y-3">
+          {credentials.map((c) => (
+            <li>
+              <abbr
+                title={c.name}
+                class="cursor-help text-sm font-bold tracking-tight text-brand no-underline transition-colors hover:text-lime-600"
+              >
+                {c.abbr}
+              </abbr>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+
+    {/* Hero image, framed rather than full-bleed so the light page stays light */}
+    <div class="reveal lg:col-span-5" style="--i:2">
+      <div class="relative">
+        <div
+          class="absolute -inset-3 -z-10 rounded-[28px] opacity-60 blur-2xl"
+          style="background: linear-gradient(140deg, rgba(26,65,148,0.28), rgba(176,208,56,0.30));"
+          aria-hidden="true"
+        >
+        </div>
+
+        <Picture
+          src={heroImage}
+          formats={['avif', 'webp']}
+          quality={62}
+          alt="High-voltage electrical substation with transformers and insulator stacks"
+          widths={[480, 720, 1000]}
+          sizes="(min-width: 1024px) 40vw, 92vw"
+          loading="eager"
+          fetchpriority="high"
+          class="aspect-[4/5] w-full rounded-[22px] object-cover shadow-[0_30px_60px_-30px_rgba(14,27,51,0.5)] ring-1 ring-brand-900/10"
+        />
+
+        {/* Floating stat card */}
+        <div
+          class="absolute -bottom-6 -left-4 rounded-2xl border border-line bg-white/90 px-6 py-4 shadow-[0_16px_40px_-20px_rgba(14,27,51,0.45)] backdrop-blur-sm sm:-left-8"
+        >
+          <p class="font-display text-3xl font-bold text-brand">
+            <span data-count-to="3" data-count-suffix="">3</span>
+          </p>
+          <p class="mt-0.5 text-xs font-medium text-ink-muted">
+            Provincial engineering permits
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

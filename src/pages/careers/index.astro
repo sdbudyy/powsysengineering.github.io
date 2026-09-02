@@ -1,0 +1,377 @@
+---
+import { withBase } from '../../lib/url';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SiteForm from '../../components/SiteForm.astro';
+import { site } from '../../data/site';
+import { tools } from '../../data/content';
+import { openings, culturePillars, datesVerified } from '../../data/careers';
+import { values } from '../../data/team';
+import { FORM_ENDPOINTS } from '../../data/forms';
+
+const formatDate = (iso: string) =>
+  new Date(`${iso}T12:00:00Z`).toLocaleDateString('en-CA', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    timeZone: 'UTC',
+  });
+
+/* JobPosting per opening. `datePosted` is omitted until the dates on the
+   current site are confirmed — see the note in careers.ts. */
+const jobSchemas = openings.map((job) => ({
+  '@context': 'https://schema.org',
+  '@type': 'JobPosting',
+  '@id': `${site.url}/careers#${job.slug}`,
+  title: job.title,
+  description: `${job.summary} Requirements: ${job.requirements.join('; ')}.`,
+  employmentType: job.employmentType,
+  hiringOrganization: { '@id': `${site.url}/#organization` },
+  jobLocation: {
+    '@type': 'Place',
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: site.address.street,
+      addressLocality: site.address.locality,
+      addressRegion: site.address.region,
+      postalCode: site.address.postalCode,
+      addressCountry: site.address.country,
+    },
+  },
+  occupationalCategory: job.department,
+  directApply: true,
+  ...(datesVerified ? { datePosted: job.date } : {}),
+}));
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: site.url },
+    { '@type': 'ListItem', position: 2, name: 'Careers', item: `${site.url}/careers` },
+  ],
+};
+---
+
+<BaseLayout
+  title="Careers at PowSys Engineering | Calgary, Alberta"
+  description="Open roles at PowSys Engineering in Calgary — electrical engineer, marketing executive and engineering draftsman. A safety-first, teamwork-based culture at a woman-owned electrical engineering firm."
+  schema={[...jobSchemas, breadcrumbSchema]}
+>
+  <!-- =====================================================================
+       HERO
+  ====================================================================== -->
+  <section class="relative isolate overflow-hidden pt-32 pb-12 lg:pt-40 lg:pb-16">
+    <div
+      class="pointer-events-none absolute -top-40 right-[-8%] -z-10 h-[44rem] w-[44rem] rounded-full opacity-70 blur-3xl"
+      style="background: radial-gradient(circle, rgba(176,208,56,0.30) 0%, rgba(176,208,56,0.06) 45%, transparent 70%);"
+      aria-hidden="true"
+    >
+    </div>
+    <div
+      class="pointer-events-none absolute -left-[12%] top-24 -z-10 h-[36rem] w-[36rem] rounded-full opacity-70 blur-3xl"
+      style="background: radial-gradient(circle, rgba(26,65,148,0.20) 0%, rgba(26,65,148,0.04) 48%, transparent 70%);"
+      aria-hidden="true"
+    >
+    </div>
+
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <nav aria-label="Breadcrumb" class="reveal">
+        <ol class="flex items-center gap-2 text-xs text-ink-muted">
+          <li><a href={withBase('/')} class="transition-colors hover:text-brand">Home</a></li>
+          <li aria-hidden="true">/</li>
+          <li class="font-medium text-ink-soft">Careers</li>
+        </ol>
+      </nav>
+
+      <p class="reveal eyebrow mt-6" style="--i:1">Careers</p>
+
+      <h1 class="reveal mt-5 max-w-4xl text-[clamp(2.2rem,5vw,4rem)] leading-[1.05]" style="--i:2">
+        Our core strength is <span class="grad-text">our people</span>.
+      </h1>
+
+      <p class="reveal mt-6 max-w-2xl text-lg leading-relaxed text-ink-soft" style="--i:3">
+        A small team means every person is a hands-on contributor. If you would
+        rather own a problem end to end than be handed a slice of one, this is
+        the right size of firm.
+      </p>
+
+      <div class="reveal mt-9 flex flex-wrap gap-3" style="--i:4">
+        <a
+          href="#openings"
+          class="rounded-xl bg-brand px-7 py-4 font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-brand-700"
+        >
+          {openings.length} open positions
+        </a>
+        <a
+          href="#apply"
+          class="rounded-xl border border-line bg-white/70 px-7 py-4 font-semibold text-ink transition-all duration-300 hover:-translate-y-0.5 hover:border-brand-200"
+        >
+          Register interest
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       CULTURE
+  ====================================================================== -->
+  <section class="relative py-16 lg:py-20" aria-labelledby="culture-heading">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <div class="max-w-2xl">
+        <p class="reveal eyebrow">Our culture</p>
+        <h2 id="culture-heading" class="reveal mt-5 text-[clamp(1.8rem,3.4vw,2.7rem)] leading-[1.08]" style="--i:1">
+          Four things we actually hold to.
+        </h2>
+        <p class="reveal mt-5 text-lg leading-relaxed text-ink-soft" style="--i:2">
+          We come from diverse backgrounds and we value that difference — not as
+          a statement, but because it produces more than one way of solving the
+          problem in front of us.
+        </p>
+      </div>
+
+      <ul class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {culturePillars.map((p, i) => (
+          <li class="reveal" style={`--i:${i}`}>
+            <article class="card h-full p-7">
+              <span class="block h-1 w-10 rounded-full" style="background: linear-gradient(90deg, var(--color-brand), var(--color-lime));" aria-hidden="true"></span>
+              <h3 class="mt-5 font-display text-base font-bold text-ink">{p.title}</h3>
+              <p class="mt-3 text-sm leading-relaxed text-ink-soft">{p.detail}</p>
+            </article>
+          </li>
+        ))}
+      </ul>
+
+      <div class="reveal mt-10 card p-7 lg:p-8">
+        <p class="leading-relaxed text-ink-soft">
+          PowSys Engineering encourages an open culture where employees feel
+          comfortable sharing ideas and suggestions. Our mission is bold and we
+          are moving full-throttle ahead — we recruit, nurture and develop people
+          to deliver continuous improvement, and provide a sense of personal
+          comfort, support, security and a safe, teamwork-based environment.
+        </p>
+        <a
+          href={withBase('/about/our-story#principles')}
+          class="group mt-5 inline-flex items-center gap-2 text-sm font-semibold text-brand transition-colors hover:text-lime-600"
+        >
+          <span class="link-draw relative">Read our core principles</span>
+          <span class="transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true">&rarr;</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       OPENINGS
+  ====================================================================== -->
+  <section id="openings" class="relative scroll-mt-28 py-16 lg:py-20" aria-labelledby="openings-heading">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <div class="flex flex-wrap items-end justify-between gap-6">
+        <div class="max-w-2xl">
+          <p class="reveal eyebrow">Open positions</p>
+          <h2 id="openings-heading" class="reveal mt-5 text-[clamp(1.8rem,3.4vw,2.7rem)] leading-[1.08]" style="--i:1">
+            Currently hiring.
+          </h2>
+        </div>
+        <p class="reveal text-sm text-ink-muted">
+          All roles based in {site.address.locality}, {site.address.region}
+        </p>
+      </div>
+
+      <ol class="mt-12 space-y-4">
+        {openings.map((job, i) => (
+          <li class="reveal" style={`--i:${i}`}>
+            <article id={job.slug} class="card scroll-mt-28 p-7 lg:p-8">
+              <div class="flex flex-wrap items-start justify-between gap-x-8 gap-y-4">
+                <div class="min-w-0 flex-1">
+                  <div class="flex flex-wrap items-center gap-2">
+                    <span class="rounded-full border border-lime-100 bg-lime-50 px-3 py-1 text-[0.68rem] font-bold uppercase tracking-[0.09em] text-lime-deep">
+                      {job.department}
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 text-xs text-ink-muted">
+                      <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true" class="text-brand">
+                        <path d="M8 14.5s5-4.2 5-8a5 5 0 0 0-10 0c0 3.8 5 8 5 8Z" stroke="currentColor" stroke-width="1.4" />
+                        <circle cx="8" cy="6.5" r="1.8" stroke="currentColor" stroke-width="1.4" />
+                      </svg>
+                      {job.location}
+                    </span>
+                    <span class="text-xs text-ink-muted">Full time</span>
+                  </div>
+
+                  <h3 class="mt-4 font-display text-[clamp(1.3rem,2.4vw,1.75rem)] font-bold text-ink">
+                    {job.title}
+                  </h3>
+                  <p class="mt-3 max-w-2xl leading-relaxed text-ink-soft">{job.summary}</p>
+                </div>
+
+                <a
+                  href={`mailto:${site.hrEmail}?subject=${encodeURIComponent(`Application — ${job.title}`)}`}
+                  class="shrink-0 rounded-xl bg-brand px-6 py-3 text-sm font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-brand-700"
+                >
+                  Apply now
+                </a>
+              </div>
+
+              <div class="expando" id={`job-${job.slug}`} data-open="false">
+                <div>
+                  <div class="mt-6 border-t border-line-soft pt-6">
+                    <h4 class="font-display text-[0.72rem] font-bold uppercase tracking-[0.13em] text-brand">
+                      What we are looking for
+                    </h4>
+                    <ul class="mt-4 grid gap-x-10 gap-y-2.5 lg:grid-cols-2">
+                      {job.requirements.map((r) => (
+                        <li class="flex gap-3 text-sm leading-relaxed text-ink-soft">
+                          <span class="mt-[0.5rem] h-1.5 w-1.5 shrink-0 rounded-full bg-lime" aria-hidden="true"></span>
+                          <span>{r}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-6 flex flex-wrap items-center gap-4">
+                <button
+                  type="button"
+                  data-expands={`job-${job.slug}`}
+                  data-label-closed="Full requirements"
+                  data-label-open="Show less"
+                  aria-expanded="false"
+                  class="inline-flex items-center gap-1.5 rounded-lg border border-line px-4 py-2.5 text-xs font-semibold text-brand transition-all duration-300 hover:border-brand-200 hover:bg-brand-50"
+                >
+                  <span data-label>Full requirements</span>
+                  <svg class="chev" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                    <path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </button>
+
+                <p class="text-xs text-ink-muted">
+                  Listed {formatDate(job.date)}
+                </p>
+              </div>
+            </article>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       WHAT YOU WILL WORK WITH
+  ====================================================================== -->
+  <section class="relative py-12 lg:py-16" aria-labelledby="tools-heading">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <div class="grid gap-10 lg:grid-cols-12 lg:gap-12">
+        <div class="lg:col-span-5">
+          <p class="reveal eyebrow">The work</p>
+          <h2 id="tools-heading" class="reveal mt-5 text-[clamp(1.8rem,3.4vw,2.7rem)] leading-[1.08]" style="--i:1">
+            What you would work on.
+          </h2>
+          <p class="reveal mt-5 leading-relaxed text-ink-soft" style="--i:2">
+            Real projects in oil and gas, mining, renewable generation, utilities
+            and data centres — power system studies, hazardous area compliance,
+            condition-based maintenance and full project delivery.
+          </p>
+        </div>
+
+        <div class="lg:col-span-7">
+          <ul class="reveal grid gap-4 sm:grid-cols-3">
+            {values.map((v) => (
+              <li class="rounded-xl border border-line bg-white/70 p-5">
+                <h3 class="font-display text-sm font-bold text-ink">{v.title}</h3>
+                <p class="mt-2 text-xs leading-relaxed text-ink-soft">{v.detail}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="marquee mt-12 overflow-hidden py-2" aria-label="Software you would work in">
+      <div class="marquee-track gap-3">
+        {[...tools, ...tools].map((t, i) => (
+          <span
+            aria-hidden={i >= tools.length ? 'true' : undefined}
+            class="whitespace-nowrap rounded-full border border-line bg-white/70 px-5 py-2.5 text-sm font-medium text-ink-soft"
+          >
+            {t}
+          </span>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       APPLY
+  ====================================================================== -->
+  <section id="apply" class="relative scroll-mt-28 pb-24 lg:pb-32">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <div class="grid gap-10 lg:grid-cols-12 lg:gap-12">
+        <div class="lg:col-span-5">
+          <p class="reveal eyebrow">Apply</p>
+          <h2 class="reveal mt-5 text-[clamp(1.8rem,3.4vw,2.7rem)] leading-[1.08]" style="--i:1">
+            Apply, or register interest.
+          </h2>
+          <p class="reveal mt-5 leading-relaxed text-ink-soft" style="--i:2">
+            Applying for one of the roles above? Say which. Nothing listed that
+            fits? Send an expression of interest anyway — we would rather know
+            you exist before the role opens.
+          </p>
+
+          <div class="reveal card mt-8 p-6" style="--i:3">
+            <p class="font-display text-[0.72rem] font-bold uppercase tracking-[0.13em] text-brand">
+              Prefer email?
+            </p>
+            <p class="mt-3 text-sm leading-relaxed text-ink-soft">
+              Send your resume and cover letter directly to
+            </p>
+            <a
+              href={`mailto:${site.hrEmail}`}
+              class="mt-1 inline-block font-semibold text-brand transition-colors hover:text-lime-600"
+            >
+              {site.hrEmail}
+            </a>
+          </div>
+        </div>
+
+        <div class="lg:col-span-7">
+          <div class="reveal card p-7 lg:p-8">
+            <SiteForm
+              id="apply-form"
+              endpoint={FORM_ENDPOINTS.contact}
+              mailTo={site.hrEmail}
+              subject="Job application — powsysengineering.com"
+              submitLabel="Send application"
+              note="We review every application."
+              fields={[
+                { name: 'name', label: 'Full name', required: true },
+                { name: 'email', label: 'Email', type: 'email', required: true },
+                { name: 'phone', label: 'Phone', type: 'tel' },
+                {
+                  name: 'position',
+                  label: 'Position',
+                  type: 'select',
+                  required: true,
+                  options: [...openings.map((o) => o.title), 'Expression of interest'],
+                },
+                {
+                  name: 'resume',
+                  label: 'Resume',
+                  type: 'file',
+                  accept: '.pdf,.doc,.docx',
+                  hint: 'PDF or Word, under 2 MB.',
+                  full: true,
+                },
+                {
+                  name: 'message',
+                  label: 'Cover letter',
+                  type: 'textarea',
+                  placeholder: 'Why this role, and what you would bring to it.',
+                },
+              ]}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

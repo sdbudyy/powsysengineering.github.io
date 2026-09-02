@@ -1,0 +1,25 @@
+---
+/* The supplied logo is a solid blue/lime rectangle with no transparency, so it
+   is treated as a badge: rounded, clipped, and given a hairline border rather
+   than floated directly on the page. */
+import { Image } from 'astro:assets';
+import logo from '../assets/powsys-logo.png';
+
+interface Props {
+  class?: string;
+  /** Rendered height in px. Width follows the source aspect ratio. */
+  height?: number;
+}
+
+const { class: className = '', height = 44 } = Astro.props;
+---
+
+<Image
+  src={logo}
+  alt="PowSys Engineering"
+  height={height}
+  densities={[1, 2]}
+  loading="eager"
+  class={`w-auto rounded-[7px] ring-1 ring-brand-900/10 ${className}`}
+  style={`height:${height}px`}
+/>

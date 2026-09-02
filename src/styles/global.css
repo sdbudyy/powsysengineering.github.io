@@ -1,0 +1,284 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   PowSys Engineering — design tokens
+
+   The palette is taken directly from the logo: royal blue #1A4194 and
+   lime #B0D038. Lime is bright and low-contrast on white, so it is used for
+   graphic accents (rules, glows, markers) while `lime-deep` is the only lime
+   safe for text on light backgrounds.
+--------------------------------------------------------------------------- */
+@theme {
+  /* Brand blue */
+  --color-brand-50:  #EEF3FC;
+  --color-brand-100: #DCE6F8;
+  --color-brand-200: #B9CCF0;
+  --color-brand-400: #4E76C8;
+  --color-brand:     #1A4194;
+  --color-brand-700: #14357B;
+  --color-brand-900: #0C2050;
+
+  /* Brand lime */
+  --color-lime-50:   #F5F9E6;
+  --color-lime-100:  #E9F2C8;
+  --color-lime-300:  #CBE070;
+  --color-lime:      #B0D038;
+  --color-lime-600:  #89A521;
+  --color-lime-deep: #63781A;
+
+  /* Surfaces — the page is one continuous light wash, not stacked blocks */
+  --color-paper:      #FFFFFF;
+  --color-paper-warm: #FAFBFE;
+  --color-paper-tint: #F3F7FD;
+  --color-line:       #E3EAF5;
+  --color-line-soft:  #EFF3FA;
+
+  /* Text */
+  --color-ink:       #0E1B33;
+  --color-ink-soft:  #3B4A63;
+  --color-ink-muted: #64748B;
+
+  --font-display: "Archivo Variable", "Archivo", system-ui, sans-serif;
+  --font-sans: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --radius-card: 16px;
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* --------------------------------------------------------------------------- */
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: 6rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.024em;
+    color: var(--color-ink);
+    text-wrap: balance;
+  }
+
+  p { text-wrap: pretty; }
+
+  :focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 3px;
+    border-radius: 3px;
+  }
+
+  ::selection {
+    background: var(--color-lime);
+    color: var(--color-brand-900);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   SEAMLESS SECTIONS
+   Sections are transparent. The page background is a single continuous wash
+   painted once on a fixed layer, so there are no hard edges between sections —
+   they dissolve into one another instead of stacking as visible blocks.
+--------------------------------------------------------------------------- */
+@layer components {
+  .page-wash {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(60rem 40rem at 82% -5%,  rgba(176, 208, 56, 0.16), transparent 60%),
+      radial-gradient(52rem 38rem at 8% 12%,   rgba(26, 65, 148, 0.10),  transparent 62%),
+      radial-gradient(64rem 44rem at 95% 48%,  rgba(26, 65, 148, 0.08),  transparent 60%),
+      radial-gradient(52rem 36rem at 0% 78%,   rgba(176, 208, 56, 0.13), transparent 62%),
+      linear-gradient(180deg, #FFFFFF 0%, #F7FAFE 38%, #F3F7FD 66%, #FFFFFF 100%);
+  }
+
+  /* A soft feathered band used to tint one stretch of the page without
+     drawing a boundary around it. */
+  .band {
+    position: absolute;
+    inset-inline: 0;
+    z-index: -1;
+    pointer-events: none;
+    mask-image: linear-gradient(180deg, transparent, #000 18%, #000 82%, transparent);
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-brand);
+  }
+
+  .eyebrow::before {
+    content: "";
+    width: 1.75rem;
+    height: 3px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--color-brand), var(--color-lime));
+  }
+
+  /* Card surface — frosted white that sits on the page wash */
+  .card {
+    background: rgba(255, 255, 255, 0.78);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    box-shadow: 0 1px 2px rgba(14, 27, 51, 0.04);
+    transition:
+      transform 0.4s var(--ease-out-soft),
+      box-shadow 0.4s var(--ease-out-soft),
+      border-color 0.4s var(--ease-out-soft),
+      background-color 0.4s var(--ease-out-soft);
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+    background: #FFFFFF;
+    border-color: var(--color-brand-200);
+    box-shadow:
+      0 18px 40px -18px rgba(26, 65, 148, 0.28),
+      0 2px 6px rgba(14, 27, 51, 0.04);
+  }
+
+  /* Animated gradient text, used sparingly on hero emphasis */
+  .grad-text {
+    background: linear-gradient(100deg, var(--color-brand) 0%, var(--color-brand-400) 34%, var(--color-lime-600) 68%, var(--color-brand) 100%);
+    background-size: 260% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: grad-pan 9s ease-in-out infinite;
+  }
+
+  @keyframes grad-pan {
+    0%, 100% { background-position: 0% 50%; }
+    50%      { background-position: 100% 50%; }
+  }
+
+  /* Link with an underline that draws in from the left */
+  .link-draw {
+    position: relative;
+  }
+  .link-draw::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -3px;
+    height: 2px;
+    width: 100%;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--color-brand), var(--color-lime));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.45s var(--ease-out-soft);
+  }
+  .link-draw:hover::after,
+  .group:hover .link-draw::after {
+    transform: scaleX(1);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   SCROLL REVEAL
+   Opt-in via JS: `.reveal` alone is fully visible. Script adds `is-armed`
+   only once an IntersectionObserver is watching, so a JS failure degrades to
+   "no animation" rather than "no content".
+--------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal.is-armed {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+
+  .reveal.is-armed.is-visible {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 0.7s var(--ease-out-soft),
+      transform 0.7s var(--ease-out-soft);
+    /* --i is set per item to stagger a group */
+    transition-delay: calc(var(--i, 0) * 70ms);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   EXPANDABLE PANELS
+   Height animation via grid-template-rows 0fr -> 1fr, which transitions
+   smoothly without needing a hard-coded max-height.
+--------------------------------------------------------------------------- */
+.expando {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.55s var(--ease-out-soft);
+}
+
+.expando > * {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.expando[data-open="true"] {
+  grid-template-rows: 1fr;
+}
+
+/* Chevron flip on the control that owns the panel */
+[aria-expanded="true"] .chev {
+  transform: rotate(180deg);
+}
+.chev {
+  transition: transform 0.4s var(--ease-out-soft);
+}
+
+/* ---------------------------------------------------------------------------
+   MARQUEE — continuous, pauses on hover, duplicated track for a seamless loop
+--------------------------------------------------------------------------- */
+.marquee {
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll 38s linear infinite;
+}
+
+.marquee:hover .marquee-track,
+.marquee[data-paused='true'] .marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation: none; }
+}

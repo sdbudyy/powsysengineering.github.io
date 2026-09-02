@@ -1,0 +1,217 @@
+---
+/* ---------------------------------------------------------------------------
+   SITE FORM
+
+   One form component behind every form on the site. Fields are declared as
+   data so a new form is a config change rather than new markup.
+
+   If no endpoint is configured in `src/data/forms.ts`, submitting composes a
+   pre-filled email to the company instead of failing silently. Wire an
+   endpoint up and it posts normally with no other change.
+--------------------------------------------------------------------------- */
+import { site } from '../data/site';
+
+export interface Field {
+  name: string;
+  label: string;
+  type?: 'text' | 'email' | 'tel' | 'date' | 'time' | 'textarea' | 'select' | 'file';
+  required?: boolean;
+  options?: string[];
+  placeholder?: string;
+  /** Span both columns on wide layouts. */
+  full?: boolean;
+  /** File inputs only: accepted types and a hint shown under the control. */
+  accept?: string;
+  hint?: string;
+}
+
+interface Props {
+  id: string;
+  endpoint: string;
+  fields: Field[];
+  submitLabel: string;
+  /** Subject line used by the mail fallback. */
+  subject: string;
+  /** Recipient for the mail fallback. Defaults to the general enquiries inbox. */
+  mailTo?: string;
+  note?: string;
+}
+
+const { id, endpoint, fields, submitLabel, subject, note, mailTo = site.email } = Astro.props;
+
+const inputClass =
+  'w-full rounded-lg border border-line bg-white px-4 py-3 text-sm text-ink placeholder:text-ink-muted/70 transition-colors focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20';
+---
+
+<form
+  id={id}
+  class="site-form"
+  enctype={fields.some((f) => f.type === 'file') ? 'multipart/form-data' : undefined}
+  method="post"
+  action={endpoint || undefined}
+  data-endpoint={endpoint}
+  data-subject={subject}
+  data-mailto={mailTo}
+  novalidate={false}
+>
+  <div class="grid gap-4 sm:grid-cols-2">
+    {fields.map((f) => (
+      <div class={f.full || f.type === 'textarea' ? 'sm:col-span-2' : ''}>
+        <label for={`${id}-${f.name}`} class="mb-1.5 block text-xs font-semibold text-ink">
+          {f.label}
+          {f.required && <span class="text-lime-600" aria-hidden="true"> *</span>}
+        </label>
+
+        {f.type === 'textarea' ? (
+          <textarea
+            id={`${id}-${f.name}`}
+            name={f.name}
+            rows="4"
+            required={f.required}
+            placeholder={f.placeholder}
+            class={inputClass}
+          ></textarea>
+        ) : f.type === 'select' ? (
+          <select id={`${id}-${f.name}`} name={f.name} required={f.required} class={inputClass}>
+            {(f.options ?? []).map((o) => <option value={o}>{o}</option>)}
+          </select>
+        ) : f.type === 'file' ? (
+          <>
+            <input
+              id={`${id}-${f.name}`}
+              name={f.name}
+              type="file"
+              accept={f.accept}
+              required={f.required}
+              class="w-full cursor-pointer rounded-lg border border-line bg-white px-4 py-2.5 text-sm text-ink-soft file:mr-4 file:cursor-pointer file:rounded-md file:border-0 file:bg-brand-50 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-brand hover:file:bg-brand-100"
+            />
+            {f.hint && <p class="mt-1.5 text-xs text-ink-muted">{f.hint}</p>}
+          </>
+        ) : (
+          <input
+            id={`${id}-${f.name}`}
+            name={f.name}
+            type={f.type ?? 'text'}
+            required={f.required}
+            placeholder={f.placeholder}
+            class={inputClass}
+          />
+        )}
+      </div>
+    ))}
+  </div>
+
+  {/* Honeypot — bots fill it, people never see it. */}
+  <div class="absolute left-[-9999px]" aria-hidden="true">
+    <label>
+      Leave this empty
+      <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" />
+    </label>
+  </div>
+
+  <div class="mt-6 flex flex-wrap items-center gap-4">
+    <button
+      type="submit"
+      class="group relative overflow-hidden rounded-xl bg-brand px-7 py-3.5 font-semibold text-white shadow-[0_10px_28px_-14px_rgba(26,65,148,0.8)] transition-all duration-300 hover:-translate-y-0.5"
+    >
+      <span
+        class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-lime/45 to-transparent transition-transform duration-700 group-hover:translate-x-full"
+        aria-hidden="true"
+      ></span>
+      <span class="relative">{submitLabel}</span>
+    </button>
+
+    {note && <p class="text-xs text-ink-muted">{note}</p>}
+  </div>
+
+  <p class="form-status mt-4 text-sm" role="status" aria-live="polite"></p>
+</form>
+
+<script>
+  // Shared handling for every form on the site.
+  document.querySelectorAll<HTMLFormElement>('form.site-form').forEach((form) => {
+    const status = form.querySelector<HTMLElement>('.form-status')!;
+
+    const say = (message: string, tone: 'ok' | 'bad' | 'info') => {
+      status.textContent = message;
+      status.className =
+        'form-status mt-4 text-sm ' +
+        (tone === 'ok'
+          ? 'text-lime-deep font-semibold'
+          : tone === 'bad'
+            ? 'text-red-700 font-semibold'
+            : 'text-ink-muted');
+    };
+
+    form.addEventListener('submit', async (event) => {
+      if (!form.reportValidity()) return;
+
+      const endpoint = form.dataset.endpoint;
+      const data = new FormData(form);
+
+      // Honeypot tripped — silently pretend it worked.
+      if (data.get('_gotcha')) {
+        event.preventDefault();
+        say('Thank you — your message has been sent.', 'ok');
+        return;
+      }
+
+      // No endpoint configured: fall back to composing an email so the
+      // enquiry still reaches someone.
+      if (!endpoint) {
+        event.preventDefault();
+        const lines: string[] = [];
+        let hasFile = false;
+
+        data.forEach((value, key) => {
+          if (key === '_gotcha') return;
+          // A mailto: link cannot carry an attachment, so name the file and
+          // ask the sender to attach it themselves rather than losing it.
+          if (value instanceof File) {
+            if (value.size > 0) {
+              hasFile = true;
+              lines.push(`Attachment to add manually: ${value.name}`);
+            }
+            return;
+          }
+          if (!String(value).trim()) return;
+          const label = form.querySelector(`label[for$="-${key}"]`)?.textContent?.trim() ?? key;
+          lines.push(`${label.replace(/\s*\*$/, '')}: ${value}`);
+        });
+
+        const href =
+          `mailto:${form.dataset.mailto}` +
+          `?subject=${encodeURIComponent(form.dataset.subject ?? 'Website enquiry')}` +
+          `&body=${encodeURIComponent(lines.join('\n'))}`;
+
+        window.location.href = href;
+        say(
+          hasFile
+            ? 'Opening your email app — please attach your file before sending.'
+            : 'Opening your email app with these details filled in…',
+          'info'
+        );
+        return;
+      }
+
+      event.preventDefault();
+      say('Sending…', 'info');
+
+      try {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          body: data,
+          headers: { Accept: 'application/json' },
+        });
+        if (!res.ok) throw new Error(String(res.status));
+        form.reset();
+        say('Thank you — we respond to enquiries within two working days.', 'ok');
+      } catch {
+        say(
+          'Something went wrong sending that. Please email info@powsysengineering.com directly.',
+          'bad'
+        );
+      }
+    });
+  });
+</script>

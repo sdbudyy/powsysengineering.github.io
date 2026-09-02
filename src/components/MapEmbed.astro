@@ -1,0 +1,129 @@
+---
+/* ---------------------------------------------------------------------------
+   GOOGLE MAP — background load
+
+   The iframe is not in the initial HTML. Instead a lightweight placeholder
+   paints immediately, and the real map is injected in the background once the
+   page has finished loading and the browser is idle. By the time anyone
+   scrolls down to it, the map is already there — but it never competes with
+   the page's own load, and it costs nothing on the critical path.
+
+   The placeholder is only a loading state and fades out once the iframe
+   reports `load`. Crucially the address and the link out live in the caption
+   BELOW the map, not inside that placeholder — an iframe fires `load` even
+   when Google is blocked by a firewall, a consent gate or an extension, and it
+   then paints an opaque blank panel. Keeping the essentials outside means a
+   failed embed degrades to "no map" rather than "no information".
+
+   Note: the map is third-party. Loading it automatically means Google sets
+   cookies for every visitor who reaches this page.
+--------------------------------------------------------------------------- */
+import { site } from '../data/site';
+
+const address = `${site.address.street}, ${site.address.locality}, ${site.address.region} ${site.address.postalCode}, Canada`;
+const query = encodeURIComponent(`${site.legalName}, ${address}`);
+
+const embedSrc = `https://www.google.com/maps?q=${query}&z=15&output=embed`;
+const linkOut = `https://www.google.com/maps/search/?api=1&query=${query}`;
+---
+
+<figure>
+<div
+  id="map-shell"
+  class="relative isolate aspect-[16/10] overflow-hidden rounded-[var(--radius-card)] border border-line sm:aspect-[16/9]"
+  data-embed={embedSrc}
+>
+  {/* Placeholder — paints instantly, cross-fades out when the map arrives. */}
+  <div
+    id="map-facade"
+    class="absolute inset-0 z-10 grid place-items-center p-6 text-center transition-opacity duration-700"
+  >
+    <div
+      class="absolute inset-0 -z-10"
+      style="background: linear-gradient(180deg, var(--color-brand-50), var(--color-paper-tint));"
+      aria-hidden="true"
+    >
+    </div>
+    <div
+      class="absolute inset-0 -z-10"
+      style="background: repeating-linear-gradient(90deg, transparent 0 46px, rgba(26,65,148,0.07) 46px 48px), repeating-linear-gradient(0deg, transparent 0 46px, rgba(26,65,148,0.07) 46px 48px);"
+      aria-hidden="true"
+    >
+    </div>
+
+    <div class="relative flex flex-col items-center">
+      <span
+        class="grid h-14 w-14 place-items-center rounded-full bg-brand text-white shadow-[0_10px_28px_-12px_rgba(26,65,148,0.8)]"
+        aria-hidden="true"
+      >
+        <svg width="22" height="22" viewBox="0 0 16 16" fill="none">
+          <path d="M8 14.5s5-4.2 5-8a5 5 0 0 0-10 0c0 3.8 5 8 5 8Z" stroke="currentColor" stroke-width="1.4" />
+          <circle cx="8" cy="6.5" r="1.9" stroke="currentColor" stroke-width="1.4" />
+        </svg>
+      </span>
+      <p class="mt-4 text-sm font-medium text-ink-soft">Loading map…</p>
+    </div>
+  </div>
+</div>
+
+  <figcaption class="mt-3 flex flex-wrap items-center justify-between gap-x-6 gap-y-2 text-sm">
+    <address class="not-italic text-ink-soft">
+      <span class="font-semibold text-ink">{site.legalName}</span>
+      {' '}&middot; {site.address.street}, {site.address.locality}, {site.address.region}
+      {' '}{site.address.postalCode}
+    </address>
+    <a
+      href={linkOut}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="group inline-flex shrink-0 items-center gap-1.5 font-semibold text-brand transition-colors hover:text-lime-600"
+    >
+      <span class="link-draw relative">Open in Google Maps</span>
+      <span class="transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true">&rarr;</span>
+    </a>
+  </figcaption>
+</figure>
+
+<script>
+  const shell = document.getElementById('map-shell');
+  const facade = document.getElementById('map-facade');
+
+  if (shell) {
+    const insertMap = () => {
+      // Guard against double-insertion if both triggers fire.
+      if (shell.querySelector('iframe')) return;
+
+      const frame = document.createElement('iframe');
+      frame.title = 'Google Map showing the PowSys Engineering office in Calgary';
+      frame.loading = 'lazy';
+      frame.referrerPolicy = 'no-referrer-when-downgrade';
+      frame.className = 'absolute inset-0 h-full w-full border-0';
+      frame.allowFullscreen = true;
+
+      // Drop the loading state once the frame reports load. This is not proof
+      // the map rendered — see the note at the top of this file, which is why
+      // the address and link live in the caption rather than in here.
+      frame.addEventListener('load', () => {
+        if (!facade) return;
+        facade.style.opacity = '0';
+        setTimeout(() => facade.remove(), 700);
+      });
+
+      frame.src = shell.dataset.embed!;
+      shell.appendChild(frame);
+    };
+
+    // Start only after the page itself has finished loading, then wait for an
+    // idle moment. The map never competes with the site's own assets.
+    const start = () => {
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(insertMap, { timeout: 2500 });
+      } else {
+        setTimeout(insertMap, 1200);
+      }
+    };
+
+    if (document.readyState === 'complete') start();
+    else addEventListener('load', start, { once: true });
+  }
+</script>

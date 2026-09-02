@@ -1,0 +1,474 @@
+---
+import { withBase } from '../../lib/url';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import KnowledgeMini from '../../components/KnowledgeMini.astro';
+import CoverageMap from '../../components/CoverageMap.astro';
+import { site } from '../../data/site';
+import { projects, engagementTypes, projectFaqs, tools, mapMarkers } from '../../data/content';
+import { projectLinks, getService, getIndustry, getEntry } from '../../data/relations';
+
+/* Derived counters — factual, not invented. */
+const regions = [...new Set(projects.map((p) => p.location.split(',').pop()!.trim()))];
+const disciplines = [...new Set(projects.map((p) => p.category))];
+
+const listSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Selected PowSys Engineering projects',
+  description:
+    'Illustrative electrical engineering case studies delivered by PowSys Engineering across power system studies, renewable generation design and verification work.',
+  itemListElement: projects.map((p, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    item: {
+      '@type': 'CreativeWork',
+      name: p.title,
+      description: p.detail,
+      url: `${site.url}/projects#project-${p.slug}`,
+      creator: { '@id': `${site.url}/#organization` },
+      locationCreated: { '@type': 'Place', name: p.location },
+      about: p.category,
+    },
+  })),
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: projectFaqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: site.url },
+    { '@type': 'ListItem', position: 2, name: 'Projects', item: `${site.url}/projects` },
+  ],
+};
+---
+
+<BaseLayout
+  title="Projects & Case Studies | PowSys Engineering"
+  description="Selected electrical engineering case studies from PowSys Engineering — a rectifier transformer harmonic study in Louisiana, a 1.115 MWh solar PV design, and a switchgear upgrade with full ETAP model verification in Lloydminster, Alberta."
+  schema={[listSchema, faqSchema, breadcrumbSchema]}
+>
+  <!-- =====================================================================
+       HERO
+  ====================================================================== -->
+  <section class="relative isolate overflow-hidden pt-32 pb-12 lg:pt-40 lg:pb-16">
+    <div
+      class="pointer-events-none absolute -top-40 right-[-8%] -z-10 h-[44rem] w-[44rem] rounded-full opacity-70 blur-3xl"
+      style="background: radial-gradient(circle, rgba(176,208,56,0.30) 0%, rgba(176,208,56,0.06) 45%, transparent 70%);"
+      aria-hidden="true"
+    >
+    </div>
+    <div
+      class="pointer-events-none absolute -left-[12%] top-24 -z-10 h-[36rem] w-[36rem] rounded-full opacity-70 blur-3xl"
+      style="background: radial-gradient(circle, rgba(26,65,148,0.20) 0%, rgba(26,65,148,0.04) 48%, transparent 70%);"
+      aria-hidden="true"
+    >
+    </div>
+
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <nav aria-label="Breadcrumb" class="reveal">
+        <ol class="flex items-center gap-2 text-xs text-ink-muted">
+          <li><a href={withBase('/')} class="transition-colors hover:text-brand">Home</a></li>
+          <li aria-hidden="true">/</li>
+          <li class="font-medium text-ink-soft">Projects</li>
+        </ol>
+      </nav>
+
+      <p class="reveal eyebrow mt-6" style="--i:1">Selected work</p>
+
+      <h1 class="reveal mt-5 max-w-4xl text-[clamp(2.2rem,5vw,4rem)] leading-[1.05]" style="--i:2">
+        A few projects, <span class="grad-text">in detail</span>.
+      </h1>
+
+      <p class="reveal mt-6 max-w-xl text-lg leading-relaxed text-ink-soft" style="--i:3">
+        Published case studies are illustrative rather than exhaustive. Each one
+        below is shown with its actual scope and the tooling used.
+      </p>
+
+      <dl class="reveal mt-10 flex flex-wrap gap-x-10 gap-y-5" style="--i:4">
+        <div>
+          <dt class="text-[0.7rem] uppercase tracking-[0.14em] text-ink-muted">Case studies</dt>
+          <dd class="mt-1 font-display text-3xl font-bold text-brand">
+            <span data-count-to={projects.length}>{projects.length}</span>
+          </dd>
+        </div>
+        <div>
+          <dt class="text-[0.7rem] uppercase tracking-[0.14em] text-ink-muted">Countries</dt>
+          <dd class="mt-1 font-display text-3xl font-bold text-brand">
+            <span data-count-to={regions.length}>{regions.length}</span>
+          </dd>
+        </div>
+        <div>
+          <dt class="text-[0.7rem] uppercase tracking-[0.14em] text-ink-muted">Disciplines</dt>
+          <dd class="mt-1 font-display text-3xl font-bold text-brand">
+            <span data-count-to={disciplines.length}>{disciplines.length}</span>
+          </dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       CASE STUDIES
+  ====================================================================== -->
+  <section class="relative pb-16 lg:pb-20" aria-labelledby="cases-heading">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <h2 id="cases-heading" class="sr-only">Case studies</h2>
+
+      <ol class="space-y-5">
+        {projects.map((p, i) => {
+          const links = projectLinks[p.slug];
+          return (
+            <li class="reveal" style={`--i:${i % 2}`}>
+              <article id={`project-${p.slug}`} class="card scroll-mt-28 p-7 lg:p-9">
+                <div class="grid gap-8 lg:grid-cols-12 lg:gap-10">
+                  <!-- Left: the work -->
+                  <div class="lg:col-span-7">
+                    <div class="flex flex-wrap items-center gap-3">
+                      <span
+                        class="grid h-9 w-9 shrink-0 place-items-center rounded-lg font-display text-xs font-bold text-white"
+                        style="background: linear-gradient(140deg, var(--color-brand), var(--color-brand-400));"
+                        aria-hidden="true"
+                      >{String(i + 1).padStart(2, '0')}</span>
+
+                      <span class="rounded-full border border-lime-100 bg-lime-50 px-3 py-1 text-[0.68rem] font-bold uppercase tracking-[0.09em] text-lime-deep">
+                        {p.category}
+                      </span>
+
+                      <span class="inline-flex items-center gap-1.5 text-sm text-ink-muted">
+                        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true" class="text-brand">
+                          <path d="M8 14.5s5-4.2 5-8a5 5 0 0 0-10 0c0 3.8 5 8 5 8Z" stroke="currentColor" stroke-width="1.4" />
+                          <circle cx="8" cy="6.5" r="1.8" stroke="currentColor" stroke-width="1.4" />
+                        </svg>
+                        {p.location}
+                      </span>
+                    </div>
+
+                    <h3 class="mt-5 font-display text-[clamp(1.4rem,2.6vw,2rem)] font-bold leading-tight text-ink">
+                      {p.title}
+                    </h3>
+
+                    <p class="mt-3 max-w-2xl leading-relaxed text-ink-soft">{p.detail}</p>
+
+                    <h4 class="mt-8 font-display text-[0.72rem] font-bold uppercase tracking-[0.13em] text-brand">
+                      Scope of work
+                    </h4>
+                    <ul class="mt-3 space-y-2.5">
+                      {p.scope.map((item) => (
+                        <li class="flex gap-3 text-[0.95rem] leading-relaxed text-ink-soft">
+                          <span class="mt-[0.5rem] h-1.5 w-1.5 shrink-0 rounded-full bg-lime" aria-hidden="true"></span>
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    <h4 class="mt-7 font-display text-[0.72rem] font-bold uppercase tracking-[0.13em] text-brand">
+                      Tools
+                    </h4>
+                    <ul class="mt-3 flex flex-wrap gap-2">
+                      {p.tools.map((t) => (
+                        <li class="rounded-full border border-line bg-white px-3 py-1 text-xs font-medium text-ink-soft">
+                          {t}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <!-- Right: how it connects -->
+                  <div class="lg:col-span-5">
+                    <div class="rounded-xl bg-brand-50/60 p-6">
+                      <h4 class="font-display text-[0.72rem] font-bold uppercase tracking-[0.13em] text-brand">
+                        Services used
+                      </h4>
+                      <ul class="mt-3 flex flex-wrap gap-2">
+                        {links.services.map((slug) => {
+                          const svc = getService(slug);
+                          return (
+                            <li>
+                              <a
+                                href={withBase(`/services#service-${svc.slug}`)}
+                                class="inline-flex rounded-full border border-line bg-white px-3 py-1.5 text-xs font-medium text-ink-soft transition-all duration-300 hover:-translate-y-0.5 hover:border-brand-200 hover:text-brand"
+                              >
+                                {svc.title}
+                              </a>
+                            </li>
+                          );
+                        })}
+                      </ul>
+
+                      <h4 class="mt-6 font-display text-[0.72rem] font-bold uppercase tracking-[0.13em] text-brand">
+                        Sectors
+                      </h4>
+                      <ul class="mt-3 flex flex-wrap gap-2">
+                        {links.industries.map((slug) => {
+                          const ind = getIndustry(slug);
+                          return (
+                            <li>
+                              <a
+                                href={withBase(`/industries/${ind.slug}`)}
+                                class="inline-flex rounded-full border border-line bg-white px-3 py-1.5 text-xs font-medium text-ink-soft transition-all duration-300 hover:-translate-y-0.5 hover:border-brand-200 hover:text-brand"
+                              >
+                                {ind.name}
+                              </a>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+
+                    {links.knowledge.length > 0 && (
+                      <div class="mt-5">
+                        <h4 class="font-display text-[0.72rem] font-bold uppercase tracking-[0.13em] text-brand">
+                          The engineering, explained
+                        </h4>
+                        <ul class="mt-3 space-y-3">
+                          {links.knowledge.map((slug) => (
+                            <li><KnowledgeMini entry={getEntry(slug)} /></li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </article>
+            </li>
+          );
+        })}
+      </ol>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       WHY THE LIST IS SHORT
+  ====================================================================== -->
+  <section class="relative py-16 lg:py-20" aria-labelledby="more-heading">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <div
+        class="reveal card border-l-[3px] p-7 lg:p-9"
+        style="border-left-color: var(--color-lime);"
+      >
+        <h2 id="more-heading" class="font-display text-xl font-bold text-ink lg:text-2xl">
+          Why this list is short
+        </h2>
+        <p class="mt-4 max-w-3xl leading-relaxed text-ink-soft">
+          Most of our work sits under client confidentiality, so only a small
+          number of case studies are published. That is a deliberate limit rather
+          than a reflection of volume. If you are assessing us for a specific
+          scope, ask — we provide detailed project experience, capability
+          statements and client references directly.
+        </p>
+        <a
+          href={withBase('/contact')}
+          class="group mt-6 inline-flex items-center gap-2 text-sm font-semibold text-brand transition-colors hover:text-lime-600"
+        >
+          <span class="link-draw relative">Request our full experience</span>
+          <span class="transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true">&rarr;</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       TYPES OF ENGAGEMENT
+  ====================================================================== -->
+  <section class="relative py-16 lg:py-20" aria-labelledby="types-heading">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <div class="max-w-2xl">
+        <p class="reveal eyebrow">What we get asked for</p>
+        <h2 id="types-heading" class="reveal mt-5 text-[clamp(1.8rem,3.4vw,2.7rem)] leading-[1.08]" style="--i:1">
+          Six kinds of engagement.
+        </h2>
+        <p class="reveal mt-5 text-lg leading-relaxed text-ink-soft" style="--i:2">
+          The published case studies are examples of these. Most enquiries land
+          in one of them.
+        </p>
+      </div>
+
+      <ul class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {engagementTypes.map((t, i) => (
+          <li class="reveal" style={`--i:${i % 3}`}>
+            <article class="card h-full p-6">
+              <div class="flex items-center gap-3">
+                <span
+                  class="h-2 w-2 shrink-0 rounded-full bg-lime"
+                  aria-hidden="true"
+                ></span>
+                <h3 class="font-display text-base font-bold text-ink">{t.title}</h3>
+              </div>
+              <p class="mt-3 text-sm leading-relaxed text-ink-soft">{t.detail}</p>
+            </article>
+          </li>
+        ))}
+      </ul>
+
+      <div class="marquee mt-14 overflow-hidden py-2" aria-label="Engineering software used on projects">
+        <div class="marquee-track gap-3">
+          {[...tools, ...tools].map((t, i) => (
+            <span
+              aria-hidden={i >= tools.length ? 'true' : undefined}
+              class="whitespace-nowrap rounded-full border border-line bg-white/70 px-5 py-2.5 text-sm font-medium text-ink-soft"
+            >
+              {t}
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       WHERE WE WORK
+  ====================================================================== -->
+  <section class="relative py-16 lg:py-20" aria-labelledby="where-heading">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <div class="max-w-2xl">
+        <p class="reveal eyebrow">Coverage</p>
+        <h2 id="where-heading" class="reveal mt-5 text-[clamp(1.8rem,3.4vw,2.7rem)] leading-[1.08]" style="--i:1">
+          Where we work.
+        </h2>
+        <p class="reveal mt-5 leading-relaxed text-ink-soft" style="--i:2">
+          Based in Calgary, delivering across western Canada and into the United
+          States — offsite, onsite, or a mix of both.
+        </p>
+      </div>
+
+      <div class="mt-12 grid gap-8 lg:grid-cols-12 lg:gap-10">
+        <div class="reveal lg:col-span-8">
+          <CoverageMap />
+        </div>
+
+        <div class="lg:col-span-4">
+          {/* Same information as text, so it is readable without the graphic
+              and crawlable by search and answer engines. */}
+          <h3 class="reveal font-display text-[0.72rem] font-bold uppercase tracking-[0.13em] text-brand">
+            Plotted locations
+          </h3>
+          <ul class="reveal mt-4 space-y-3">
+            {mapMarkers.map((m) => (
+              <li class="flex gap-3 rounded-xl border border-line bg-white/70 p-4">
+                <span
+                  class={`mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full ${m.kind === 'office' ? 'bg-brand' : 'bg-lime-600'}`}
+                  aria-hidden="true"
+                ></span>
+                <span>
+                  <span class="block text-sm font-semibold text-ink">{m.name}</span>
+                  <span class="mt-0.5 block text-xs text-ink-muted">{m.note}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+
+          <h3 class="reveal mt-8 font-display text-[0.72rem] font-bold uppercase tracking-[0.13em] text-brand" style="--i:1">
+            Regions served
+          </h3>
+          <ul class="reveal mt-4 flex flex-wrap gap-2" style="--i:1">
+            {site.areaServed.map((area) => (
+              <li class="rounded-full border border-line bg-white/70 px-3.5 py-1.5 text-xs font-medium text-ink-soft">
+                {area}
+              </li>
+            ))}
+          </ul>
+
+          <p class="reveal mt-6 text-xs leading-relaxed text-ink-muted" style="--i:2">
+            Engineering permits held with APEGA (Alberta), Engineers and
+            Geoscientists British Columbia, and APEGS (Saskatchewan). The
+            1.115 MWh solar project is recorded only as “United States”, so it is
+            not plotted.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       FAQ
+  ====================================================================== -->
+  <section class="relative py-16 lg:py-20" aria-labelledby="faq-heading">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <div class="grid gap-12 lg:grid-cols-12 lg:gap-16">
+        <div class="lg:col-span-4">
+          <p class="reveal eyebrow">Project questions</p>
+          <h2 id="faq-heading" class="reveal mt-5 text-[clamp(1.8rem,3.4vw,2.7rem)] leading-[1.08]" style="--i:1">
+            Before you ask.
+          </h2>
+        </div>
+
+        <div class="lg:col-span-8">
+          <dl class="space-y-3">
+            {projectFaqs.map((f, i) => (
+              <div class="reveal" style={`--i:${i}`}>
+                <details class="card group overflow-hidden [&[open]]:border-brand-200">
+                  <summary class="flex cursor-pointer list-none items-center justify-between gap-6 p-6 text-left [&::-webkit-details-marker]:hidden">
+                    <dt class="font-display text-base font-bold text-ink transition-colors group-hover:text-brand">
+                      {f.q}
+                    </dt>
+                    <span
+                      class="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-line text-brand transition-all duration-300 group-open:rotate-45 group-open:border-brand-200 group-open:bg-brand-50"
+                      aria-hidden="true"
+                    >
+                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                        <path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+                      </svg>
+                    </span>
+                  </summary>
+                  <dd class="px-6 pb-6 text-[0.95rem] leading-relaxed text-ink-soft">{f.a}</dd>
+                </details>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       CTA
+  ====================================================================== -->
+  <section class="relative pb-24 lg:pb-32">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <div
+        class="reveal relative isolate overflow-hidden rounded-[28px] px-6 py-14 text-center lg:px-16 lg:py-16"
+        style="background: linear-gradient(135deg, #14357B 0%, #1A4194 45%, #2B57B0 100%);"
+      >
+        <div
+          class="pointer-events-none absolute -right-24 -top-24 h-[26rem] w-[26rem] rounded-full opacity-45 blur-3xl"
+          style="background: radial-gradient(circle, rgba(176,208,56,0.75) 0%, transparent 65%);"
+          aria-hidden="true"
+        >
+        </div>
+
+        <h2 class="relative mx-auto max-w-2xl text-[clamp(1.7rem,3.4vw,2.6rem)] leading-[1.08] text-white">
+          Assessing us for a specific scope?
+        </h2>
+        <p class="relative mx-auto mt-4 max-w-xl leading-relaxed text-brand-100">
+          Tell us the sector and the type of work, and we will send relevant
+          project experience and references — not a generic capability deck.
+        </p>
+
+        <div class="relative mt-8 flex flex-wrap justify-center gap-3">
+          <a
+            href={withBase('/contact')}
+            class="rounded-xl bg-lime px-7 py-4 font-semibold text-brand-900 transition-all duration-300 hover:-translate-y-0.5 hover:bg-lime-300"
+          >
+            Request project experience
+          </a>
+          <a
+            href={`tel:${site.phoneRaw}`}
+            class="rounded-xl border border-white/30 px-7 py-4 font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:border-white/60 hover:bg-white/10"
+          >
+            {site.phone}
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

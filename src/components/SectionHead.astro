@@ -1,0 +1,40 @@
+---
+import { withBase } from '../lib/url';
+/* Shared section heading: eyebrow, title, optional lead and trailing link.
+   Keeps rhythm consistent across every section on the page. */
+interface Props {
+  eyebrow: string;
+  title: string;
+  lead?: string;
+  linkHref?: string;
+  linkLabel?: string;
+  id?: string;
+}
+
+const { eyebrow, title, lead, linkHref, linkLabel, id } = Astro.props;
+---
+
+<div class="flex flex-wrap items-end justify-between gap-x-10 gap-y-6">
+  <div class="max-w-2xl">
+    <p class="reveal eyebrow">{eyebrow}</p>
+    <h2 id={id} class="reveal mt-5 text-[clamp(1.95rem,3.8vw,3.1rem)] leading-[1.07]" style="--i:1">
+      {title}
+    </h2>
+    {lead && (
+      <p class="reveal mt-5 text-lg leading-relaxed text-ink-soft" style="--i:2">
+        {lead}
+      </p>
+    )}
+  </div>
+
+  {linkHref && (
+    <a
+      href={withBase(linkHref)}
+      class="reveal group inline-flex items-center gap-2 text-sm font-semibold text-brand transition-colors hover:text-lime-600"
+      style="--i:2"
+    >
+      <span class="link-draw relative">{linkLabel}</span>
+      <span class="transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true">&rarr;</span>
+    </a>
+  )}
+</div>

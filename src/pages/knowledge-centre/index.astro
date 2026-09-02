@@ -1,0 +1,366 @@
+---
+import { withBase } from '../../lib/url';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import EntryCard from '../../components/EntryCard.astro';
+import { site } from '../../data/site';
+import {
+  sortedEntries,
+  featuredEntry,
+  categories,
+  typeStyles,
+  formatDate,
+} from '../../data/knowledge';
+
+const rest = sortedEntries.filter((e) => e.slug !== featuredEntry.slug);
+
+/* Only offer filters that actually match something. */
+const activeCategories = categories.filter((c) =>
+  sortedEntries.some((e) => e.category === c)
+);
+const activeTypes = [...new Set(sortedEntries.map((e) => e.type))];
+
+const blogSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Blog',
+  '@id': `${site.url}/knowledge-centre#blog`,
+  name: 'PowSys Engineering Knowledge Centre',
+  description:
+    'Articles, guides, field notes and opinion on electrical engineering, power system studies, compliance and asset reliability.',
+  url: `${site.url}/knowledge-centre`,
+  publisher: { '@id': `${site.url}/#organization` },
+  inLanguage: 'en-CA',
+  blogPost: sortedEntries.map((e) => ({
+    '@type': 'BlogPosting',
+    headline: e.title,
+    description: e.excerpt,
+    url: `${site.url}/knowledge-centre/${e.slug}`,
+    datePublished: e.date,
+    author: { '@type': 'Organization', name: e.author },
+    publisher: { '@id': `${site.url}/#organization` },
+    articleSection: e.category,
+    timeRequired: `PT${e.readMinutes}M`,
+  })),
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: site.url },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'Knowledge Centre',
+      item: `${site.url}/knowledge-centre`,
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title="Knowledge Centre | PowSys Engineering"
+  description="Articles, guides, field notes and opinion from PowSys Engineering on arc flash studies, CSA Z462 compliance, partial discharge testing, condition-based maintenance, hazardous area classification and power system modelling."
+  schema={[blogSchema, breadcrumbSchema]}
+>
+  <!-- =====================================================================
+       PAGE HEAD
+  ====================================================================== -->
+  <section class="relative isolate overflow-hidden pt-32 pb-14 lg:pt-40 lg:pb-16">
+    <div
+      class="pointer-events-none absolute -top-40 right-[-8%] -z-10 h-[42rem] w-[42rem] rounded-full opacity-70 blur-3xl"
+      style="background: radial-gradient(circle, rgba(176,208,56,0.30) 0%, rgba(176,208,56,0.06) 45%, transparent 70%);"
+      aria-hidden="true"
+    >
+    </div>
+    <div
+      class="pointer-events-none absolute -left-[12%] top-24 -z-10 h-[34rem] w-[34rem] rounded-full opacity-70 blur-3xl"
+      style="background: radial-gradient(circle, rgba(26,65,148,0.20) 0%, rgba(26,65,148,0.04) 48%, transparent 70%);"
+      aria-hidden="true"
+    >
+    </div>
+
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <nav aria-label="Breadcrumb" class="reveal">
+        <ol class="flex items-center gap-2 text-xs text-ink-muted">
+          <li><a href={withBase('/')} class="transition-colors hover:text-brand">Home</a></li>
+          <li aria-hidden="true">/</li>
+          <li class="font-medium text-ink-soft">Knowledge Centre</li>
+        </ol>
+      </nav>
+
+      <p class="reveal eyebrow mt-6" style="--i:1">Knowledge Centre</p>
+
+      <h1 class="reveal mt-5 max-w-4xl text-[clamp(2.2rem,5vw,4rem)] leading-[1.05]" style="--i:2">
+        Engineering, <span class="grad-text">explained</span>.
+      </h1>
+
+      <p class="reveal mt-6 max-w-2xl text-lg leading-relaxed text-ink-soft" style="--i:3">
+        Articles, guides, field notes and the occasional opinion — on the
+        standards, tests and studies our clients ask about most.
+      </p>
+
+      <dl class="reveal mt-10 flex flex-wrap gap-x-10 gap-y-4" style="--i:4">
+        <div>
+          <dt class="text-xs uppercase tracking-wider text-ink-muted">Entries</dt>
+          <dd class="font-display text-2xl font-bold text-brand">{sortedEntries.length}</dd>
+        </div>
+        <div>
+          <dt class="text-xs uppercase tracking-wider text-ink-muted">Topics</dt>
+          <dd class="font-display text-2xl font-bold text-brand">{activeCategories.length}</dd>
+        </div>
+        <div>
+          <dt class="text-xs uppercase tracking-wider text-ink-muted">Formats</dt>
+          <dd class="font-display text-2xl font-bold text-brand">{activeTypes.length}</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       FEATURED
+  ====================================================================== -->
+  <section class="relative pb-16" aria-labelledby="featured-heading">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <h2 id="featured-heading" class="sr-only">Featured entry</h2>
+
+      <a
+        href={withBase(`/knowledge-centre/${featuredEntry.slug}`)}
+        class="reveal card group relative block overflow-hidden p-8 lg:p-12"
+      >
+        <div
+          class="pointer-events-none absolute -right-20 -top-24 h-80 w-80 rounded-full opacity-60 blur-3xl transition-opacity duration-700 group-hover:opacity-90"
+          style="background: radial-gradient(circle, rgba(176,208,56,0.42) 0%, transparent 68%);"
+          aria-hidden="true"
+        >
+        </div>
+
+        <div class="relative flex flex-wrap items-center gap-2">
+          <span
+            class="rounded-full border border-brand bg-brand px-2.5 py-1 text-[0.68rem] font-bold uppercase tracking-[0.09em] text-white"
+          >
+            Featured
+          </span>
+          <span
+            class={`rounded-full border px-2.5 py-1 text-[0.68rem] font-bold uppercase tracking-[0.09em] ${typeStyles[featuredEntry.type]}`}
+          >
+            {featuredEntry.type}
+          </span>
+          <span class="rounded-full border border-line bg-white/70 px-2.5 py-1 text-[0.68rem] font-semibold text-ink-soft">
+            {featuredEntry.category}
+          </span>
+        </div>
+
+        <h3 class="relative mt-6 max-w-3xl font-display text-[clamp(1.5rem,3vw,2.35rem)] font-bold leading-[1.12] text-ink transition-colors group-hover:text-brand">
+          {featuredEntry.title}
+        </h3>
+
+        <p class="relative mt-4 max-w-2xl leading-relaxed text-ink-soft">
+          {featuredEntry.excerpt}
+        </p>
+
+        <div class="relative mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
+          <span class="inline-flex items-center gap-1.5 font-semibold text-brand">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <circle cx="8" cy="8" r="6.4" stroke="currentColor" stroke-width="1.4" />
+              <path d="M8 4.6V8l2.3 1.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+            </svg>
+            {featuredEntry.readMinutes} min read
+          </span>
+          <time datetime={featuredEntry.date} class="text-ink-muted">
+            {formatDate(featuredEntry.date)}
+          </time>
+          <span class="text-ink-muted">{featuredEntry.author}</span>
+
+          <span class="ml-auto inline-flex items-center gap-2 font-semibold text-brand">
+            <span class="link-draw relative">Read it</span>
+            <span class="transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true">&rarr;</span>
+          </span>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       FILTERS + GRID
+  ====================================================================== -->
+  <section class="relative pb-24 lg:pb-32" aria-labelledby="all-heading">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <div class="flex flex-wrap items-end justify-between gap-6">
+        <h2 id="all-heading" class="reveal font-display text-2xl font-bold">
+          All entries
+        </h2>
+        <p class="reveal text-sm text-ink-muted" aria-live="polite" id="result-count">
+          Showing {rest.length} entries
+        </p>
+      </div>
+
+      {/* Filters. Progressive enhancement: without JS every entry is shown and
+          the controls simply do nothing. */}
+      <div class="reveal mt-6 space-y-3" style="--i:1">
+        <div class="flex flex-wrap items-center gap-2" role="group" aria-label="Filter by topic">
+          <span class="mr-1 text-xs font-semibold uppercase tracking-wider text-ink-muted">Topic</span>
+          <button
+            type="button"
+            data-filter="category"
+            data-value="all"
+            aria-pressed="true"
+            class="filter-chip is-active"
+          >
+            All
+          </button>
+          {activeCategories.map((c) => (
+            <button type="button" data-filter="category" data-value={c} aria-pressed="false" class="filter-chip">
+              {c}
+            </button>
+          ))}
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2" role="group" aria-label="Filter by format">
+          <span class="mr-1 text-xs font-semibold uppercase tracking-wider text-ink-muted">Format</span>
+          <button
+            type="button"
+            data-filter="type"
+            data-value="all"
+            aria-pressed="true"
+            class="filter-chip is-active"
+          >
+            All
+          </button>
+          {activeTypes.map((t) => (
+            <button type="button" data-filter="type" data-value={t} aria-pressed="false" class="filter-chip">
+              {t}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <ul id="entry-grid" class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {rest.map((entry, i) => (
+          <li class="reveal" data-entry data-category={entry.category} data-type={entry.type} style={`--i:${i % 3}`}>
+            <EntryCard entry={entry} />
+          </li>
+        ))}
+      </ul>
+
+      <p id="empty-state" hidden class="mt-12 text-center text-ink-muted">
+        Nothing matches that combination yet. Try a different topic or format.
+      </p>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       CTA
+  ====================================================================== -->
+  <section class="relative pb-24 lg:pb-32">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <div
+        class="reveal relative isolate overflow-hidden rounded-[28px] px-6 py-14 text-center lg:px-16 lg:py-16"
+        style="background: linear-gradient(135deg, #14357B 0%, #1A4194 45%, #2B57B0 100%);"
+      >
+        <div
+          class="pointer-events-none absolute -right-24 -top-24 h-[26rem] w-[26rem] rounded-full opacity-45 blur-3xl"
+          style="background: radial-gradient(circle, rgba(176,208,56,0.75) 0%, transparent 65%);"
+          aria-hidden="true"
+        >
+        </div>
+
+        <h2 class="relative mx-auto max-w-2xl text-[clamp(1.7rem,3.4vw,2.6rem)] leading-[1.08] text-white">
+          Have a question we have not written about yet?
+        </h2>
+        <p class="relative mx-auto mt-4 max-w-xl leading-relaxed text-brand-100">
+          Our engineers answer technical enquiries directly. Ask, and we will
+          point you at the standard, the test or the study you need.
+        </p>
+        <a
+          href={withBase('/contact')}
+          class="relative mt-8 inline-block rounded-xl bg-lime px-7 py-4 font-semibold text-brand-900 transition-all duration-300 hover:-translate-y-0.5 hover:bg-lime-300"
+        >
+          Ask our team
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .filter-chip {
+    border-radius: 9999px;
+    border: 1px solid var(--color-line);
+    background: rgba(255, 255, 255, 0.7);
+    padding: 0.4rem 0.85rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-ink-soft);
+    transition:
+      background-color 0.25s var(--ease-out-soft),
+      border-color 0.25s var(--ease-out-soft),
+      color 0.25s var(--ease-out-soft),
+      transform 0.25s var(--ease-out-soft);
+  }
+
+  .filter-chip:hover {
+    border-color: var(--color-brand-200);
+    color: var(--color-brand);
+    transform: translateY(-1px);
+  }
+
+  .filter-chip.is-active {
+    background: var(--color-brand);
+    border-color: var(--color-brand);
+    color: #fff;
+  }
+
+  /* Filtered-out cards collapse rather than jump */
+  [data-entry] {
+    transition:
+      opacity 0.35s var(--ease-out-soft),
+      transform 0.35s var(--ease-out-soft);
+  }
+
+  [data-entry][hidden] {
+    display: none;
+  }
+</style>
+
+<script>
+  // Client-side filtering. Two independent axes (topic and format) combined
+  // with AND. Without JS every entry stays visible, so nothing is lost.
+  const grid = document.getElementById('entry-grid');
+  const countEl = document.getElementById('result-count');
+  const emptyEl = document.getElementById('empty-state');
+
+  if (grid && countEl && emptyEl) {
+    const items = [...grid.querySelectorAll<HTMLElement>('[data-entry]')];
+    const state = { category: 'all', type: 'all' };
+
+    const apply = () => {
+      let shown = 0;
+
+      for (const item of items) {
+        const okCategory = state.category === 'all' || item.dataset.category === state.category;
+        const okType = state.type === 'all' || item.dataset.type === state.type;
+        const visible = okCategory && okType;
+        item.hidden = !visible;
+        if (visible) shown++;
+      }
+
+      countEl.textContent = `Showing ${shown} ${shown === 1 ? 'entry' : 'entries'}`;
+      emptyEl.hidden = shown > 0;
+    };
+
+    document.querySelectorAll<HTMLButtonElement>('[data-filter]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const axis = btn.dataset.filter as 'category' | 'type';
+        state[axis] = btn.dataset.value!;
+
+        document.querySelectorAll<HTMLButtonElement>(`[data-filter="${axis}"]`).forEach((sibling) => {
+          const active = sibling === btn;
+          sibling.classList.toggle('is-active', active);
+          sibling.setAttribute('aria-pressed', String(active));
+        });
+
+        apply();
+      });
+    });
+  }
+</script>

@@ -1,0 +1,312 @@
+---
+import { withBase } from '../lib/url';
+/* ---------------------------------------------------------------------------
+   BASE LAYOUT
+   Owns the <head> — title, meta description, canonical URL, Open Graph tags
+   and the site-wide JSON-LD structured data that Google and AI answer engines
+   read — plus the three small behaviours the pages share: scroll reveal,
+   expandable panels, and count-up statistics.
+--------------------------------------------------------------------------- */
+import '@fontsource-variable/inter';
+import '@fontsource-variable/archivo';
+
+/* The latin subsets are what an English page actually downloads. Importing the
+   file URLs lets us preload them: without this the browser cannot discover a
+   font until it has fetched and parsed the CSS, which costs a round trip on
+   the critical path and shows fallback text for longer. */
+import interLatin from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+import archivoLatin from '@fontsource-variable/archivo/files/archivo-latin-wght-normal.woff2?url';
+import '../styles/global.css';
+import { site } from '../data/site';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  schema?: Record<string, unknown>[];
+}
+
+const { title, description, schema = [] } = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, site.url).href.replace(/\/$/, '') || site.url;
+
+/* The GitHub Pages demo is a full copy of the site. Without noindex it would
+   compete with the real domain for the same queries and split ranking signals,
+   so the demo build is excluded from search entirely. */
+const isDemo = import.meta.env.PUBLIC_IS_DEMO === 'true';
+
+/* Social share card. Must be absolute — relative URLs are ignored by every
+   major scraper. Regenerate with `node scripts/build-og-image.mjs`. */
+const ogImage = new URL('/og-image.jpg', site.url).href;
+
+const organizationSchema = {
+  '@context': 'https://schema.org',
+  '@type': ['Organization', 'LocalBusiness', 'ProfessionalService'],
+  '@id': `${site.url}/#organization`,
+  name: site.name,
+  legalName: site.legalName,
+  description: site.definition,
+  url: site.url,
+  foundingDate: site.founded,
+  email: site.email,
+  telephone: site.phone,
+  priceRange: '$$',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: site.address.street,
+    addressLocality: site.address.locality,
+    addressRegion: site.address.region,
+    postalCode: site.address.postalCode,
+    addressCountry: site.address.country,
+  },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: site.geo.lat,
+    longitude: site.geo.lng,
+  },
+  areaServed: site.areaServed.map((name) => ({ '@type': 'AdministrativeArea', name })),
+  sameAs: [site.social.linkedin],
+  knowsAbout: [
+    'Electrical engineering',
+    'Power system studies',
+    'Arc flash analysis',
+    'Condition-based maintenance',
+    'Partial discharge testing',
+    'Hazardous area classification',
+    'Solar photovoltaic design',
+    'Substation automation',
+  ],
+  hasCredential: [
+    'APEGA — Association of Professional Engineers and Geoscientists of Alberta',
+    'Engineers and Geoscientists British Columbia',
+    'APEGS — Association of Professional Engineers and Geoscientists of Saskatchewan',
+    'RCDD — Registered Communications Distribution Designer',
+  ],
+};
+
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': `${site.url}/#website`,
+  url: site.url,
+  name: site.name,
+  publisher: { '@id': `${site.url}/#organization` },
+  inLanguage: 'en-CA',
+};
+
+const allSchema = [organizationSchema, websiteSchema, ...schema];
+---
+
+<!doctype html>
+<html lang="en-CA">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    <meta
+      name="robots"
+      content={isDemo
+        ? 'noindex, nofollow'
+        : 'index, follow, max-image-preview:large, max-snippet:-1'}
+    />
+    <meta name="theme-color" content="#1A4194" />
+    <meta name="geo.region" content="CA-AB" />
+    <meta name="geo.placename" content="Calgary" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content="en_CA" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${site.name} — ${site.tagline}`} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={ogImage} />
+
+    {/* Fonts are same-origin but still CORS-fetched, hence crossorigin. */}
+    <link rel="preload" as="font" type="font/woff2" href={interLatin} crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href={archivoLatin} crossorigin />
+
+    <link rel="sitemap" href={withBase('/sitemap-index.xml')} />
+
+    {allSchema.map((block) => (
+      <script type="application/ld+json" set:html={JSON.stringify(block)} />
+    ))}
+  </head>
+
+  <body class="antialiased">
+    {/* One continuous background wash for the whole page, so sections dissolve
+        into each other instead of stacking as separate blocks. */}
+    <div class="page-wash" aria-hidden="true"></div>
+
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[60] focus:rounded-md focus:bg-brand focus:px-4 focus:py-2 focus:font-semibold focus:text-white"
+    >
+      Skip to content
+    </a>
+
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+
+    <script>
+      const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      /* --- Scroll reveal -------------------------------------------------
+         Elements are visible by default; we only hide them once we know the
+         observer is running, so a JS failure degrades to "no animation"
+         rather than "blank page". */
+      const revealTargets = document.querySelectorAll<HTMLElement>('.reveal');
+
+      if (!reduced && 'IntersectionObserver' in window && revealTargets.length) {
+        revealTargets.forEach((el) => el.classList.add('is-armed'));
+
+        // Arming hides the content until the observer reveals it, so if the
+        // observer never delivers a callback — it exists but is inert in some
+        // embedded and headless contexts — the page would be left permanently
+        // blank. If nothing has fired shortly after arming, disarm everything
+        // and fall back to no animation, which is the intended failure mode.
+        let observerFired = false;
+
+        const revealObserver = new IntersectionObserver(
+          (entries) => {
+            observerFired = true;
+            for (const entry of entries) {
+              if (!entry.isIntersecting) continue;
+              entry.target.classList.add('is-visible');
+              revealObserver.unobserve(entry.target);
+            }
+          },
+          { rootMargin: '0px 0px -6% 0px', threshold: 0.05 }
+        );
+
+        revealTargets.forEach((el) => revealObserver.observe(el));
+
+        setTimeout(() => {
+          if (observerFired) return;
+          revealObserver.disconnect();
+          revealTargets.forEach((el) => el.classList.remove('is-armed'));
+        }, 2000);
+      }
+
+      /* --- Expandable panels ---------------------------------------------
+         Any button with `data-expands="<id>"` toggles the panel with that id.
+         The panel animates open via CSS grid-template-rows, so no height is
+         hard-coded and content can change freely. */
+      document.querySelectorAll<HTMLButtonElement>('[data-expands]').forEach((btn) => {
+        const panel = document.getElementById(btn.dataset.expands!);
+        if (!panel) return;
+
+        btn.addEventListener('click', () => {
+          const open = panel.dataset.open === 'true';
+          panel.dataset.open = String(!open);
+          btn.setAttribute('aria-expanded', String(!open));
+
+          const label = btn.querySelector('[data-label]');
+          if (label) {
+            label.textContent = open
+              ? btn.dataset.labelClosed || 'Show more'
+              : btn.dataset.labelOpen || 'Show less';
+          }
+        });
+      });
+
+      /* --- Marquee -------------------------------------------------------
+         A CSS animation keeps compositing even when the element is scrolled
+         well out of view, which costs CPU and battery for nothing. Pause each
+         marquee whenever it leaves the viewport. */
+      const marquees = document.querySelectorAll<HTMLElement>('.marquee');
+
+      if ('IntersectionObserver' in window && marquees.length) {
+        const marqueeObserver = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              (entry.target as HTMLElement).dataset.paused = String(!entry.isIntersecting);
+            }
+          },
+          { rootMargin: '150px 0px' }
+        );
+
+        marquees.forEach((el) => marqueeObserver.observe(el));
+      }
+
+      /* --- Count-up statistics -------------------------------------------
+         Numbers tick up the first time they scroll into view. The final value
+         is already in the HTML, so it reads correctly without JS. */
+      const counters = document.querySelectorAll<HTMLElement>('[data-count-to]');
+
+      if (!reduced && 'IntersectionObserver' in window && counters.length) {
+        // Counters mid-flight. requestAnimationFrame stops firing in a
+        // backgrounded tab, which would otherwise freeze a number partway and
+        // leave a wrong figure on screen for good — so anything still running
+        // is snapped to its final value the moment the page is hidden.
+        const inFlight = new Set<HTMLElement>();
+
+        const finalise = (el: HTMLElement) => {
+          el.textContent = el.dataset.countTo + (el.dataset.countSuffix || '');
+          inFlight.delete(el);
+        };
+
+        document.addEventListener('visibilitychange', () => {
+          if (document.hidden) inFlight.forEach(finalise);
+        });
+
+        const countObserver = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (!entry.isIntersecting) continue;
+              const el = entry.target as HTMLElement;
+              countObserver.unobserve(el);
+
+              // No point animating something nobody is looking at.
+              if (document.hidden) {
+                finalise(el);
+                continue;
+              }
+
+              const target = Number(el.dataset.countTo);
+              const suffix = el.dataset.countSuffix || '';
+              const duration = 1100;
+              const start = performance.now();
+              inFlight.add(el);
+
+              // Safety net: requestAnimationFrame can stop firing even while
+              // the page reports itself visible (throttled or uncomposited
+              // tabs), which would strand the number partway. setTimeout still
+              // fires in those conditions, so the value always lands on target.
+              // If the animation finishes normally this is a no-op.
+              setTimeout(() => {
+                if (inFlight.has(el)) finalise(el);
+              }, duration + 400);
+
+              const tick = (now: number) => {
+                if (!inFlight.has(el)) return; // already finalised
+                const t = Math.min((now - start) / duration, 1);
+                const eased = 1 - Math.pow(1 - t, 3);
+                el.textContent = Math.round(target * eased) + suffix;
+                if (t < 1) requestAnimationFrame(tick);
+                else finalise(el); // always land exactly on target
+              };
+
+              requestAnimationFrame(tick);
+            }
+          },
+          { threshold: 0.4 }
+        );
+
+        counters.forEach((el) => countObserver.observe(el));
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,371 @@
+---
+import { withBase } from '../../lib/url';
+import { Image } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { site } from '../../data/site';
+import { credentials, industries, services } from '../../data/content';
+import { values } from '../../data/team';
+import imgStudy from '../../assets/images/engineering-study.jpg';
+
+/* Vision and mission are reproduced verbatim from the "Who we are" page of the
+   existing powsysengineering.com — they are the company's own words. */
+const vision =
+  'To provide quality services and establish stronger relationships through sustainability-centered creative solutions, benefits-focused outcome, and coherent communication while achieving holistic growth for company, stakeholders, customer and community.';
+
+const mission =
+  'To be well recognized as a leader in providing sustainability-centered engineering solutions and quality services while responsibly managing climate change and environment.';
+
+/* The team's own working motto, from the existing site. */
+const motto = ['Believe it', 'Present it', 'Deliver it', 'Manage it', 'Transform it'];
+
+const principles = [
+  {
+    title: 'Fit-for-purpose, not gold-plated',
+    detail:
+      'We design to the business requirement — performance, compliance and cost — rather than to the largest defensible scope. Sometimes the honest answer is that you need less than you asked for.',
+  },
+  {
+    title: 'Prove it, do not assert it',
+    detail:
+      'A model is verified against site conditions. A compliant installation is backed by a dossier that survives an audit. The evidence is part of the deliverable, not an afterthought.',
+  },
+  {
+    title: 'The reasoning outlives the person',
+    detail:
+      'Assumptions get recorded. Anyone picking the work up in three years should be able to see why a decision was made, not just what was decided.',
+  },
+  {
+    title: 'Safety is a design property',
+    detail:
+      'Arc flash boundaries, hazardous area classification and protection settings are not paperwork exercises. They determine whether someone goes home at the end of a shift.',
+  },
+  {
+    title: 'Sustainability, deliberately',
+    detail:
+      'Our mission commits us to responsibly managing climate change and environment. In practice that means sustainable design choices on every project, not a separate initiative.',
+  },
+  {
+    title: 'Relationships over transactions',
+    detail:
+      'Responsive communication and delivery against what was agreed. It is the reason an ever-increasing share of our work is repeat business.',
+  },
+];
+
+const aboutSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'AboutPage',
+  '@id': `${site.url}/about/our-story#page`,
+  url: `${site.url}/about/our-story`,
+  name: `Our story — ${site.legalName}`,
+  description: `The founding, vision, mission and core principles of ${site.legalName}, a woman-owned electrical engineering firm established in Calgary, Alberta in ${site.founded}.`,
+  mainEntity: { '@id': `${site.url}/#organization` },
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: site.url },
+    { '@type': 'ListItem', position: 2, name: 'About', item: `${site.url}/about` },
+    { '@type': 'ListItem', position: 3, name: 'Our story', item: `${site.url}/about/our-story` },
+  ],
+};
+---
+
+<BaseLayout
+  title="Our Story, Vision & Core Principles | PowSys Engineering"
+  description="How PowSys Engineering started in Calgary in 2017, what the woman-owned electrical engineering firm believes, and the core principles and values behind how it delivers work."
+  schema={[aboutSchema, breadcrumbSchema]}
+>
+  <!-- =====================================================================
+       HERO
+  ====================================================================== -->
+  <section class="relative isolate overflow-hidden pt-32 pb-12 lg:pt-40 lg:pb-16">
+    <div
+      class="pointer-events-none absolute -top-40 right-[-8%] -z-10 h-[44rem] w-[44rem] rounded-full opacity-70 blur-3xl"
+      style="background: radial-gradient(circle, rgba(176,208,56,0.30) 0%, rgba(176,208,56,0.06) 45%, transparent 70%);"
+      aria-hidden="true"
+    >
+    </div>
+    <div
+      class="pointer-events-none absolute -left-[12%] top-24 -z-10 h-[36rem] w-[36rem] rounded-full opacity-70 blur-3xl"
+      style="background: radial-gradient(circle, rgba(26,65,148,0.20) 0%, rgba(26,65,148,0.04) 48%, transparent 70%);"
+      aria-hidden="true"
+    >
+    </div>
+
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <nav aria-label="Breadcrumb" class="reveal">
+        <ol class="flex flex-wrap items-center gap-2 text-xs text-ink-muted">
+          <li><a href={withBase('/')} class="transition-colors hover:text-brand">Home</a></li>
+          <li aria-hidden="true">/</li>
+          <li><a href={withBase('/about')} class="transition-colors hover:text-brand">About</a></li>
+          <li aria-hidden="true">/</li>
+          <li class="font-medium text-ink-soft">Our story</li>
+        </ol>
+      </nav>
+
+      <p class="reveal eyebrow mt-6" style="--i:1">Our story</p>
+
+      <h1 class="reveal mt-5 max-w-4xl text-[clamp(2.2rem,5vw,4rem)] leading-[1.05]" style="--i:2">
+        Started in Calgary, <span class="grad-text">{site.founded}</span>.
+      </h1>
+
+      <p class="reveal mt-6 max-w-2xl text-lg leading-relaxed text-ink-soft" style="--i:3">
+        A woman-owned electrical engineering practice built on a simple premise:
+        that the engineering is rarely the hard part, and that proving it is
+        what most projects actually struggle with.
+      </p>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       THE STORY
+  ====================================================================== -->
+  <section class="relative py-12 lg:py-16" aria-labelledby="story-heading">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <div class="grid gap-12 lg:grid-cols-12 lg:gap-16">
+        <div class="lg:col-span-5">
+          <h2 id="story-heading" class="reveal text-[clamp(1.8rem,3.4vw,2.7rem)] leading-[1.08]">
+            How it began.
+          </h2>
+
+          <div class="reveal mt-8" style="--i:1">
+            <div
+              class="absolute -inset-2 -z-10 rounded-[24px] opacity-50 blur-2xl"
+              style="background: linear-gradient(140deg, rgba(26,65,148,0.24), rgba(176,208,56,0.28));"
+              aria-hidden="true"
+            >
+            </div>
+            <Image
+              src={imgStudy}
+              alt="Two engineers reviewing a technical site drawing together"
+              widths={[400, 700, 900]}
+              sizes="(min-width: 1024px) 38vw, 92vw"
+              loading="lazy"
+              class="aspect-[4/3] w-full rounded-[var(--radius-card)] object-cover ring-1 ring-brand-900/10"
+            />
+          </div>
+        </div>
+
+        <div class="lg:col-span-7">
+          <p class="reveal text-xl leading-relaxed text-ink lg:text-[1.25rem]">
+            PowSys Engineering was established in {site.founded} in Calgary,
+            Alberta, to provide electrical engineering and technical services to
+            industries where the cost of getting it wrong is measured in
+            downtime, liability and safety.
+          </p>
+
+          <p class="reveal mt-6 leading-relaxed text-ink-soft" style="--i:1">
+            The firm was built to work either way round — delivering an entire
+            project end to end, or joining an existing one as a contractor,
+            vendor or partner. That flexibility was deliberate. A great deal of
+            industrial engineering work does not need a full delivery team; it
+            needs the right person, at the right stage, with the authority to
+            close a question rather than escalate it.
+          </p>
+
+          <p class="reveal mt-6 leading-relaxed text-ink-soft" style="--i:2">
+            What began as electrical engineering for oil and gas has since
+            extended across mining, renewable generation, utilities, commercial
+            infrastructure and data centres — because the underlying discipline
+            repeats even when the sector does not. A hazardous area dossier and
+            a data hall power study are the same rigour applied to different
+            consequences.
+          </p>
+
+          <p class="reveal mt-6 leading-relaxed text-ink-soft" style="--i:3">
+            Today the practice holds professional engineering permits in three
+            provinces, works across Canada and the United States, and remains
+            deliberately small — closely held enough that the people who scope
+            your work are the people who deliver it.
+          </p>
+
+          <dl class="reveal mt-10 grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-4" style="--i:1">
+            {[
+              { n: site.founded, l: 'Established', count: false },
+              { n: 3, l: 'Provincial permits', count: true },
+              { n: services.length, l: 'Service lines', count: true },
+              { n: industries.length, l: 'Core sectors', count: true },
+            ].map((stat) => (
+              <div class="relative pl-4">
+                <span
+                  class="absolute left-0 top-1 h-[calc(100%-0.5rem)] w-[3px] rounded-full"
+                  style="background: linear-gradient(180deg, var(--color-brand), var(--color-lime));"
+                  aria-hidden="true"
+                ></span>
+                <dt class="sr-only">{stat.l}</dt>
+                <dd>
+                  <span
+                    class="block font-display text-3xl font-bold text-brand"
+                    data-count-to={stat.count ? stat.n : undefined}
+                  >{stat.n}</span>
+                  <span class="mt-1 block text-sm text-ink-muted">{stat.l}</span>
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       VISION & MISSION
+  ====================================================================== -->
+  <section class="relative py-16 lg:py-20" aria-labelledby="vm-heading">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <h2 id="vm-heading" class="sr-only">Vision and mission</h2>
+
+      <div class="grid gap-5 lg:grid-cols-2">
+        {[
+          { label: 'Our vision', text: vision },
+          { label: 'Our mission', text: mission },
+        ].map((block, i) => (
+          <article
+            class="reveal relative isolate overflow-hidden rounded-[var(--radius-card)] p-8 lg:p-10"
+            style={`--i:${i}; background: linear-gradient(135deg, #14357B 0%, #1A4194 48%, #2B57B0 100%);`}
+          >
+            <div
+              class="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full opacity-45 blur-3xl"
+              style="background: radial-gradient(circle, rgba(176,208,56,0.7) 0%, transparent 65%);"
+              aria-hidden="true"
+            >
+            </div>
+            <p class="relative font-display text-[0.72rem] font-bold uppercase tracking-[0.16em] text-lime">
+              {block.label}
+            </p>
+            <p class="relative mt-5 text-lg leading-relaxed text-white lg:text-xl">
+              {block.text}
+            </p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       CORE PRINCIPLES
+  ====================================================================== -->
+  <section id="principles" class="relative scroll-mt-28 py-16 lg:py-20" aria-labelledby="principles-heading">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <div class="max-w-2xl">
+        <p class="reveal eyebrow">Core principles</p>
+        <h2 id="principles-heading" class="reveal mt-5 text-[clamp(1.8rem,3.4vw,2.7rem)] leading-[1.08]" style="--i:1">
+          What we will and will not do.
+        </h2>
+        <p class="reveal mt-5 text-lg leading-relaxed text-ink-soft" style="--i:2">
+          Principles are only worth stating if they rule something out. These do.
+        </p>
+      </div>
+
+      <ul class="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        {principles.map((p, i) => (
+          <li class="reveal" style={`--i:${i % 3}`}>
+            <article class="card h-full p-7">
+              <span
+                class="grid h-9 w-9 place-items-center rounded-lg font-display text-xs font-bold text-white"
+                style="background: linear-gradient(140deg, var(--color-brand), var(--color-brand-400));"
+                aria-hidden="true"
+              >{String(i + 1).padStart(2, '0')}</span>
+              <h3 class="mt-5 font-display text-base font-bold text-ink">{p.title}</h3>
+              <p class="mt-3 text-sm leading-relaxed text-ink-soft">{p.detail}</p>
+            </article>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       VALUES + MOTTO
+  ====================================================================== -->
+  <section class="relative py-16 lg:py-20" aria-labelledby="values-heading">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <div class="grid gap-12 lg:grid-cols-12 lg:gap-16">
+        <div class="lg:col-span-5">
+          <p class="reveal eyebrow">Our values</p>
+          <h2 id="values-heading" class="reveal mt-5 text-[clamp(1.8rem,3.4vw,2.7rem)] leading-[1.08]" style="--i:1">
+            Three pairs, in that order.
+          </h2>
+          <p class="reveal mt-5 leading-relaxed text-ink-soft" style="--i:2">
+            And one working motto the team applies to every relationship — with
+            associates, clients and suppliers alike.
+          </p>
+
+          <ol class="reveal mt-8 flex flex-wrap gap-2" style="--i:3">
+            {motto.map((step, i) => (
+              <li class="inline-flex items-center gap-2 rounded-full border border-line bg-white/70 px-4 py-2 text-sm font-semibold text-ink">
+                <span class="font-display text-xs text-lime-600">{i + 1}</span>
+                {step}
+              </li>
+            ))}
+          </ol>
+        </div>
+
+        <div class="lg:col-span-7">
+          <ul class="space-y-4">
+            {values.map((v, i) => (
+              <li class="reveal card p-7" style={`--i:${i}`}>
+                <div class="flex items-start gap-4">
+                  <span
+                    class="mt-1 block h-10 w-1 shrink-0 rounded-full"
+                    style="background: linear-gradient(180deg, var(--color-brand), var(--color-lime));"
+                    aria-hidden="true"
+                  ></span>
+                  <div>
+                    <h3 class="font-display text-lg font-bold text-ink">{v.title}</h3>
+                    <p class="mt-2 leading-relaxed text-ink-soft">{v.detail}</p>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       CREDENTIALS + CTA
+  ====================================================================== -->
+  <section class="relative pb-24 lg:pb-32">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <div class="reveal card p-8 lg:p-10">
+        <h2 class="font-display text-[0.72rem] font-bold uppercase tracking-[0.14em] text-brand">
+          Credentials behind the commitments
+        </h2>
+        <ul class="mt-6 flex flex-wrap gap-x-8 gap-y-3">
+          {credentials.map((c) => (
+            <li>
+              <abbr title={c.name} class="cursor-help text-sm font-bold tracking-tight text-ink no-underline transition-colors hover:text-brand">
+                {c.abbr}
+              </abbr>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="reveal mt-10 flex flex-wrap gap-3">
+        <a
+          href={withBase('/about#team')}
+          class="rounded-xl bg-brand px-7 py-4 font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-brand-700"
+        >
+          Meet the team
+        </a>
+        <a
+          href={withBase('/careers')}
+          class="rounded-xl border border-line bg-white/70 px-7 py-4 font-semibold text-ink transition-all duration-300 hover:-translate-y-0.5 hover:border-brand-200"
+        >
+          Work with us
+        </a>
+        <a
+          href={withBase('/contact')}
+          class="rounded-xl border border-line bg-white/70 px-7 py-4 font-semibold text-ink transition-all duration-300 hover:-translate-y-0.5 hover:border-brand-200"
+        >
+          Get in touch
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

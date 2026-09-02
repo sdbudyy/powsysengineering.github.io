@@ -1,0 +1,198 @@
+---
+import { withBase } from '../../lib/url';
+import { Image } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { site } from '../../data/site';
+import { industries } from '../../data/content';
+import { industryPages } from '../../data/industry-pages';
+import { industryServices, getService } from '../../data/relations';
+
+import { industryHeroes } from '../../data/industry-images';
+
+const countCapabilities = (slug: string) =>
+  industryPages[slug].capabilityGroups.reduce((n, g) => n + g.items.length, 0);
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: site.url },
+    { '@type': 'ListItem', position: 2, name: 'Industries', item: `${site.url}/industries` },
+  ],
+};
+
+const listSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Industries served by PowSys Engineering',
+  itemListElement: industries.map((ind, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: ind.name,
+    url: `${site.url}/industries/${ind.slug}`,
+    description: industryPages[ind.slug].intro,
+  })),
+};
+---
+
+<BaseLayout
+  title="Industries We Serve | PowSys Engineering"
+  description="PowSys Engineering delivers electrical engineering across oil and gas, renewable energy, mining and utility sectors from Calgary, Alberta — hazardous area classification, solar PV design, shutdown support, substation automation and power system studies."
+  schema={[breadcrumbSchema, listSchema]}
+>
+  <!-- =====================================================================
+       HERO
+  ====================================================================== -->
+  <section class="relative isolate overflow-hidden pt-32 pb-12 lg:pt-40 lg:pb-16">
+    <div
+      class="pointer-events-none absolute -top-40 right-[-8%] -z-10 h-[44rem] w-[44rem] rounded-full opacity-70 blur-3xl"
+      style="background: radial-gradient(circle, rgba(176,208,56,0.30) 0%, rgba(176,208,56,0.06) 45%, transparent 70%);"
+      aria-hidden="true"
+    >
+    </div>
+    <div
+      class="pointer-events-none absolute -left-[12%] top-24 -z-10 h-[36rem] w-[36rem] rounded-full opacity-70 blur-3xl"
+      style="background: radial-gradient(circle, rgba(26,65,148,0.20) 0%, rgba(26,65,148,0.04) 48%, transparent 70%);"
+      aria-hidden="true"
+    >
+    </div>
+
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <nav aria-label="Breadcrumb" class="reveal">
+        <ol class="flex items-center gap-2 text-xs text-ink-muted">
+          <li><a href={withBase('/')} class="transition-colors hover:text-brand">Home</a></li>
+          <li aria-hidden="true">/</li>
+          <li class="font-medium text-ink-soft">Industries</li>
+        </ol>
+      </nav>
+
+      <p class="reveal eyebrow mt-6" style="--i:1">Industry focus</p>
+
+      <h1 class="reveal mt-5 max-w-4xl text-[clamp(2.2rem,5vw,4rem)] leading-[1.05]" style="--i:2">
+        Four sectors. <span class="grad-text">One standard</span>.
+      </h1>
+
+      <p class="reveal mt-6 max-w-xl text-lg leading-relaxed text-ink-soft" style="--i:3">
+        The engineering discipline does not change between a wellsite and a
+        substation. What changes is what has to be proven, and to whom.
+      </p>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       INDUSTRY TILES — the visual centrepiece
+  ====================================================================== -->
+  <section class="relative pb-20 lg:pb-28" aria-labelledby="tiles-heading">
+    <h2 id="tiles-heading" class="sr-only">Industries we serve</h2>
+
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <ul class="grid gap-5 lg:grid-cols-2">
+        {industries.map((ind, i) => {
+          const hero = industryHeroes[ind.slug];
+          const page = industryPages[ind.slug];
+          return (
+            <li class="reveal" style={`--i:${i % 2}`}>
+              <a
+                href={withBase(`/industries/${ind.slug}`)}
+                class="group relative block aspect-[16/11] overflow-hidden rounded-[var(--radius-card)] ring-1 ring-brand-900/10 sm:aspect-[16/10]"
+              >
+                <Image
+                  src={hero.src}
+                  alt={hero.alt}
+                  widths={[500, 800, 1200]}
+                  sizes="(min-width: 1024px) 48vw, 92vw"
+                  loading={i < 2 ? 'eager' : 'lazy'}
+                  class="absolute inset-0 h-full w-full object-cover transition-transform duration-[1400ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.07]"
+                />
+
+                {/* Brand-tinted scrim keeps text legible and unifies mixed stock */}
+                <div
+                  class="absolute inset-0 transition-opacity duration-700 group-hover:opacity-90"
+                  style="background: linear-gradient(180deg, rgba(6,16,42,0.00) 0%, rgba(6,16,42,0.10) 34%, rgba(7,18,46,0.62) 66%, rgba(5,12,32,0.92) 88%, rgba(5,12,32,0.96) 100%);"
+                  aria-hidden="true"
+                >
+                </div>
+
+                {/* Lime wash that sweeps in on hover */}
+                <div
+                  class="absolute inset-0 opacity-0 transition-opacity duration-700 group-hover:opacity-100"
+                  style="background: radial-gradient(70% 60% at 90% 100%, rgba(176,208,56,0.30) 0%, transparent 70%);"
+                  aria-hidden="true"
+                >
+                </div>
+
+                {/* Anchored to the bottom of a fixed-ratio tile, so the text
+                    always sits in the darkest part of the scrim. */}
+                <div class="absolute inset-x-0 bottom-0 p-7 lg:p-9">
+                  <span
+                    class="font-display text-[0.72rem] font-bold uppercase tracking-[0.16em] text-lime"
+                  >
+                    {String(i + 1).padStart(2, '0')} — {countCapabilities(ind.slug)} capabilities
+                  </span>
+
+                  <h3 class="mt-3 font-display text-[clamp(1.6rem,3vw,2.3rem)] font-bold leading-tight text-white">
+                    {ind.name}
+                  </h3>
+
+                  <p class="mt-3 max-w-md text-sm leading-relaxed text-white/80">
+                    {page.tagline}
+                  </p>
+
+                  {/* Services applied here */}
+                  <ul class="mt-6 flex flex-wrap gap-1.5">
+                    {(industryServices[ind.slug] ?? []).slice(0, 3).map((slug) => (
+                      <li class="rounded-full border border-white/25 px-2.5 py-1 text-[0.68rem] font-medium text-white/85">
+                        {getService(slug).title}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <span class="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-lime">
+                    Explore {ind.name}
+                    <span
+                      class="transition-transform duration-300 group-hover:translate-x-1.5"
+                      aria-hidden="true">&rarr;</span>
+                  </span>
+                </div>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       NOT LISTED
+  ====================================================================== -->
+  <section class="relative pb-24 lg:pb-32">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <div
+        class="reveal relative isolate overflow-hidden rounded-[28px] px-6 py-14 text-center lg:px-16 lg:py-16"
+        style="background: linear-gradient(135deg, #14357B 0%, #1A4194 45%, #2B57B0 100%);"
+      >
+        <div
+          class="pointer-events-none absolute -right-24 -top-24 h-[26rem] w-[26rem] rounded-full opacity-45 blur-3xl"
+          style="background: radial-gradient(circle, rgba(176,208,56,0.75) 0%, transparent 65%);"
+          aria-hidden="true"
+        >
+        </div>
+
+        <h2 class="relative mx-auto max-w-2xl text-[clamp(1.7rem,3.4vw,2.6rem)] leading-[1.08] text-white">
+          Not seeing your industry?
+        </h2>
+        <p class="relative mx-auto mt-4 max-w-xl leading-relaxed text-brand-100">
+          We have also worked across petrochemical, power generation, commercial and
+          data centre environments. Ask, and we will tell you honestly whether the
+          experience transfers.
+        </p>
+        <a
+          href={withBase('/contact')}
+          class="relative mt-8 inline-block rounded-xl bg-lime px-7 py-4 font-semibold text-brand-900 transition-all duration-300 hover:-translate-y-0.5 hover:bg-lime-300"
+        >
+          Ask about your sector
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

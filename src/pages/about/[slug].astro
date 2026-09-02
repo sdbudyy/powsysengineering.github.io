@@ -1,0 +1,189 @@
+---
+import { withBase } from '../../lib/url';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Avatar from '../../components/Avatar.astro';
+import { site } from '../../data/site';
+import { team, type Member } from '../../data/team';
+
+export function getStaticPaths() {
+  return team.map((member) => ({
+    params: { slug: member.slug },
+    props: { member },
+  }));
+}
+
+interface Props { member: Member }
+const { member } = Astro.props;
+
+const others = team.filter((m) => m.slug !== member.slug);
+const url = `${site.url}/about/${member.slug}`;
+
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  '@id': `${url}#person`,
+  name: member.name,
+  jobTitle: member.role,
+  url,
+  worksFor: { '@id': `${site.url}/#organization` },
+  knowsAbout: member.focus,
+  homeLocation: { '@type': 'Place', name: member.location },
+  ...(member.linkedin ? { sameAs: [member.linkedin] } : {}),
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: site.url },
+    { '@type': 'ListItem', position: 2, name: 'About', item: `${site.url}/about` },
+    { '@type': 'ListItem', position: 3, name: member.name, item: url },
+  ],
+};
+---
+
+<BaseLayout
+  title={`${member.name} — ${member.role} | PowSys Engineering`}
+  description={`${member.name} is ${member.role} at PowSys Engineering in Calgary, Alberta. ${member.summary}`}
+  schema={[personSchema, breadcrumbSchema]}
+>
+  <!-- =====================================================================
+       HEADER
+  ====================================================================== -->
+  <section class="relative isolate overflow-hidden pt-32 pb-12 lg:pt-40 lg:pb-14">
+    <div
+      class="pointer-events-none absolute -top-40 right-[-8%] -z-10 h-[40rem] w-[40rem] rounded-full opacity-70 blur-3xl"
+      style="background: radial-gradient(circle, rgba(176,208,56,0.28) 0%, transparent 68%);"
+      aria-hidden="true"
+    >
+    </div>
+
+    <div class="mx-auto max-w-5xl px-5 lg:px-8">
+      <nav aria-label="Breadcrumb">
+        <ol class="flex flex-wrap items-center gap-2 text-xs text-ink-muted">
+          <li><a href={withBase('/')} class="transition-colors hover:text-brand">Home</a></li>
+          <li aria-hidden="true">/</li>
+          <li><a href={withBase('/about')} class="transition-colors hover:text-brand">About</a></li>
+          <li aria-hidden="true">/</li>
+          <li class="font-medium text-ink-soft">{member.name}</li>
+        </ol>
+      </nav>
+
+      <div class="mt-8 flex flex-col gap-7 sm:flex-row sm:items-center">
+        <Avatar member={member} size={132} />
+
+        <div>
+          <h1 class="text-[clamp(2rem,4.4vw,3.2rem)] leading-[1.06]">
+            {member.name}{member.credentials ? `, ${member.credentials}` : ''}
+          </h1>
+          <p class="mt-2 font-display text-sm font-bold uppercase tracking-[0.13em] text-lime-600">
+            {member.role}
+          </p>
+          <p class="mt-3 inline-flex items-center gap-1.5 text-sm text-ink-muted">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true" class="text-brand">
+              <path d="M8 14.5s5-4.2 5-8a5 5 0 0 0-10 0c0 3.8 5 8 5 8Z" stroke="currentColor" stroke-width="1.4" />
+              <circle cx="8" cy="6.5" r="1.8" stroke="currentColor" stroke-width="1.4" />
+            </svg>
+            {member.location}
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       BIO
+  ====================================================================== -->
+  <section class="relative pb-16 lg:pb-20" aria-labelledby="bio-heading">
+    <div class="mx-auto max-w-5xl px-5 lg:px-8">
+      <h2 id="bio-heading" class="sr-only">About {member.name}</h2>
+
+      <div class="grid gap-10 lg:grid-cols-12 lg:gap-12">
+        <div class="lg:col-span-7">
+          {member.bio.map((para, i) => (
+            <p class={`reveal leading-[1.75] text-ink-soft ${i === 0 ? 'text-lg text-ink' : 'mt-5'}`}>
+              {para}
+            </p>
+          ))}
+
+          {member.quote && (
+            <figure class="reveal mt-9">
+              <blockquote
+                class="border-l-[3px] pl-6 font-display text-lg font-semibold leading-snug text-ink"
+                style="border-image: linear-gradient(180deg, var(--color-brand), var(--color-lime)) 1;"
+              >
+                {member.quote.text}
+              </blockquote>
+              <figcaption class="mt-3 pl-6 text-sm text-ink-muted">
+                — {member.quote.attribution}
+              </figcaption>
+            </figure>
+          )}
+        </div>
+
+        <div class="lg:col-span-5">
+          <div class="reveal card p-7">
+            <h3 class="font-display text-[0.72rem] font-bold uppercase tracking-[0.13em] text-brand">
+              Focus areas
+            </h3>
+            <ul class="mt-4 space-y-2.5">
+              {member.focus.map((f) => (
+                <li class="flex gap-3 text-sm leading-relaxed text-ink-soft">
+                  <span class="mt-[0.45rem] h-1.5 w-1.5 shrink-0 rounded-full bg-lime" aria-hidden="true"></span>
+                  <span>{f}</span>
+                </li>
+              ))}
+            </ul>
+
+            <div class="mt-6 border-t border-line-soft pt-5">
+              <a
+                href={withBase('/about#book')}
+                class="group inline-flex items-center gap-2 text-sm font-semibold text-brand transition-colors hover:text-lime-600"
+              >
+                <span class="link-draw relative">Book a meeting</span>
+                <span class="transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true">&rarr;</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       REST OF THE TEAM
+  ====================================================================== -->
+  <section class="relative pb-24 lg:pb-32" aria-labelledby="others-heading">
+    <div class="mx-auto max-w-5xl px-5 lg:px-8">
+      <h2 id="others-heading" class="reveal font-display text-xl font-bold">The rest of the team</h2>
+
+      <ul class="mt-7 grid gap-5 sm:grid-cols-2">
+        {others.map((m, i) => (
+          <li class="reveal" style={`--i:${i}`}>
+            <a href={withBase(`/about/${m.slug}`)} class="card group flex h-full items-center gap-5 p-6">
+              <Avatar member={m} size={64} class="transition-transform duration-500 group-hover:scale-105" />
+              <span class="min-w-0">
+                <span class="block font-display text-base font-bold text-ink transition-colors group-hover:text-brand">
+                  {m.name}
+                </span>
+                <span class="mt-0.5 block text-[0.72rem] font-bold uppercase tracking-wider text-lime-600">
+                  {m.role}
+                </span>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <div class="mt-10">
+        <a
+          href={withBase('/about')}
+          class="group inline-flex items-center gap-2 text-sm font-semibold text-brand transition-colors hover:text-lime-600"
+        >
+          <span class="transition-transform duration-300 group-hover:-translate-x-1" aria-hidden="true">&larr;</span>
+          <span class="link-draw relative">Back to About</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

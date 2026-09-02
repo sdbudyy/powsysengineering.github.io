@@ -1,0 +1,81 @@
+name: Deploy demo to GitHub Pages
+
+# Builds the site and publishes it to GitHub Pages on every push to main.
+#
+# GitHub Pages serves a repository at the domain root ONLY when the repo is
+# named exactly <owner>.github.io. Every other repo — including one merely
+# named something.github.io under a different owner — is served from
+# /<repo-name>/. Getting that wrong means every link 404s, so the base path is
+# worked out at build time rather than hard-coded.
+#
+# PUBLIC_IS_DEMO adds a noindex tag so this copy never competes with the real
+# site in search results.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Let a running deploy finish rather than cancelling it mid-publish.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Work out where Pages will serve this
+        id: target
+        run: |
+          OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          REPO=$(echo "${{ github.event.repository.name }}" | tr '[:upper:]' '[:lower:]')
+
+          if [ "$REPO" = "$OWNER.github.io" ]; then
+            # User or organisation site — served at the domain root.
+            echo "base=" >> "$GITHUB_OUTPUT"
+            echo "site=https://$REPO" >> "$GITHUB_OUTPUT"
+          else
+            # Project site — served from a subpath.
+            echo "base=$REPO" >> "$GITHUB_OUTPUT"
+            echo "site=https://$OWNER.github.io" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build
+        env:
+          PUBLIC_SITE_URL: ${{ steps.target.outputs.site }}
+          PUBLIC_BASE_PATH: ${{ steps.target.outputs.base }}
+          PUBLIC_IS_DEMO: 'true'
+        run: npm run build
+
+      - name: Check the build for crawl and accessibility regressions
+        run: npm run audit
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

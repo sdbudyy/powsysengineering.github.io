@@ -1,0 +1,52 @@
+# PowSys Engineering Inc.
+
+> PowSys Engineering Inc. is a woman-owned electrical engineering and technical
+> services firm founded in 2017 and based in Calgary, Alberta, Canada. It serves
+> the oil and gas, mining, renewable energy, utility, commercial and data centre
+> sectors across Canada and the United States.
+
+PowSys delivers engineering solutions either as complete end-to-end projects or
+as a contractor, vendor or partner within a client's project. Services span
+design, development, integration, risk and relationship management, project
+planning and control.
+
+**Credentials:** APEGA (Alberta), Engineers and Geoscientists British Columbia,
+APEGS (Saskatchewan), RCDD (Registered Communications Distribution Designer),
+Alberta Fire Safety Association, ComplyWorks.
+
+**Contact:** info@powsysengineering.com · +1 (866) 269-0545 ·
+5538 1A St SW, Calgary, AB T2H 0E7, Canada (by appointment only)
+
+## Services
+
+- [Engineering & Design](https://powsysengineering.com/services#service-engineering-design): FEED, detailed engineering, arc flash and harmonic studies, protective device coordination, ground grid design, automation and control.
+- [Compliance & Verification](https://powsysengineering.com/services#service-compliance-verification): QA/QC, FAT/SAT/IFAT testing, process safety audits, code reviews, equipment validation, written schemes of verification, HAZOPs.
+- [Project Management](https://powsysengineering.com/services#service-project-management): ISO 9001-aligned delivery, scope development, costing, subcontract management, cost and schedule control, risk management.
+- [Condition-Based Maintenance](https://powsysengineering.com/services#service-condition-based-maintenance): infrared thermography, partial discharge and tan delta testing, motor current signature analysis, rotor shorted turns detection, root cause analysis.
+- [Data Centre Solutions](https://powsysengineering.com/services#service-data-centres): power system studies, interconnection design, performance optimisation.
+- [Commercial Sector Solutions](https://powsysengineering.com/services#service-commercial-sector): life safety systems, telecommunications infrastructure, electrical assessment and design.
+
+## Industries
+
+- [Oil & Gas](https://powsysengineering.com/industries/oil-and-gas): hazardous area (EEHA) classification, equipment selection, inspection and verification dossiers.
+- [Renewable Energy](https://powsysengineering.com/industries/renewable-energy): solar PV, wind, hydro, landfill gas, hybrid interconnection, full life-cycle power system management.
+- [Mining](https://powsysengineering.com/industries/mining): shutdowns and turnarounds, refurbishment, site audits, reliability and economic studies.
+- [Utilities & Power](https://powsysengineering.com/industries/utilities): substation automation, protection and control, transmission line switching studies.
+
+## Engineering tools
+
+ETAP, SKM, AutoCAD, Plant 3D, Navisworks, EMTP-RV, DIALux, Thermon CompuTrace,
+Hexagon Intergraph Smart Electrical, Hexagon Intergraph Smart Instrumentation,
+Oracle, Microsoft Project.
+
+## Knowledge Centre
+
+Articles, guides, field notes and opinion at https://powsysengineering.com/knowledge-centre — covering arc flash studies and CSA Z462, partial discharge testing, condition-based maintenance, hazardous area verification dossiers, solar interconnection, data centre power density, power system model drift, and infrared thermography.
+
+## Other pages
+
+- [About](https://powsysengineering.com/about)
+- [Projects](https://powsysengineering.com/projects)
+- [Knowledge Centre](https://powsysengineering.com/knowledge-centre)
+- [Careers](https://powsysengineering.com/careers)
+- [Contact](https://powsysengineering.com/contact)

@@ -1,0 +1,94 @@
+---
+import { withBase } from '../lib/url';
+import { site } from '../data/site';
+import { services, industries } from '../data/content';
+import Logo from './Logo.astro';
+const year = new Date().getFullYear();
+---
+
+<footer class="relative mt-8 border-t border-line bg-white/60">
+  <div class="mx-auto max-w-7xl px-5 py-16 lg:px-8">
+    <div class="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
+      <div>
+        <Logo height={48} />
+        <p class="mt-6 max-w-xs text-sm leading-relaxed text-ink-soft">
+          Woman-owned electrical engineering and technical services, delivered from
+          Calgary across Canada and the United States since {site.founded}.
+        </p>
+        <a
+          href={site.social.linkedin}
+          rel="noopener"
+          class="mt-6 inline-flex items-center gap-2 text-sm font-medium text-ink-soft transition-colors hover:text-brand"
+        >
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29ZM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13ZM7.12 20.45H3.55V9h3.57v11.45Z" />
+          </svg>
+          LinkedIn
+        </a>
+      </div>
+
+      <nav aria-label="Services">
+        <h2 class="font-display text-xs font-bold uppercase tracking-[0.16em] text-ink">Services</h2>
+        <ul class="mt-5 space-y-3">
+          {services.map((s) => (
+            <li>
+              <a href={withBase(`/services#service-${s.slug}`)} class="text-sm text-ink-soft transition-colors hover:text-brand">
+                {s.title}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <nav aria-label="Industries">
+        <h2 class="font-display text-xs font-bold uppercase tracking-[0.16em] text-ink">Industries</h2>
+        <ul class="mt-5 space-y-3">
+          {industries.map((i) => (
+            <li>
+              <a href={withBase(`/industries/${i.slug}`)} class="text-sm text-ink-soft transition-colors hover:text-brand">
+                {i.name}
+              </a>
+            </li>
+          ))}
+          <li>
+            <a href={withBase('/knowledge-centre')} class="text-sm text-ink-soft transition-colors hover:text-brand">Knowledge Centre</a>
+          </li>
+          <li>
+            <a href={withBase('/about/our-story')} class="text-sm text-ink-soft transition-colors hover:text-brand">Our story</a>
+          </li>
+          <li>
+            <a href={withBase('/careers')} class="text-sm text-ink-soft transition-colors hover:text-brand">Careers</a>
+          </li>
+          <li>
+            <a href={withBase('/contact')} class="text-sm text-ink-soft transition-colors hover:text-brand">Contact</a>
+          </li>
+        </ul>
+      </nav>
+
+      <div>
+        <h2 class="font-display text-xs font-bold uppercase tracking-[0.16em] text-ink">Contact</h2>
+        {/* Marked up as an address so crawlers read it as the business location. */}
+        <address class="mt-5 space-y-3 text-sm not-italic text-ink-soft">
+          <p>
+            <a href={`mailto:${site.email}`} class="transition-colors hover:text-brand">{site.email}</a>
+          </p>
+          <p>
+            <a href={`tel:${site.phoneRaw}`} class="transition-colors hover:text-brand">{site.phone}</a>
+          </p>
+          <p class="leading-relaxed">
+            {site.legalName}<br />
+            {site.address.street}<br />
+            {site.address.locality}, {site.address.region} {site.address.postalCode}<br />
+            Canada
+          </p>
+          <p class="text-xs text-ink-muted">({site.address.note})</p>
+        </address>
+      </div>
+    </div>
+
+    <div class="mt-14 flex flex-col gap-4 border-t border-line pt-7 text-xs text-ink-muted sm:flex-row sm:items-center sm:justify-between">
+      <p>&copy; {year} {site.legalName} All rights reserved.</p>
+      <p>APEGA &middot; EGBC &middot; APEGS permit holder</p>
+    </div>
+  </div>
+</footer>

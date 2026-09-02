@@ -1,0 +1,43 @@
+---
+/* Team headshot, with an initials fallback for members whose photo has not
+   been supplied yet. The fallback is a deliberate design rather than a broken
+   image — the page looks finished either way. */
+import { Image } from 'astro:assets';
+import type { Member } from '../data/team';
+
+interface Props {
+  member: Member;
+  /** Rendered size in px. */
+  size?: number;
+  class?: string;
+}
+
+const { member, size = 128, class: className = '' } = Astro.props;
+
+const initials = member.name
+  .split(' ')
+  .map((part) => part[0])
+  .slice(0, 2)
+  .join('');
+---
+
+{member.photo ? (
+  <Image
+    src={member.photo}
+    alt={`${member.name}, ${member.role} at PowSys Engineering`}
+    width={size}
+    height={size}
+    densities={[1, 2]}
+    loading="lazy"
+    class={`aspect-square rounded-full object-cover ring-4 ring-white ${className}`}
+    style={`width:${size}px;height:${size}px`}
+  />
+) : (
+  <span
+    class={`grid aspect-square shrink-0 place-items-center rounded-full font-display font-bold text-white ring-4 ring-white ${className}`}
+    style={`width:${size}px;height:${size}px;font-size:${Math.round(size * 0.34)}px;background:linear-gradient(140deg,var(--color-brand),var(--color-brand-400) 60%,var(--color-lime-600));`}
+    aria-hidden="true"
+  >
+    {initials}
+  </span>
+)}
