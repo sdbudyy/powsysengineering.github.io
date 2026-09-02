@@ -45,10 +45,7 @@ export default defineConfig({
     '/about/portfolio': '/projects',
     '/about/careers': '/careers',
     '/about/testimonials': '/about',
-    '/services/engineering-design': '/services#service-engineering-design',
-    '/services/compliance-verification': '/services#service-compliance-verification',
-    '/services/project-management': '/services#service-project-management',
-    '/services/cbm': '/services#service-condition-based-maintenance',
+    '/services/cbm': '/services/condition-based-maintenance',
   }),
 
   integrations: [sitemap()],

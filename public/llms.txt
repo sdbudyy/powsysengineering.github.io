@@ -19,12 +19,12 @@ Alberta Fire Safety Association, ComplyWorks.
 
 ## Services
 
-- [Engineering & Design](https://powsysengineering.com/services#service-engineering-design): FEED, detailed engineering, arc flash and harmonic studies, protective device coordination, ground grid design, automation and control.
-- [Compliance & Verification](https://powsysengineering.com/services#service-compliance-verification): QA/QC, FAT/SAT/IFAT testing, process safety audits, code reviews, equipment validation, written schemes of verification, HAZOPs.
-- [Project Management](https://powsysengineering.com/services#service-project-management): ISO 9001-aligned delivery, scope development, costing, subcontract management, cost and schedule control, risk management.
-- [Condition-Based Maintenance](https://powsysengineering.com/services#service-condition-based-maintenance): infrared thermography, partial discharge and tan delta testing, motor current signature analysis, rotor shorted turns detection, root cause analysis.
-- [Data Centre Solutions](https://powsysengineering.com/services#service-data-centres): power system studies, interconnection design, performance optimisation.
-- [Commercial Sector Solutions](https://powsysengineering.com/services#service-commercial-sector): life safety systems, telecommunications infrastructure, electrical assessment and design.
+- [Engineering & Design](https://powsysengineering.com/services/engineering-design): FEED, detailed engineering, arc flash and harmonic studies, protective device coordination, ground grid design, automation and control.
+- [Compliance & Verification](https://powsysengineering.com/services/compliance-verification): QA/QC, FAT/SAT/IFAT testing, process safety audits, code reviews, equipment validation, written schemes of verification, HAZOPs.
+- [Project Management](https://powsysengineering.com/services/project-management): ISO 9001-aligned delivery, scope development, costing, subcontract management, cost and schedule control, risk management.
+- [Condition-Based Maintenance](https://powsysengineering.com/services/condition-based-maintenance): infrared thermography, partial discharge and tan delta testing, motor current signature analysis, rotor shorted turns detection, root cause analysis.
+- [Data Centre Solutions](https://powsysengineering.com/services/data-centres): power system studies, interconnection design, performance optimisation.
+- [Commercial Sector Solutions](https://powsysengineering.com/services/commercial-sector): life safety systems, telecommunications infrastructure, electrical assessment and design.
 
 ## Industries
 

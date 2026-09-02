@@ -41,7 +41,7 @@ const servicesSchema = {
       '@type': 'Service',
       name: s.title,
       description: s.summary,
-      url: `${site.url}/services#service-${s.slug}`,
+      url: `${site.url}/services/${s.slug}`,
       provider: { '@id': `${site.url}/#organization` },
       areaServed: site.areaServed,
     },
@@ -133,7 +133,7 @@ const servicesSchema = {
           <li class="reveal" style={`--i:${i % 3}`}>
             <article class="card group flex h-full flex-col p-7">
               <h3 class="font-display text-xl font-bold">
-                <a href={withBase(`/services#service-${s.slug}`)} class="link-draw relative text-ink transition-colors group-hover:text-brand">
+                <a href={withBase(`/services/${s.slug}`)} class="link-draw relative text-ink transition-colors group-hover:text-brand">
                   {s.title}
                 </a>
               </h3>

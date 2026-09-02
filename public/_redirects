@@ -1,17 +1,17 @@
 # Host-level 301s (Netlify / Cloudflare Pages syntax).
 # A real 301 preserves link equity far better than the meta-refresh fallback
 # Astro generates, so these take precedence when deployed to a supporting host.
+#
+# The four old service URLs now map to real pages rather than hub anchors —
+# three of them resolve directly and need no rule at all.
 
 # Superseded section
-/insights                          /knowledge-centre                                    301
+/insights              /knowledge-centre                      301
 
 # Old powsysengineering.com URLs
-/about/who-we-are                  /about                                               301
-/about/industry-focus              /industries                                          301
-/about/portfolio                   /projects                                            301
-/about/careers                     /careers                                             301
-/about/testimonials                /about                                               301
-/services/engineering-design       /services#service-engineering-design                 301
-/services/compliance-verification  /services#service-compliance-verification            301
-/services/project-management       /services#service-project-management                 301
-/services/cbm                      /services#service-condition-based-maintenance        301
+/about/who-we-are      /about                                 301
+/about/industry-focus  /industries                            301
+/about/portfolio       /projects                              301
+/about/careers         /careers                               301
+/about/testimonials    /about                                 301
+/services/cbm          /services/condition-based-maintenance  301

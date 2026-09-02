@@ -254,7 +254,7 @@ const breadcrumbSchema = {
         {relatedServices.map((svc, i) => (
           <li class="reveal" style={`--i:${i}`}>
             <a
-              href={withBase(`/services#service-${svc.slug}`)}
+              href={withBase(`/services/${svc.slug}`)}
               class="card group flex h-full flex-col p-6"
             >
               <h3 class="font-display text-base font-bold text-ink transition-colors group-hover:text-brand">

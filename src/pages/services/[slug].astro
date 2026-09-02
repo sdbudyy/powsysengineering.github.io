@@ -1,0 +1,434 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import KnowledgeMini from '../../components/KnowledgeMini.astro';
+import ProjectMini from '../../components/ProjectMini.astro';
+import { withBase } from '../../lib/url';
+import { site } from '../../data/site';
+import { services, projects } from '../../data/content';
+import { servicePages, type ServicePage } from '../../data/service-pages';
+import { serviceMedia } from '../../data/service-images';
+import { serviceLinks, getIndustry, getEntry } from '../../data/relations';
+
+export function getStaticPaths() {
+  return services.map((service) => ({
+    params: { slug: service.slug },
+    props: { service, page: servicePages[service.slug] },
+  }));
+}
+
+interface Props {
+  service: (typeof services)[number];
+  page: ServicePage;
+}
+
+const { service, page } = Astro.props;
+
+const media = serviceMedia[service.slug];
+const links = serviceLinks[service.slug];
+const related = links.projects
+  .map((slug) => projects.find((p) => p.slug === slug)!)
+  .filter(Boolean);
+
+const others = services.filter((s) => s.slug !== service.slug);
+const totalCapabilities = page.groups.reduce((n, g) => n + g.items.length, 0);
+
+const url = `${site.url}/services/${service.slug}`;
+
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  '@id': `${url}#service`,
+  name: service.title,
+  description: page.intro,
+  url,
+  serviceType: service.title,
+  provider: { '@id': `${site.url}/#organization` },
+  areaServed: site.areaServed,
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: `${service.title} capabilities`,
+    itemListElement: page.groups.map((group) => ({
+      '@type': 'OfferCatalog',
+      name: group.title,
+      itemListElement: group.items.map((item) => ({
+        '@type': 'Offer',
+        itemOffered: { '@type': 'Service', name: item },
+      })),
+    })),
+  },
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: page.faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: site.url },
+    { '@type': 'ListItem', position: 2, name: 'Services', item: `${site.url}/services` },
+    { '@type': 'ListItem', position: 3, name: service.title, item: url },
+  ],
+};
+---
+
+<BaseLayout
+  title={`${service.title} Services | PowSys Engineering`}
+  description={page.intro.slice(0, 300)}
+  schema={[serviceSchema, faqSchema, breadcrumbSchema]}
+>
+  <!-- =====================================================================
+       HERO
+  ====================================================================== -->
+  <section class="relative isolate overflow-hidden pt-32 pb-12 lg:pt-40 lg:pb-16">
+    <div
+      class="pointer-events-none absolute -top-40 right-[-8%] -z-10 h-[42rem] w-[42rem] rounded-full opacity-70 blur-3xl"
+      style="background: radial-gradient(circle, rgba(176,208,56,0.28) 0%, transparent 68%);"
+      aria-hidden="true"
+    >
+    </div>
+    <div
+      class="pointer-events-none absolute -left-[12%] top-24 -z-10 h-[34rem] w-[34rem] rounded-full opacity-70 blur-3xl"
+      style="background: radial-gradient(circle, rgba(26,65,148,0.18) 0%, transparent 70%);"
+      aria-hidden="true"
+    >
+    </div>
+
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <nav aria-label="Breadcrumb" class="reveal">
+        <ol class="flex flex-wrap items-center gap-2 text-xs text-ink-muted">
+          <li><a href={withBase('/')} class="transition-colors hover:text-brand">Home</a></li>
+          <li aria-hidden="true">/</li>
+          <li><a href={withBase('/services')} class="transition-colors hover:text-brand">Services</a></li>
+          <li aria-hidden="true">/</li>
+          <li class="font-medium text-ink-soft">{service.title}</li>
+        </ol>
+      </nav>
+
+      <div class="mt-7 grid gap-10 lg:grid-cols-12 lg:gap-12">
+        <div class="lg:col-span-7">
+          <p class="reveal font-display text-[0.78rem] font-bold uppercase tracking-[0.13em] text-lime-600">
+            {service.threeWords}
+          </p>
+
+          <h1 class="reveal mt-4 text-[clamp(2.1rem,4.8vw,3.7rem)] leading-[1.05]" style="--i:1">
+            {service.title}
+          </h1>
+
+          <p class="reveal mt-5 max-w-xl text-lg leading-relaxed text-ink-soft" style="--i:2">
+            {page.tagline}
+          </p>
+
+          <div class="reveal mt-8 flex flex-wrap gap-3" style="--i:3">
+            <a
+              href={withBase('/contact')}
+              class="rounded-xl bg-brand px-7 py-4 font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-brand-700"
+            >
+              Discuss this scope
+            </a>
+            <a
+              href="#capabilities"
+              class="rounded-xl border border-line bg-white/70 px-7 py-4 font-semibold text-ink transition-all duration-300 hover:-translate-y-0.5 hover:border-brand-200"
+            >
+              {totalCapabilities} capabilities
+            </a>
+          </div>
+        </div>
+
+        <div class="reveal lg:col-span-5" style="--i:2">
+          <div class="relative">
+            <div
+              class="absolute -inset-2 -z-10 rounded-[24px] opacity-50 blur-2xl"
+              style="background: linear-gradient(140deg, rgba(26,65,148,0.22), rgba(176,208,56,0.28));"
+              aria-hidden="true"
+            >
+            </div>
+            <Image
+              src={media.src}
+              alt={media.alt}
+              widths={[400, 700, 900]}
+              sizes="(min-width: 1024px) 40vw, 92vw"
+              loading="eager"
+              fetchpriority="high"
+              class="aspect-[4/3] w-full rounded-[var(--radius-card)] object-cover ring-1 ring-brand-900/10"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       OVERVIEW
+  ====================================================================== -->
+  <section class="relative py-14 lg:py-20" aria-labelledby="overview-heading">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <div class="grid gap-12 lg:grid-cols-12 lg:gap-16">
+        <div class="lg:col-span-5">
+          <p class="reveal eyebrow">Overview</p>
+          <h2 id="overview-heading" class="reveal mt-5 text-[clamp(1.8rem,3.4vw,2.6rem)] leading-[1.08]" style="--i:1">
+            What this covers.
+          </h2>
+        </div>
+
+        <div class="lg:col-span-7">
+          <p class="reveal text-xl leading-relaxed text-ink lg:text-[1.22rem]">{page.intro}</p>
+
+          <div
+            class="reveal mt-8 rounded-[var(--radius-card)] border-l-[3px] bg-brand-50/60 p-6"
+            style="--i:1; border-left-color: var(--color-lime);"
+          >
+            <p class="font-display text-[0.72rem] font-bold uppercase tracking-[0.13em] text-brand">
+              Where it usually goes wrong
+            </p>
+            <p class="mt-3 leading-relaxed text-ink-soft">{page.challenge}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       CAPABILITIES
+  ====================================================================== -->
+  <section id="capabilities" class="relative scroll-mt-28 py-14 lg:py-20" aria-labelledby="capabilities-heading">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <div class="max-w-2xl">
+        <p class="reveal eyebrow">Capabilities</p>
+        <h2 id="capabilities-heading" class="reveal mt-5 text-[clamp(1.8rem,3.4vw,2.6rem)] leading-[1.08]" style="--i:1">
+          {totalCapabilities} capabilities, grouped.
+        </h2>
+      </div>
+
+      <div class="mt-12 grid gap-5 sm:grid-cols-2">
+        {page.groups.map((group, i) => (
+          <article class="reveal card p-7" style={`--i:${i % 2}`}>
+            <div class="flex items-center gap-3">
+              <span
+                class="grid h-9 w-9 shrink-0 place-items-center rounded-lg font-display text-xs font-bold text-white"
+                style="background: linear-gradient(140deg, var(--color-brand), var(--color-brand-400));"
+                aria-hidden="true"
+              >{i + 1}</span>
+              <h3 class="font-display text-lg font-bold text-ink">{group.title}</h3>
+              <span class="ml-auto text-xs font-semibold text-ink-muted">{group.items.length}</span>
+            </div>
+
+            <ul class="mt-5 space-y-2.5">
+              {group.items.map((item) => (
+                <li class="flex gap-3 text-sm leading-relaxed text-ink-soft">
+                  <span class="mt-[0.45rem] h-1.5 w-1.5 shrink-0 rounded-full bg-lime" aria-hidden="true"></span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       DELIVERABLES
+  ====================================================================== -->
+  <section class="relative py-14 lg:py-20" aria-labelledby="deliverables-heading">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <div class="grid gap-12 lg:grid-cols-12 lg:gap-16">
+        <div class="lg:col-span-5">
+          <p class="reveal eyebrow">Deliverables</p>
+          <h2 id="deliverables-heading" class="reveal mt-5 text-[clamp(1.8rem,3.4vw,2.6rem)] leading-[1.08]" style="--i:1">
+            What you actually receive.
+          </h2>
+          <p class="reveal mt-5 leading-relaxed text-ink-soft" style="--i:2">
+            Named up front, so there is no argument at handover about what was
+            in scope.
+          </p>
+        </div>
+
+        <div class="lg:col-span-7">
+          <ul class="reveal grid gap-3">
+            {page.deliverables.map((d) => (
+              <li class="flex items-start gap-3.5 rounded-xl border border-line bg-white/70 px-5 py-4">
+                <span
+                  class="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-lime-50 text-lime-deep"
+                  aria-hidden="true"
+                >
+                  <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
+                    <path d="M2.5 6.3 4.7 8.5 9.5 3.7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </span>
+                <span class="text-sm leading-relaxed text-ink-soft">{d}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       APPLIED IN + RELATED
+  ====================================================================== -->
+  {(links.industries.length > 0 || links.knowledge.length > 0 || related.length > 0) && (
+    <section class="relative py-14 lg:py-20" aria-labelledby="related-heading">
+      <div class="mx-auto max-w-7xl px-5 lg:px-8">
+        <h2 id="related-heading" class="sr-only">Where this applies, and related material</h2>
+
+        {links.industries.length > 0 && (
+          <div class="reveal">
+            <p class="eyebrow">Applied in</p>
+            <ul class="mt-5 flex flex-wrap gap-2">
+              {links.industries.map((slug) => {
+                const ind = getIndustry(slug);
+                return (
+                  <li>
+                    <a
+                      href={withBase(`/industries/${ind.slug}`)}
+                      class="inline-flex items-center gap-1.5 rounded-full border border-line bg-white/70 px-4 py-2 text-sm font-medium text-ink-soft transition-all duration-300 hover:-translate-y-0.5 hover:border-brand-200 hover:text-brand"
+                    >
+                      {ind.name}
+                      <span aria-hidden="true" class="text-lime-600">&rarr;</span>
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        )}
+
+        <div class="mt-12 grid gap-12 lg:grid-cols-2 lg:gap-10">
+          {links.knowledge.length > 0 && (
+            <div>
+              <p class="reveal eyebrow">Related reading</p>
+              <ul class="mt-5 space-y-3">
+                {links.knowledge.map((slug, i) => (
+                  <li class="reveal" style={`--i:${i}`}>
+                    <KnowledgeMini entry={getEntry(slug)} />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {related.length > 0 && (
+            <div>
+              <p class="reveal eyebrow">Related work</p>
+              <ul class="mt-5 space-y-4">
+                {related.map((p, i) => (
+                  <li class="reveal" style={`--i:${i}`}>
+                    <ProjectMini project={p} panelId={`svc-page-${service.slug}-${p.slug}`} />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- =====================================================================
+       FAQ
+  ====================================================================== -->
+  <section class="relative py-14 lg:py-20" aria-labelledby="faq-heading">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <div class="grid gap-12 lg:grid-cols-12 lg:gap-16">
+        <div class="lg:col-span-4">
+          <p class="reveal eyebrow">Questions</p>
+          <h2 id="faq-heading" class="reveal mt-5 text-[clamp(1.8rem,3.4vw,2.6rem)] leading-[1.08]" style="--i:1">
+            About {service.title.toLowerCase()}.
+          </h2>
+        </div>
+
+        <div class="lg:col-span-8">
+          <dl class="space-y-3">
+            {page.faqs.map((f, i) => (
+              <div class="reveal" style={`--i:${i}`}>
+                <details class="card group overflow-hidden [&[open]]:border-brand-200">
+                  <summary class="flex cursor-pointer list-none items-center justify-between gap-6 p-6 text-left [&::-webkit-details-marker]:hidden">
+                    <dt class="font-display text-base font-bold text-ink transition-colors group-hover:text-brand">
+                      {f.q}
+                    </dt>
+                    <span
+                      class="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-line text-brand transition-all duration-300 group-open:rotate-45 group-open:border-brand-200 group-open:bg-brand-50"
+                      aria-hidden="true"
+                    >
+                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                        <path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+                      </svg>
+                    </span>
+                  </summary>
+                  <dd class="px-6 pb-6 text-[0.95rem] leading-relaxed text-ink-soft">{f.a}</dd>
+                </details>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       OTHER SERVICES + CTA
+  ====================================================================== -->
+  <section class="relative pb-24 lg:pb-32" aria-labelledby="others-heading">
+    <div class="mx-auto max-w-7xl px-5 lg:px-8">
+      <h2 id="others-heading" class="reveal font-display text-xl font-bold">Other service lines</h2>
+
+      <ul class="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+        {others.map((s, i) => (
+          <li class="reveal" style={`--i:${i % 5}`}>
+            <a href={withBase(`/services/${s.slug}`)} class="card group flex h-full flex-col p-5">
+              <span class="font-display text-sm font-bold text-ink transition-colors group-hover:text-brand">
+                {s.title}
+              </span>
+              <span class="mt-2 flex-1 text-xs leading-relaxed text-ink-soft">{s.summary}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <div
+        class="reveal relative isolate mt-14 overflow-hidden rounded-[28px] px-6 py-14 text-center lg:px-16 lg:py-16"
+        style="background: linear-gradient(135deg, #14357B 0%, #1A4194 45%, #2B57B0 100%);"
+      >
+        <div
+          class="pointer-events-none absolute -right-24 -top-24 h-[26rem] w-[26rem] rounded-full opacity-45 blur-3xl"
+          style="background: radial-gradient(circle, rgba(176,208,56,0.75) 0%, transparent 65%);"
+          aria-hidden="true"
+        >
+        </div>
+
+        <h2 class="relative mx-auto max-w-2xl text-[clamp(1.7rem,3.4vw,2.5rem)] leading-[1.08] text-white">
+          Need {service.title.toLowerCase()}?
+        </h2>
+        <p class="relative mx-auto mt-4 max-w-xl leading-relaxed text-brand-100">
+          Tell us the scope and the constraint. We will tell you what it needs —
+          including when the answer is less than you expected.
+        </p>
+
+        <div class="relative mt-8 flex flex-wrap justify-center gap-3">
+          <a
+            href={withBase('/contact')}
+            class="rounded-xl bg-lime px-7 py-4 font-semibold text-brand-900 transition-all duration-300 hover:-translate-y-0.5 hover:bg-lime-300"
+          >
+            Start a conversation
+          </a>
+          <a
+            href={withBase('/services')}
+            class="rounded-xl border border-white/30 px-7 py-4 font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 hover:border-white/60 hover:bg-white/10"
+          >
+            All services
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
