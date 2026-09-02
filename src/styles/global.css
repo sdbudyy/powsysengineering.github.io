@@ -167,13 +167,21 @@
       0 2px 6px rgba(14, 27, 51, 0.04);
   }
 
-  /* Animated gradient text, used sparingly on hero emphasis */
+  /* Animated gradient text, used sparingly on hero emphasis.
+
+     background-clip:text paints only inside the inline box, and these headings
+     run a line-height tighter than their font-size. Without the padding the
+     box stops at the baseline and descenders get sliced off — the y in
+     "deliberately", the p in "explained" and "people". Vertical padding on an
+     inline element extends the paint area without changing the line box, so
+     this costs nothing in layout. */
   .grad-text {
     background: linear-gradient(100deg, var(--color-brand) 0%, var(--color-brand-400) 34%, var(--color-lime-600) 68%, var(--color-brand) 100%);
     background-size: 260% 100%;
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+    padding-block: 0.06em 0.18em;
     animation: grad-pan 9s ease-in-out infinite;
   }
 
