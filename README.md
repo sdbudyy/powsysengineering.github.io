@@ -54,10 +54,13 @@ Taken straight from the logo:
 |---|---|---|
 | `brand` | `#1A4194` | Headings, links, primary buttons, the CTA panel |
 | `lime` | `#B0D038` | Graphic accents only — rules, bullets, glows, the CTA button |
-| `lime-600` / `lime-deep` | `#89A521` / `#63781A` | The only limes with enough contrast for text on white |
+| `lime-deep` | `#63781A` | The only lime with enough contrast for text on white — 4.96:1 |
+| `lime-600` | `#89A521` | Graphic accents only. **Fails WCAG AA for text at 2.81:1** |
 
-Lime is bright and fails contrast as body text on white, so never use bare
-`lime` for type — reach for `lime-600` or `lime-deep`.
+Lime is bright and fails contrast as text on white. Only `lime-deep` clears
+WCAG AA (4.96:1); `lime` and `lime-600` are for rules, dots, glows and fills.
+An earlier version of this file wrongly listed `lime-600` as safe for text —
+it measures 2.81:1 and was failing on 9 labels across the site.
 
 Sections have no background of their own. A single fixed `.page-wash` layer
 paints one continuous gradient behind the whole document, which is what makes
@@ -211,6 +214,25 @@ Things that are deliberate and easy to undo by accident:
 equivalent here, and `public/_redirects` repeats them as real 301s for
 Netlify/Cloudflare Pages. Redirect stubs are excluded from the sitemap and
 skipped by the audit.
+
+## Accessibility notes
+
+Verified at 375px across the site: no horizontal overflow anywhere, focus rings
+present on every interactive element, and the skip link expands correctly on
+focus.
+
+Two rules worth not undoing:
+
+- **Only `lime-deep` is safe for text.** `lime-600` measures 2.81:1 on white
+  and fails WCAG AA. It was in use on 9 labels before this was caught.
+- **Form inputs are 16px below the `sm` breakpoint.** iOS Safari zooms the
+  page whenever a focused input is under 16px and does not zoom back out.
+  `text-base sm:text-sm` keeps the desktop proportions without that.
+
+A caution for anyone writing contrast checks against this site: Tailwind v4
+emits alpha-modified colours as `oklab()`, not `rgba()`. Parsing those as RGB
+produces wildly wrong ratios — read only plain `rgb()` values and walk up to
+the nearest opaque ancestor instead.
 
 ## Auditing
 

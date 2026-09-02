@@ -169,7 +169,7 @@ const howToSchema = {
                 <span class="block text-sm font-bold text-ink transition-colors group-hover:text-brand">
                   {s.title}
                 </span>
-                <span class="mt-0.5 block truncate text-[0.72rem] font-semibold uppercase tracking-wider text-lime-600">
+                <span class="mt-0.5 block truncate text-[0.72rem] font-semibold uppercase tracking-wider text-lime-deep">
                   {s.threeWords}
                 </span>
               </span>
@@ -241,7 +241,7 @@ const howToSchema = {
                 >
                   {String(i + 1).padStart(2, '0')}
                 </span>
-                <p class="font-display text-[0.78rem] font-bold uppercase tracking-[0.13em] text-lime-600">
+                <p class="font-display text-[0.78rem] font-bold uppercase tracking-[0.13em] text-lime-deep">
                   {s.threeWords}
                 </p>
               </div>
@@ -306,7 +306,7 @@ const howToSchema = {
                         {n > 0 && ', '}
                         <a
                           href={withBase(`/industries/${slug}`)}
-                          class="font-medium text-brand transition-colors hover:text-lime-600"
+                          class="font-medium text-brand transition-colors hover:text-lime-deep"
                         >{getIndustry(slug).name}</a>
                       </>
                     ))}
@@ -426,7 +426,7 @@ const howToSchema = {
                         href={`#service-${svc.slug}`}
                         class="inline-flex items-center gap-1.5 rounded-full border border-line bg-white/70 px-3.5 py-1.5 text-[0.8rem] font-medium text-ink-soft transition-all duration-300 hover:-translate-y-0.5 hover:border-brand-200 hover:text-brand"
                       >
-                        <span aria-hidden="true" class="text-lime-600">&uarr;</span>
+                        <span aria-hidden="true" class="text-lime-deep">&uarr;</span>
                         {svc.title}
                       </a>
                     </li>
@@ -501,7 +501,7 @@ const howToSchema = {
           </h2>
           <p class="reveal mt-5 text-sm leading-relaxed text-ink-soft" style="--i:2">
             More technical background sits in the
-            <a href={withBase('/knowledge-centre')} class="font-semibold text-brand underline underline-offset-4 hover:text-lime-600">
+            <a href={withBase('/knowledge-centre')} class="font-semibold text-brand underline underline-offset-4 hover:text-lime-deep">
               Knowledge Centre</a>.
           </p>
         </div>

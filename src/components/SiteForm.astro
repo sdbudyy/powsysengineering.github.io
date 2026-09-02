@@ -39,8 +39,11 @@ interface Props {
 
 const { id, endpoint, fields, submitLabel, subject, note, mailTo = site.email } = Astro.props;
 
+/* 16px on small screens is deliberate: iOS Safari zooms the whole page in
+   whenever a focused input has a font-size below 16px, and never zooms back
+   out. Dropping to 14px from `sm` up keeps the desktop proportions. */
 const inputClass =
-  'w-full rounded-lg border border-line bg-white px-4 py-3 text-sm text-ink placeholder:text-ink-muted/70 transition-colors focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20';
+  'w-full rounded-lg border border-line bg-white px-4 py-3 text-base sm:text-sm text-ink placeholder:text-ink-muted/70 transition-colors focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20';
 ---
 
 <form
@@ -59,7 +62,7 @@ const inputClass =
       <div class={f.full || f.type === 'textarea' ? 'sm:col-span-2' : ''}>
         <label for={`${id}-${f.name}`} class="mb-1.5 block text-xs font-semibold text-ink">
           {f.label}
-          {f.required && <span class="text-lime-600" aria-hidden="true"> *</span>}
+          {f.required && <span class="text-lime-deep" aria-hidden="true"> *</span>}
         </label>
 
         {f.type === 'textarea' ? (
@@ -83,7 +86,7 @@ const inputClass =
               type="file"
               accept={f.accept}
               required={f.required}
-              class="w-full cursor-pointer rounded-lg border border-line bg-white px-4 py-2.5 text-sm text-ink-soft file:mr-4 file:cursor-pointer file:rounded-md file:border-0 file:bg-brand-50 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-brand hover:file:bg-brand-100"
+              class="w-full cursor-pointer rounded-lg border border-line bg-white px-4 py-2.5 text-base sm:text-sm text-ink-soft file:mr-4 file:cursor-pointer file:rounded-md file:border-0 file:bg-brand-50 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-brand hover:file:bg-brand-100"
             />
             {f.hint && <p class="mt-1.5 text-xs text-ink-muted">{f.hint}</p>}
           </>

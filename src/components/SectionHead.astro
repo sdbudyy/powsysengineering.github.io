@@ -30,7 +30,7 @@ const { eyebrow, title, lead, linkHref, linkLabel, id } = Astro.props;
   {linkHref && (
     <a
       href={withBase(linkHref)}
-      class="reveal group inline-flex items-center gap-2 text-sm font-semibold text-brand transition-colors hover:text-lime-600"
+      class="reveal group inline-flex items-center gap-2 text-sm font-semibold text-brand transition-colors hover:text-lime-deep"
       style="--i:2"
     >
       <span class="link-draw relative">{linkLabel}</span>
