@@ -90,13 +90,13 @@ const breadcrumbSchema = {
   ====================================================================== -->
   <section class="relative isolate overflow-hidden pt-32 pb-12 lg:pt-40 lg:pb-16">
     <div
-      class="pointer-events-none absolute -top-40 right-[-8%] -z-10 h-[42rem] w-[42rem] rounded-full opacity-70 blur-3xl"
+      class="pointer-events-none absolute -top-40 right-[-8%] -z-10 h-[42rem] w-[42rem] rounded-full opacity-70"
       style="background: radial-gradient(circle, rgba(176,208,56,0.28) 0%, transparent 68%);"
       aria-hidden="true"
     >
     </div>
     <div
-      class="pointer-events-none absolute -left-[12%] top-24 -z-10 h-[34rem] w-[34rem] rounded-full opacity-70 blur-3xl"
+      class="pointer-events-none absolute -left-[12%] top-24 -z-10 h-[34rem] w-[34rem] rounded-full opacity-70"
       style="background: radial-gradient(circle, rgba(26,65,148,0.18) 0%, transparent 70%);"
       aria-hidden="true"
     >
@@ -348,14 +348,14 @@ const breadcrumbSchema = {
         </div>
 
         <div class="lg:col-span-8">
-          <dl class="space-y-3">
+          <div class="space-y-3">
             {page.faqs.map((f, i) => (
               <div class="reveal" style={`--i:${i}`}>
                 <details class="card group overflow-hidden [&[open]]:border-brand-200">
                   <summary class="flex cursor-pointer list-none items-center justify-between gap-6 p-6 text-left [&::-webkit-details-marker]:hidden">
-                    <dt class="font-display text-base font-bold text-ink transition-colors group-hover:text-brand">
+                    <h3 class="font-display text-base font-bold text-ink transition-colors group-hover:text-brand">
                       {f.q}
-                    </dt>
+                    </h3>
                     <span
                       class="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-line text-brand transition-all duration-300 group-open:rotate-45 group-open:border-brand-200 group-open:bg-brand-50"
                       aria-hidden="true"
@@ -365,11 +365,11 @@ const breadcrumbSchema = {
                       </svg>
                     </span>
                   </summary>
-                  <dd class="px-6 pb-6 text-[0.95rem] leading-relaxed text-ink-soft">{f.a}</dd>
+                  <p class="px-6 pb-6 text-[0.95rem] leading-relaxed text-ink-soft">{f.a}</p>
                 </details>
               </div>
             ))}
-          </dl>
+          </div>
         </div>
       </div>
     </div>
@@ -400,7 +400,7 @@ const breadcrumbSchema = {
         style="background: linear-gradient(135deg, #14357B 0%, #1A4194 45%, #2B57B0 100%);"
       >
         <div
-          class="pointer-events-none absolute -right-24 -top-24 h-[26rem] w-[26rem] rounded-full opacity-45 blur-3xl"
+          class="pointer-events-none absolute -right-24 -top-24 h-[26rem] w-[26rem] rounded-full opacity-45"
           style="background: radial-gradient(circle, rgba(176,208,56,0.75) 0%, transparent 65%);"
           aria-hidden="true"
         >
