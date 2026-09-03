@@ -180,10 +180,24 @@
      past the glyphs whatever the font metrics or the clamped font-size, which
      padding alone could not guarantee. The horizontal 260% is what the pan
      animation travels across. */
+  /* Gradient text.
+
+     `background-clip: text` clips the gradient to the glyphs, but the paint is
+     still bounded by the element's own box first. An inline box ends at roughly
+     the baseline, so descenders (y, g, p) hang outside it and get sheared off
+     flat. Enlarging `background-size` does NOT help - the image is clipped to
+     the box no matter how large it is drawn.
+
+     The fix is padding, which is what actually extends the box. Archivo's
+     descender measures 0.188em, so the padding must clear that with room to
+     spare; 0.18em was tried first and left the tail 0.33px short, which still
+     reads as clipped. Inline padding does not affect line-box height, so this
+     costs no layout. Re-measure if the display face ever changes. */
   .grad-text {
     background: linear-gradient(100deg, var(--color-brand) 0%, var(--color-brand-400) 34%, var(--color-lime-600) 68%, var(--color-brand) 100%);
-    background-size: 260% 300%;
+    background-size: 260% 100%;
     background-position: 0% 50%;
+    padding-block: 0.05em 0.3em;
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
