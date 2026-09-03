@@ -48,6 +48,12 @@ export default defineConfig({
     '/services/cbm': '/services/condition-based-maintenance',
   }),
 
+  /* The dev and preview servers take their port from the environment when one
+     is provided, so a harness that assigns a free port is respected. Neither
+     the Astro CLI nor Vite reads PORT by itself, hence the explicit wiring.
+     Falls back to Astro's usual 4321 for a plain `npm run dev`. */
+  server: { port: Number(process.env.PORT) || 4321 },
+
   integrations: [sitemap()],
   vite: {
     plugins: [tailwindcss()],
