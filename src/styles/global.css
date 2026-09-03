@@ -169,19 +169,24 @@
 
   /* Animated gradient text, used sparingly on hero emphasis.
 
-     background-clip:text paints only inside the inline box, and these headings
-     run a line-height tighter than their font-size. Without the padding the
-     box stops at the baseline and descenders get sliced off — the y in
-     "deliberately", the p in "explained" and "people". Vertical padding on an
-     inline element extends the paint area without changing the line box, so
-     this costs nothing in layout. */
+     The vertical background-size is 300%, not 100%, and that is load-bearing.
+     With background-clip:text the gradient is painted into the background
+     positioning area and then clipped to the glyphs — so anything the glyph
+     draws outside that area simply gets no paint. A descender sits below the
+     inline content box, which sliced the tail off the y in "deliberately", the
+     p in "explained" and the p in "people".
+
+     Oversizing vertically and centring means the paint always extends well
+     past the glyphs whatever the font metrics or the clamped font-size, which
+     padding alone could not guarantee. The horizontal 260% is what the pan
+     animation travels across. */
   .grad-text {
     background: linear-gradient(100deg, var(--color-brand) 0%, var(--color-brand-400) 34%, var(--color-lime-600) 68%, var(--color-brand) 100%);
-    background-size: 260% 100%;
+    background-size: 260% 300%;
+    background-position: 0% 50%;
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    padding-block: 0.06em 0.18em;
     animation: grad-pan 9s ease-in-out infinite;
   }
 
