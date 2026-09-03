@@ -205,6 +205,16 @@
     background-size: 260% 100%;
     background-position: 0% 50%;
     padding-block: 0.05em 0.3em;
+
+    /* Headings set letter-spacing: -0.024em, which pulls the punctuation that
+       follows this span flush against it - the measured gap between the `y`
+       cell and the period cell is 0px, while Archivo's `y` overhangs its own
+       advance width by 9.64px at 64px. The tail therefore runs into the period
+       and reads as a sheared descender, which is what it was mistaken for.
+       This restores the tracking at that one boundary. Every heading using this
+       class is followed by a full stop, so it applies uniformly. */
+    margin-inline-end: 0.05em;
+
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
