@@ -51,7 +51,7 @@ const serviceCatalogSchema = {
   url: `${site.url}/services`,
   hasOfferCatalog: {
     '@type': 'OfferCatalog',
-    name: 'Electrical engineering services',
+    name: 'Electrical and instrumentation engineering services',
     itemListElement: services.map((s) => ({
       '@type': 'Offer',
       itemOffered: {
@@ -97,9 +97,9 @@ const breadcrumbSchema = {
 const howToSchema = {
   '@context': 'https://schema.org',
   '@type': 'HowTo',
-  name: 'How PowSys Engineering delivers an electrical engineering project',
+  name: 'How PowSys Engineering delivers an electrical and instrumentation engineering project',
   description:
-    'The five stages PowSys Engineering works through on an electrical engineering project, from defining the requirement to supporting the asset in service.',
+    'The five stages PowSys Engineering works through on an electrical and instrumentation engineering project, from defining the requirement to supporting the asset in service.',
   step: process.map((p, i) => ({
     '@type': 'HowToStep',
     position: i + 1,
@@ -110,8 +110,8 @@ const howToSchema = {
 ---
 
 <BaseLayout
-  title="Electrical Engineering Services Calgary | PowSys Engineering"
-  description="Six electrical engineering service lines from PowSys Engineering, Calgary — design, compliance and verification, project management, condition-based maintenance, data centre and commercial solutions across Alberta, BC and Saskatchewan."
+  title="Electrical & Instrumentation Services Calgary | PowSys"
+  description="Six service lines from PowSys Engineering, Calgary — electrical design, instrumentation and control panel design, BCMI, compliance and verification, project management and condition-based maintenance."
   schema={[serviceCatalogSchema, faqSchema, breadcrumbSchema, howToSchema]}
 >
   <!-- =====================================================================
@@ -143,7 +143,7 @@ const howToSchema = {
       <p class="reveal eyebrow mt-6" style="--i:1">What we do</p>
 
       <h1 class="reveal mt-5 max-w-4xl text-[clamp(2.2rem,5vw,4rem)] leading-[1.05]" style="--i:2">
-        Electrical engineering services, <span class="grad-text">end to end</span>.
+        Electrical and instrumentation engineering, <span class="grad-text">end to end</span>.
       </h1>
 
       <p class="reveal mt-6 max-w-xl text-lg leading-relaxed text-ink-soft" style="--i:3">

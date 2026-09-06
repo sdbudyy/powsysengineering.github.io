@@ -16,7 +16,7 @@ const listSchema = {
   '@type': 'ItemList',
   name: 'Selected PowSys Engineering projects',
   description:
-    'Illustrative electrical engineering case studies delivered by PowSys Engineering across power system studies, renewable generation design and verification work.',
+    'Illustrative electrical and instrumentation engineering case studies delivered by PowSys Engineering across power system studies, renewable generation design and verification work.',
   itemListElement: projects.map((p, i) => ({
     '@type': 'ListItem',
     position: i + 1,
@@ -54,7 +54,7 @@ const breadcrumbSchema = {
 
 <BaseLayout
   title="Projects & Case Studies | PowSys Engineering"
-  description="Selected electrical engineering case studies from PowSys Engineering — a rectifier transformer harmonic study in Louisiana, a 1.115 MWh solar PV design, and a switchgear upgrade with full ETAP model verification in Lloydminster, Alberta."
+  description="Selected electrical and instrumentation engineering case studies from PowSys Engineering — a rectifier transformer harmonic study in Louisiana, a 1.115 MWh solar PV design, and a switchgear upgrade with full ETAP model verification in Lloydminster, Alberta."
   schema={[listSchema, faqSchema, breadcrumbSchema]}
 >
   <!-- =====================================================================

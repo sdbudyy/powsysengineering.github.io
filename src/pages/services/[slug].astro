@@ -81,8 +81,8 @@ const breadcrumbSchema = {
 ---
 
 <BaseLayout
-  title={`${service.title} Services | PowSys Engineering`}
-  description={page.intro.slice(0, 300)}
+  title={page.seoTitle ?? `${service.title} Services | PowSys Engineering`}
+  description={page.seoDescription ?? page.intro.slice(0, 300)}
   schema={[serviceSchema, faqSchema, breadcrumbSchema]}
 >
   <!-- =====================================================================

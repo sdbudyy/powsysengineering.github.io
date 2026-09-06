@@ -37,7 +37,7 @@ const faqSchema = {
 const servicesSchema = {
   '@context': 'https://schema.org',
   '@type': 'ItemList',
-  name: 'Electrical engineering services',
+  name: 'Electrical and instrumentation engineering services',
   itemListElement: services.map((s, i) => ({
     '@type': 'ListItem',
     position: i + 1,
@@ -54,8 +54,8 @@ const servicesSchema = {
 ---
 
 <BaseLayout
-  title="Electrical Engineering Consultants Calgary | PowSys Engineering"
-  description="PowSys Engineering is a woman-owned electrical engineering firm in Calgary, Alberta. Power system studies, arc flash analysis, compliance verification, project management and condition-based maintenance for oil and gas, mining, renewable energy and data centres."
+  title="Electrical & Instrumentation Engineering Calgary | PowSys"
+  description="PowSys Engineering — woman-owned electrical and instrumentation engineering in Calgary, Alberta. Instrumentation and control panel design, BCMI, power system studies and arc flash analysis."
   schema={[faqSchema, servicesSchema]}
 >
   <Hero />

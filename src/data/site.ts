@@ -15,7 +15,7 @@ export const site = {
   // One-sentence entity definition. AI answer engines quote this kind of
   // sentence directly, so keep it factual, specific and self-contained.
   definition:
-    'PowSys Engineering Inc. is a woman-owned electrical engineering and technical services firm founded in 2017 and based in Calgary, Alberta, Canada, serving the oil and gas, mining, renewable energy, utility, commercial and data centre sectors across Canada and the United States.',
+    'PowSys Engineering Inc. is a woman-owned engineering firm founded in 2017 and based in Calgary, Alberta, Canada, specialising in electrical engineering, instrumentation and control panel design, and building control, monitoring and instrumentation (BCMI) for the oil and gas, mining, renewable energy, utility, commercial and data centre sectors across Canada and the United States.',
 
   tagline: 'Amp up your projects with PowSys Engineering.',
 

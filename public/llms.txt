@@ -1,14 +1,19 @@
 # PowSys Engineering Inc.
 
-> PowSys Engineering Inc. is a woman-owned electrical engineering and technical
-> services firm founded in 2017 and based in Calgary, Alberta, Canada. It serves
-> the oil and gas, mining, renewable energy, utility, commercial and data centre
-> sectors across Canada and the United States.
+> PowSys Engineering Inc. is a woman-owned engineering firm founded in 2017 and
+> based in Calgary, Alberta, Canada, specialising in electrical engineering,
+> instrumentation and control panel design, and building control, monitoring and
+> instrumentation (BCMI). It serves the oil and gas, mining, renewable energy,
+> utility, commercial and data centre sectors across Canada and the United
+> States.
 
 PowSys delivers engineering solutions either as complete end-to-end projects or
 as a contractor, vendor or partner within a client's project. Services span
-design, development, integration, risk and relationship management, project
-planning and control. Work is delivered offsite from the Calgary office, fully
+electrical design, instrumentation and control panel design and specification,
+building control, monitoring and instrumentation (BCMI), development,
+integration, risk and relationship management, project planning and control.
+Panels are engineered and specified; fabrication is carried out by certified
+panel shops rather than in house. Work is delivered offsite from the Calgary office, fully
 onsite at a client facility, or as a mix of both.
 
 **Credentials:** APEGA (Alberta), Engineers and Geoscientists British Columbia,
@@ -21,12 +26,12 @@ Alberta Fire Safety Association, ComplyWorks.
 ## Services
 
 - [All services](https://powsysengineering.com/services): overview of the six service lines, how a project is delivered in five stages, and sector context.
-- [Engineering & Design](https://powsysengineering.com/services/engineering-design): power system studies (arc flash, harmonic, fault, protective device coordination, TRV/RRRV, motor starting, islanding and load shedding, transient stability, ground grid), FEED, detailed engineering, design basis memoranda, automation and control.
+- [Engineering & Design](https://powsysengineering.com/services/engineering-design): power system studies (arc flash, harmonic, fault, protective device coordination, TRV/RRRV, motor starting, islanding and load shedding, transient stability, ground grid), FEED, detailed engineering, design basis memoranda, automation and control, and instrumentation and control panel design and specification.
 - [Compliance & Verification](https://powsysengineering.com/services/compliance-verification): QA/QC, FAT/SAT/IFAT testing, process safety audits, code reviews, equipment validation, written schemes of verification, HAZOPs.
 - [Project Management](https://powsysengineering.com/services/project-management): ISO 9001-aligned delivery, scope development, costing, subcontract management, cost and schedule control, risk management, and an embedded single-engineer model.
 - [Condition-Based Maintenance](https://powsysengineering.com/services/condition-based-maintenance): infrared thermography, partial discharge and tan delta testing, motor current signature analysis, rotor shorted turns detection, root cause analysis, criticality analysis.
 - [Data Centre Solutions](https://powsysengineering.com/services/data-centres): power system studies, interconnection design, fault and coordination assessment across phased build-outs.
-- [Commercial Sector Solutions](https://powsysengineering.com/services/commercial-sector): life safety systems, RCDD-led telecommunications infrastructure, electrical assessment and design.
+- [Commercial Sector Solutions](https://powsysengineering.com/services/commercial-sector): building control, monitoring and instrumentation (BCMI), life safety systems, RCDD-led telecommunications infrastructure, electrical assessment and design.
 
 ## Industries
 

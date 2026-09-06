@@ -29,7 +29,7 @@ export const industryPages: Record<string, IndustryPage> = {
   'oil-and-gas': {
     tagline: 'Hazardous areas, ageing assets and non-negotiable compliance.',
     intro:
-      'PowSys Engineering provides electrical engineering services to oil and gas operators across Canada and the United States, covering assessment, design, installation, commissioning, maintenance, repair and inspection — from a single field device through to a complete electrotechnical system.',
+      'PowSys Engineering provides electrical and instrumentation engineering services to oil and gas operators across Canada and the United States, covering assessment, design, installation, commissioning, maintenance, repair and inspection — from a single field device through to a complete electrotechnical system.',
     challenge:
       'Oil and gas plants combine classified hazardous areas, high-consequence failure modes and equipment that frequently outlives its documentation. The engineering is rarely the hard part; proving the installation is compliant, and keeping that proof current through years of modification, usually is.',
     capabilityGroups: [
@@ -40,7 +40,7 @@ export const industryPages: Record<string, IndustryPage> = {
           'Medium and high voltage design',
           'Power station design',
           'Facility and station engineering',
-          'Control panel design',
+          'Instrumentation and control panel design',
           'Electrical power equipment',
         ],
       },
@@ -154,7 +154,7 @@ export const industryPages: Record<string, IndustryPage> = {
   mining: {
     tagline: 'Safety, rapid response and first-time-right solutions.',
     intro:
-      'PowSys Engineering delivers and manages electrical engineering for mining operations — covering operating and new systems, and including compliance management, reliability engineering and repair across federal, provincial, industry and site requirements.',
+      'PowSys Engineering delivers and manages electrical and instrumentation engineering for mining operations — covering operating and new systems, and including compliance management, reliability engineering and repair across federal, provincial, industry and site requirements.',
     challenge:
       'Mining sites punish downtime harder than most sectors and give less warning before it happens. Work windows are short, shutdowns are tightly sequenced, and a fix that is not right the first time can cost more in lost production than the repair itself ever did.',
     capabilityGroups: [

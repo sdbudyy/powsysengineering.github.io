@@ -17,11 +17,11 @@ export const services = [
       'Detailed engineering and design basis memoranda',
       'Arc-flash, harmonic and fault analysis studies',
       'Protective device coordination and ground grid design',
-      'Automation, control and instrumentation design',
+      'Instrumentation and control panel design and specification',
     ],
     detailLabel: 'Full scope',
     detail:
-      'Feasibility studies · Ground grid system design · Protective device coordination · Arc-flash analysis · Fault analysis · Harmonic analysis · Transmission line switching · TRV/RRRV studies · Large motor starting · Grid islanding and load shedding · Transient stability · Cogeneration system design · Automation and control systems · FEED and detailed design · Instrumentation and control · Asset reliability engineering',
+      'Feasibility studies · Ground grid system design · Protective device coordination · Arc-flash analysis · Fault analysis · Harmonic analysis · Transmission line switching · TRV/RRRV studies · Large motor starting · Grid islanding and load shedding · Transient stability · Cogeneration system design · Automation and control systems · FEED and detailed design · Instrumentation and control panel design and specification · Asset reliability engineering',
   },
   {
     slug: 'compliance-verification',
@@ -94,9 +94,10 @@ export const services = [
     slug: 'commercial-sector',
     title: 'Commercial Sector Solutions',
     summary:
-      'End-to-end life safety, telecommunications and electrical systems for regulated commercial environments.',
+      'Building control, monitoring and instrumentation (BCMI), life safety and telecommunications systems for regulated commercial environments.',
     threeWords: 'Assess. Design. Implement.',
     points: [
+      'Building control, monitoring and instrumentation (BCMI)',
       'Life safety systems',
       'Telecommunications infrastructure (RCDD-led)',
       'Electrical system assessment and design',
@@ -104,7 +105,7 @@ export const services = [
     ],
     detailLabel: 'Full scope',
     detail:
-      'Life safety systems · Telecommunications infrastructure led by RCDD-certified designers · Electrical system assessment, design and implementation · Targeted upgrades through to fully integrated infrastructure · Compliant, resilient and future-ready outcomes in safety-critical, highly regulated environments',
+      'Building control, monitoring and instrumentation (BCMI) · Life safety systems · Telecommunications infrastructure led by RCDD-certified designers · Electrical system assessment, design and implementation · Targeted upgrades through to fully integrated infrastructure · Compliant, resilient and future-ready outcomes in safety-critical, highly regulated environments',
   },
 ];
 
@@ -227,7 +228,7 @@ export const tools = [
 export const faqs = [
   {
     q: 'What does PowSys Engineering do?',
-    a: 'PowSys Engineering is a Calgary-based electrical engineering firm providing engineering and design, compliance and verification, project management, and condition-based maintenance services. The company works across the oil and gas, mining, renewable energy, utility, commercial and data centre sectors, delivering projects end to end or joining a client project as a contractor, vendor or partner.',
+    a: 'PowSys Engineering is a Calgary-based electrical and instrumentation engineering firm providing engineering and design, instrumentation and control panel design, building control, monitoring and instrumentation (BCMI), compliance and verification, project management, and condition-based maintenance services. The company works across the oil and gas, mining, renewable energy, utility, commercial and data centre sectors, delivering projects end to end or joining a client project as a contractor, vendor or partner.',
   },
   {
     q: 'What is an arc flash study and when is one required?',
@@ -295,7 +296,7 @@ export const process = [
 
 export const serviceFaqs = [
   {
-    q: 'What electrical engineering services does PowSys Engineering provide?',
+    q: 'What electrical and instrumentation engineering services does PowSys Engineering provide?',
     a: 'PowSys Engineering provides six service lines: engineering and design (including FEED, detailed design and power system studies), compliance and verification, project management, condition-based maintenance, data centre solutions, and commercial sector solutions covering life safety and telecommunications infrastructure. Services are delivered as complete end-to-end projects or as a contractor, vendor or partner within a client project.',
   },
   {

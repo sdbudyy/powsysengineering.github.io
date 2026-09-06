@@ -20,6 +20,13 @@ export interface ServiceGroup {
 export interface ServicePage {
   /** Short line under the page title. */
   tagline: string;
+  /** Overrides the auto-built `<title>`, which is just "<name> Services".
+      Set this where the page should rank for a term the service name does not
+      itself contain. Keep it under about 60 characters. */
+  seoTitle?: string;
+  /** Overrides the meta description, which otherwise takes the first 300
+      characters of `intro` and can cut mid-sentence. Aim for ~155 characters. */
+  seoDescription?: string;
   /** Opening statement, written to stand alone if quoted by an answer engine. */
   intro: string;
   /** Why this work is harder than it looks — the reason to hire for it. */
@@ -33,8 +40,11 @@ export interface ServicePage {
 export const servicePages: Record<string, ServicePage> = {
   'engineering-design': {
     tagline: 'Studies, front-end design and detailed engineering.',
+    seoTitle: 'Electrical, Instrumentation & Panel Design | PowSys',
+    seoDescription:
+      'Electrical and instrumentation engineering design in Calgary — power system studies, FEED, detailed design, and instrumentation and control panel design and specification.',
     intro:
-      'PowSys Engineering provides electrical engineering and design services covering power system studies, front-end engineering design and detailed design for industrial facilities across Canada and the United States — turning an industrial concept into drawings, specifications and calculations that can be built from.',
+      'PowSys Engineering provides electrical and instrumentation engineering and design services covering power system studies, instrumentation and control panel design, front-end engineering design and detailed design for industrial facilities across Canada and the United States — turning an industrial concept into drawings, specifications and calculations that can be built from.',
     challenge:
       'A design is only as good as the model behind it, and models drift away from the plant the moment it is commissioned. Most of the corrective work we are asked to do traces back to a study run against a system that no longer existed — utility fault levels never confirmed, relay settings taken from drawings rather than devices, motor contributions quietly omitted.',
     groups: [
@@ -177,7 +187,7 @@ export const servicePages: Record<string, ServicePage> = {
   'project-management': {
     tagline: 'Delivery from inception through to commissioning.',
     intro:
-      'PowSys Engineering provides electrical engineering project management — delivering an entire project or a specified element of one, from inception through detailed design, procurement and construction to final commissioning, staff training and operational handover.',
+      'PowSys Engineering provides electrical and instrumentation engineering project management — delivering an entire project or a specified element of one, from inception through detailed design, procurement and construction to final commissioning, staff training and operational handover.',
     challenge:
       'What stalls industrial projects is rarely the engineering. It is a decision nobody owns, a vendor question circulating for six weeks, or a scope disagreement that predates the current project manager. None of that is solved by producing another deliverable.',
     groups: [
@@ -305,7 +315,7 @@ export const servicePages: Record<string, ServicePage> = {
   'data-centres': {
     tagline: 'Power engineering for environments where uptime is the product.',
     intro:
-      'PowSys Engineering provides electrical engineering services for data centres — power system studies, interconnection design, and design and delivery support for high-density, mission-critical environments where uptime and precision are non-negotiable.',
+      'PowSys Engineering provides electrical and instrumentation engineering services for data centres — power system studies, interconnection design, and design and delivery support for high-density, mission-critical environments where uptime and precision are non-negotiable.',
     challenge:
       'Discussion of rising rack density goes straight to cooling, but the electrical distribution system usually reaches its limits first and less visibly. Fault levels rise, coordination margins compress, harmonic profiles shift, and available incident energy changes — invalidating arc flash labelling that was correct at first fit-out.',
     groups: [
@@ -361,9 +371,12 @@ export const servicePages: Record<string, ServicePage> = {
   },
 
   'commercial-sector': {
-    tagline: 'Life safety, telecommunications and electrical systems.',
+    tagline: 'Building control and monitoring, life safety and telecommunications.',
+    seoTitle: 'Building Control, Monitoring & Instrumentation | PowSys',
+    seoDescription:
+      'Building control, monitoring and instrumentation (BCMI), life safety systems and RCDD-led telecommunications design for regulated commercial buildings in Calgary, Alberta.',
     intro:
-      'PowSys Engineering provides electrical engineering for the commercial sector — life safety systems, telecommunications infrastructure led by RCDD-certified designers, and electrical system assessment and design for safety-critical, highly regulated buildings.',
+      'PowSys Engineering provides electrical and instrumentation engineering for the commercial sector — building control, monitoring and instrumentation (BCMI), life safety systems, telecommunications infrastructure led by RCDD-certified designers, and electrical system assessment and design for safety-critical, highly regulated buildings.',
     challenge:
       'Commercial buildings accumulate systems from different eras and different contractors, each commissioned in isolation. The failure mode is rarely a single faulty system; it is two compliant systems that were never proven to work together.',
     groups: [
