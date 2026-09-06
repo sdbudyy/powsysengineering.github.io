@@ -69,7 +69,7 @@ const listSchema = {
       <p class="reveal eyebrow mt-6" style="--i:1">Industry focus</p>
 
       <h1 class="reveal mt-5 max-w-4xl text-[clamp(2.2rem,5vw,4rem)] leading-[1.05]" style="--i:2">
-        Four sectors. <span class="grad-text">One standard</span>.
+        Five sectors. <span class="grad-text">One standard</span>.
       </h1>
 
       <p class="reveal mt-6 max-w-2xl text-lg leading-relaxed text-ink-soft" style="--i:3">
@@ -95,7 +95,7 @@ const listSchema = {
             is why we scope by consequence rather than by sector name.
           </p>
           <p class="mt-4 leading-relaxed text-ink-soft">
-            The through-line is that all four sectors run high-consequence
+            The through-line is that all five sectors run high-consequence
             electrical infrastructure under external scrutiny — a regulator, an
             insurer, an auditor or a customer with a service level agreement.
             Experience transfers because that scrutiny is the hard part, not the
@@ -145,7 +145,14 @@ const listSchema = {
           const hero = industryHeroes[ind.slug];
           const page = industryPages[ind.slug];
           return (
-            <li class="reveal" style={`--i:${i % 2}`}>
+            <li
+              class:list={[
+                'reveal',
+                /* odd count: last card spans both columns rather than leaving a gap */
+                i === industries.length - 1 && industries.length % 2 === 1 && 'lg:col-span-2',
+              ]}
+              style={`--i:${i % 2}`}
+            >
               <a
                 href={withBase(`/industries/${ind.slug}`)}
                 class="group relative block aspect-[16/11] overflow-hidden rounded-[var(--radius-card)] ring-1 ring-brand-900/10 sm:aspect-[16/10]"

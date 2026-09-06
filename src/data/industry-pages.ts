@@ -17,6 +17,13 @@ export interface CapabilityGroup {
 export interface IndustryPage {
   /** Short line under the page title. */
   tagline: string;
+  /** Overrides the auto-built `<title>`, which is just "<name> Engineering
+      Services". Set this where the sector is searched for by another name.
+      Keep it under about 60 characters. */
+  seoTitle?: string;
+  /** Overrides the meta description, which otherwise takes the first 300
+      characters of `intro` and can cut mid-sentence. Aim for ~155 characters. */
+  seoDescription?: string;
   /** Opening statement. Written to stand alone if quoted by an answer engine. */
   intro: string;
   /** What makes this sector hard — the "why us" context. */
@@ -266,6 +273,75 @@ export const industryPages: Record<string, IndustryPage> = {
       {
         q: 'Does PowSys work on substation automation?',
         a: 'Yes. PowSys Engineering delivers substation automation alongside protection and control, automation and control systems design, and the transmission line switching, TRV/RRRV and stability studies that inform how those systems are configured.',
+      },
+    ],
+  },
+  'commercial-buildings': {
+    tagline: 'Systems from different eras, expected to work as one.',
+    seoTitle: 'Commercial Building Engineering & BCMI | PowSys',
+    seoDescription:
+      'Engineering for commercial, institutional and light-industrial buildings in Calgary — BCMI, life safety, RCDD-led telecommunications and electrical distribution.',
+    intro:
+      'PowSys Engineering serves commercial, institutional and light-industrial building operators across Canada and the United States, covering building control, monitoring and instrumentation (BCMI), life safety systems, telecommunications infrastructure and the electrical distribution underneath all of it.',
+    challenge:
+      'A building is rarely designed once. It is designed, extended, re-tenanted and re-commissioned, each time by a different party working to the standard of its day. The result is a set of individually compliant systems with no single party able to say how they behave together, and no measurement in place to find out. Proving the whole works is a different exercise from proving each part does.',
+    capabilityGroups: [
+      {
+        title: 'Building control, monitoring & instrumentation',
+        items: [
+          'Building control and automation system design',
+          'Control narratives and sequences of operation',
+          'Instrumentation selection and specification',
+          'Metering, sub-metering and energy monitoring',
+          'Power quality monitoring',
+          'Trending, alarming and reporting requirements',
+        ],
+      },
+      {
+        title: 'Life safety',
+        items: [
+          'Life safety systems',
+          'Life safety system interfaces and integration',
+          'Fire alarm and emergency power interface coordination',
+        ],
+      },
+      {
+        title: 'Electrical distribution',
+        items: [
+          'Electrical system assessment, design and implementation',
+          'Arc flash analysis for building distribution',
+          'Protective device coordination',
+          'Targeted upgrades through to fully integrated infrastructure',
+        ],
+      },
+      {
+        title: 'Telecommunications',
+        items: [
+          'Telecommunications infrastructure led by RCDD-certified designers',
+          'Network infrastructure supporting building monitoring',
+        ],
+      },
+      {
+        title: 'Commissioning & verification',
+        items: [
+          'Commissioning support',
+          'Functional verification against the control narrative',
+          'Post-occupancy verification of installed systems',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        q: 'What kinds of buildings does PowSys Engineering work on?',
+        a: 'Commercial, institutional and light-industrial facilities — the buildings where control, monitoring, life safety and electrical distribution all have to coexist and be demonstrable to an authority having jurisdiction. The work is engineering, assessment and verification rather than installation.',
+      },
+      {
+        q: 'Can an existing building be brought under proper monitoring without a full retrofit?',
+        a: 'Usually, but the value depends entirely on where the measurement points go. A staged approach that starts with main incomers and the largest loads answers most operational questions at a fraction of the cost of full sub-metering. The mistake is to instrument everything uniformly, which is expensive and still leaves the important questions unanswered.',
+      },
+      {
+        q: 'Who is responsible when two compliant building systems do not work together?',
+        a: 'In practice, nobody, unless the interface was explicitly in someone’s scope from the outset. That is why interface schedules and a single control narrative matter more in buildings than in plants: the systems arrive from separate contracts, and the gap between them is where the failure sits. Establishing that ownership at design stage is cheaper than arbitrating it after handover.',
       },
     ],
   },

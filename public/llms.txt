@@ -25,10 +25,12 @@ Alberta Fire Safety Association, ComplyWorks.
 
 ## Services
 
-- [All services](https://powsysengineering.com/services): overview of the six service lines, how a project is delivered in five stages, and sector context.
+- [All services](https://powsysengineering.com/services): overview of the eight service lines, how a project is delivered in five stages, and sector context.
 - [Engineering & Design](https://powsysengineering.com/services/engineering-design): power system studies (arc flash, harmonic, fault, protective device coordination, TRV/RRRV, motor starting, islanding and load shedding, transient stability, ground grid), FEED, detailed engineering, design basis memoranda, automation and control, and instrumentation and control panel design and specification.
 - [Compliance & Verification](https://powsysengineering.com/services/compliance-verification): QA/QC, FAT/SAT/IFAT testing, process safety audits, code reviews, equipment validation, written schemes of verification, HAZOPs.
 - [Project Management](https://powsysengineering.com/services/project-management): ISO 9001-aligned delivery, scope development, costing, subcontract management, cost and schedule control, risk management, and an embedded single-engineer model.
+- [Instrumentation & Control Panel Design](https://powsysengineering.com/services/control-panel-design): control and instrumentation panel design and specification — I/O schedules, loop drawings, panel layout, enclosure and hazardous area rating, component specification, factory acceptance test procedures. Panels are engineered and specified; fabrication is carried out by certified panel shops.
+- [Building Control, Monitoring & Instrumentation (BCMI)](https://powsysengineering.com/services/bcmi): building control and automation design, control narratives, instrumentation selection, metering and energy monitoring, power quality monitoring, life safety interfaces, commissioning and functional verification.
 - [Condition-Based Maintenance](https://powsysengineering.com/services/condition-based-maintenance): infrared thermography, partial discharge and tan delta testing, motor current signature analysis, rotor shorted turns detection, root cause analysis, criticality analysis.
 - [Data Centre Solutions](https://powsysengineering.com/services/data-centres): power system studies, interconnection design, fault and coordination assessment across phased build-outs.
 - [Commercial Sector Solutions](https://powsysengineering.com/services/commercial-sector): building control, monitoring and instrumentation (BCMI), life safety systems, RCDD-led telecommunications infrastructure, electrical assessment and design.
@@ -40,6 +42,7 @@ Alberta Fire Safety Association, ComplyWorks.
 - [Renewable Energy](https://powsysengineering.com/industries/renewable-energy): solar PV, wind, hydro, landfill gas, hybrid interconnection, full life-cycle power system management.
 - [Mining](https://powsysengineering.com/industries/mining): shutdowns and turnarounds, refurbishment, site audits, reliability and economic studies.
 - [Utilities & Power](https://powsysengineering.com/industries/utilities): substation automation, protection and control, transmission line switching studies.
+- [Commercial Buildings](https://powsysengineering.com/industries/commercial-buildings): building control, monitoring and instrumentation (BCMI), life safety systems, RCDD-led telecommunications, electrical distribution assessment and design for commercial, institutional and light-industrial facilities.
 
 ## Knowledge Centre
 

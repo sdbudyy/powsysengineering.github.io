@@ -14,6 +14,7 @@ import imgMining from '../assets/images/loader-900x600.jpg';
 import imgOil from '../assets/images/oil-refinery-900x600.jpg';
 import imgPower from '../assets/images/power-line-900x600.jpg';
 import imgStudy from '../assets/images/engineering-study.jpg';
+import imgBuildings from '../assets/images/clean-room-900x600.jpg';
 
 const latestArticles = sortedEntries.slice(0, 4);
 
@@ -22,6 +23,7 @@ const industryImages = {
   'renewable-energy': imgSolar,
   mining: imgMining,
   utilities: imgPower,
+  'commercial-buildings': imgBuildings,
 };
 
 const faqSchema = {
@@ -126,7 +128,7 @@ const servicesSchema = {
       <SectionHead
         id="services-heading"
         eyebrow="What we do"
-        title="Six capabilities, one accountable team."
+        title="Eight capabilities, one accountable team."
         lead="Open any capability to see its full scope of work."
         linkHref="/services"
         linkLabel="All services"
@@ -222,7 +224,14 @@ const servicesSchema = {
 
       <div class="mt-14 grid gap-5 lg:grid-cols-2">
         {industries.map((ind, i) => (
-          <article class="reveal card group overflow-hidden" style={`--i:${i % 2}`}>
+          <article
+            class:list={[
+              'reveal card group overflow-hidden',
+              /* odd count: last card spans both columns rather than leaving a gap */
+              i === industries.length - 1 && industries.length % 2 === 1 && 'lg:col-span-2',
+            ]}
+            style={`--i:${i % 2}`}
+          >
             <div class="relative h-52 overflow-hidden">
               <Image
                 src={industryImages[ind.slug as keyof typeof industryImages]}

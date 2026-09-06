@@ -5,6 +5,7 @@ import imgOil from '../assets/images/oil-refinery-900x600.jpg';
 import imgSolar from '../assets/images/renewables.jpg';
 import imgMining from '../assets/images/mining.jpg';
 import imgPower from '../assets/images/power-plant.jpg';
+import imgBuildings from '../assets/images/engineer-female-900x600.jpg';
 
 export const industryHeroes: Record<string, { src: ImageMetadata; alt: string }> = {
   'oil-and-gas': {
@@ -22,5 +23,9 @@ export const industryHeroes: Record<string, { src: ImageMetadata; alt: string }>
   utilities: {
     src: imgPower,
     alt: 'Electrical substation with transformers, insulator stacks and switchgear',
+  },
+  'commercial-buildings': {
+    src: imgBuildings,
+    alt: 'Engineer in a hard hat and high-visibility vest carrying out a site walkdown',
   },
 };

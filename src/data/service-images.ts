@@ -7,6 +7,8 @@ import imgPm from '../assets/images/engineering-study.jpg';
 import imgCbm from '../assets/images/engineer-male-900x600.jpg';
 import imgData from '../assets/images/datacenter-900x600.jpg';
 import imgCommercial from '../assets/images/clean-room-900x600.jpg';
+import imgPanel from '../assets/images/distributor-design-900x600.jpg';
+import imgBcmi from '../assets/images/engineering-study.jpg';
 
 export const serviceMedia: Record<string, { src: ImageMetadata; alt: string }> = {
   'engineering-design': {
@@ -32,5 +34,13 @@ export const serviceMedia: Record<string, { src: ImageMetadata; alt: string }> =
   'commercial-sector': {
     src: imgCommercial,
     alt: 'Interior of a commercial clean room with sealed wall panels and ceiling services',
+  },
+  'control-panel-design': {
+    src: imgPanel,
+    alt: 'Close-up of an electrical schematic drawing with a pencil resting on it',
+  },
+  bcmi: {
+    src: imgBcmi,
+    alt: 'Two engineers reviewing a technical site drawing together',
   },
 };

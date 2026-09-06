@@ -6,40 +6,10 @@ import { site } from '../../data/site';
 import { services, industries, process, serviceFaqs, tools } from '../../data/content';
 import { serviceLinks, industryServices, getIndustry, getService } from '../../data/relations';
 
-import imgDesign from '../../assets/images/distributor-design-900x600.jpg';
-import imgCompliance from '../../assets/images/engineer-female-900x600.jpg';
-import imgPm from '../../assets/images/engineering-study.jpg';
-import imgCbm from '../../assets/images/engineer-male-900x600.jpg';
-import imgData from '../../assets/images/datacenter-900x600.jpg';
-import imgCommercial from '../../assets/images/clean-room-900x600.jpg';
-
-/* Banner per service. Alt text describes what is actually in each photograph. */
-const serviceMedia: Record<string, { src: ImageMetadata; alt: string }> = {
-  'engineering-design': {
-    src: imgDesign,
-    alt: 'Close-up of an electrical schematic drawing with a pencil resting on it',
-  },
-  'compliance-verification': {
-    src: imgCompliance,
-    alt: 'Engineer in a hard hat and high-visibility vest on a site walkdown',
-  },
-  'project-management': {
-    src: imgPm,
-    alt: 'Two engineers reviewing a technical site drawing together',
-  },
-  'condition-based-maintenance': {
-    src: imgCbm,
-    alt: 'Technician in PowSys high-visibility PPE inspecting industrial machinery',
-  },
-  'data-centres': {
-    src: imgData,
-    alt: 'Rows of data centre server racks with structured network cabling',
-  },
-  'commercial-sector': {
-    src: imgCommercial,
-    alt: 'Interior of a commercial clean room with sealed wall panels and ceiling services',
-  },
-};
+/* Banner per service comes from the shared map so the hub, the service pages
+   and any future surface cannot drift apart. This file previously kept its
+   own copy, which meant a new service rendered everywhere except here. */
+import { serviceMedia } from '../../data/service-images';
 
 /* --- Structured data ----------------------------------------------------- */
 
@@ -111,7 +81,7 @@ const howToSchema = {
 
 <BaseLayout
   title="Electrical & Instrumentation Services Calgary | PowSys"
-  description="Six service lines from PowSys Engineering, Calgary — electrical design, instrumentation and control panel design, BCMI, compliance and verification, project management and condition-based maintenance."
+  description="Eight service lines from PowSys Engineering, Calgary — electrical design, instrumentation and control panel design, BCMI, compliance and verification, project management and condition-based maintenance."
   schema={[serviceCatalogSchema, faqSchema, breadcrumbSchema, howToSchema]}
 >
   <!-- =====================================================================
@@ -147,7 +117,7 @@ const howToSchema = {
       </h1>
 
       <p class="reveal mt-6 max-w-xl text-lg leading-relaxed text-ink-soft" style="--i:3">
-        Six service lines covering the full life of an electrical asset. Take all
+        Eight service lines covering the full life of an electrical asset. Take all
         of it, or the part you are missing.
       </p>
 

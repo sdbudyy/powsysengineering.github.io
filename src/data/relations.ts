@@ -48,13 +48,23 @@ export const serviceLinks: Record<string, ServiceLinks> = {
     projects: ['switchgear-upgrade-etap-verification'],
   },
   'data-centres': {
-    industries: ['utilities'],
+    industries: ['utilities', 'commercial-buildings'],
     knowledge: ['data-centre-power-density', 'why-etap-models-drift'],
     projects: [],
   },
   'commercial-sector': {
-    industries: [],
+    industries: ['commercial-buildings'],
     knowledge: ['arc-flash-studies-csa-z462', 'thermography-what-it-cannot-see'],
+    projects: [],
+  },
+  'control-panel-design': {
+    industries: ['oil-and-gas', 'mining', 'commercial-buildings'],
+    knowledge: ['hazardous-area-verification-dossier', 'arc-flash-studies-csa-z462'],
+    projects: ['switchgear-upgrade-etap-verification'],
+  },
+  bcmi: {
+    industries: ['commercial-buildings'],
+    knowledge: ['thermography-what-it-cannot-see', 'data-centre-power-density'],
     projects: [],
   },
 };
@@ -63,6 +73,7 @@ export const serviceLinks: Record<string, ServiceLinks> = {
 export const industryServices: Record<string, string[]> = {
   'oil-and-gas': [
     'engineering-design',
+    'control-panel-design',
     'compliance-verification',
     'condition-based-maintenance',
     'project-management',
@@ -70,11 +81,18 @@ export const industryServices: Record<string, string[]> = {
   'renewable-energy': ['engineering-design', 'project-management'],
   mining: [
     'engineering-design',
+    'control-panel-design',
     'compliance-verification',
     'condition-based-maintenance',
     'project-management',
   ],
   utilities: ['engineering-design', 'condition-based-maintenance', 'data-centres'],
+  'commercial-buildings': [
+    'bcmi',
+    'control-panel-design',
+    'commercial-sector',
+    'compliance-verification',
+  ],
 };
 
 /* ---------------------------------------------------------------------------

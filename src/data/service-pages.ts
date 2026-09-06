@@ -40,9 +40,9 @@ export interface ServicePage {
 export const servicePages: Record<string, ServicePage> = {
   'engineering-design': {
     tagline: 'Studies, front-end design and detailed engineering.',
-    seoTitle: 'Electrical, Instrumentation & Panel Design | PowSys',
+    seoTitle: 'Power System Studies & Detailed Design | PowSys',
     seoDescription:
-      'Electrical and instrumentation engineering design in Calgary — power system studies, FEED, detailed design, and instrumentation and control panel design and specification.',
+      'Electrical and instrumentation design in Calgary — arc flash, coordination, fault and harmonic studies, FEED, detailed engineering and design basis memoranda.',
     intro:
       'PowSys Engineering provides electrical and instrumentation engineering and design services covering power system studies, instrumentation and control panel design, front-end engineering design and detailed design for industrial facilities across Canada and the United States — turning an industrial concept into drawings, specifications and calculations that can be built from.',
     challenge:
@@ -371,10 +371,10 @@ export const servicePages: Record<string, ServicePage> = {
   },
 
   'commercial-sector': {
-    tagline: 'Building control and monitoring, life safety and telecommunications.',
-    seoTitle: 'Building Control, Monitoring & Instrumentation | PowSys',
+    tagline: 'Life safety, telecommunications and electrical systems.',
+    seoTitle: 'Life Safety & Telecommunications Design | PowSys',
     seoDescription:
-      'Building control, monitoring and instrumentation (BCMI), life safety systems and RCDD-led telecommunications design for regulated commercial buildings in Calgary, Alberta.',
+      'Life safety systems, RCDD-led telecommunications infrastructure and electrical assessment and design for regulated commercial buildings in Calgary, Alberta.',
     intro:
       'PowSys Engineering provides electrical and instrumentation engineering for the commercial sector — building control, monitoring and instrumentation (BCMI), life safety systems, telecommunications infrastructure led by RCDD-certified designers, and electrical system assessment and design for safety-critical, highly regulated buildings.',
     challenge:
@@ -427,6 +427,167 @@ export const servicePages: Record<string, ServicePage> = {
       {
         q: 'Who is responsible for making separate building systems work together?',
         a: 'Usually nobody, which is the problem. Life safety, telecommunications and power are frequently procured and commissioned as separate packages, each compliant in isolation. PowSys takes the integration scope explicitly, so the interfaces between those systems are designed and tested rather than assumed.',
+      },
+    ],
+  },
+  'control-panel-design': {
+    tagline: 'Panel design and specification, ready to hand to a shop.',
+    seoTitle: 'Instrumentation & Control Panel Design | PowSys',
+    seoDescription:
+      'Instrumentation and control panel design in Calgary — I/O schedules, loop drawings, enclosure and hazardous area rating, component specification and FAT support.',
+    intro:
+      'PowSys Engineering designs and specifies instrumentation and control panels for industrial and commercial facilities across Canada and the United States, producing the I/O schedules, loop drawings, layouts, component specifications and test procedures a certified panel shop builds from. PowSys engineers and specifies the panel; fabrication is carried out by a certified shop.',
+    challenge:
+      'A panel is where a control philosophy stops being a document and becomes wiring, and most of the cost of getting it wrong lands after it is built. Enclosure ratings chosen without checking the installed environment, I/O counts with no spare capacity, terminations that leave no room to land a field cable, and labelling that does not match the loop drawing are all cheap to fix on a drawing and expensive to fix on site.',
+    groups: [
+      {
+        title: 'Panel design',
+        items: [
+          'Control and instrumentation panel design',
+          'Panel general arrangement and internal layout',
+          'Power supply and distribution within the panel',
+          'Earthing, bonding and segregation',
+          'Spare capacity and future expansion allowance',
+        ],
+      },
+      {
+        title: 'Instrumentation & I/O',
+        items: [
+          'I/O schedules and signal listing',
+          'Loop drawings',
+          'Termination and wiring schedules',
+          'Instrument selection and specification',
+          'Labelling and identification schedules',
+        ],
+      },
+      {
+        title: 'Enclosure & environment',
+        items: [
+          'Enclosure selection and ingress protection rating',
+          'Environmental and temperature rating',
+          'Hazardous area enclosure and equipment selection',
+          'Arc flash considerations for panel maintenance',
+        ],
+      },
+      {
+        title: 'Specification & test',
+        items: [
+          'Component specification and bill of materials',
+          'Control and protection device selection',
+          'Design review against the Canadian Electrical Code and project specification',
+          'Factory acceptance test procedures and witness support',
+          'As-built drawing packages',
+        ],
+      },
+    ],
+    deliverables: [
+      'A fabrication-ready drawing package a certified shop can build from',
+      'I/O schedule and loop drawings',
+      'Panel general arrangement and internal layout drawings',
+      'Termination, wiring and labelling schedules',
+      'Bill of materials with specified components',
+      'Factory acceptance test procedure',
+    ],
+    faqs: [
+      {
+        q: 'Does PowSys Engineering build the control panels it designs?',
+        a: 'No. PowSys engineers and specifies panels, then hands over a drawing package a certified panel shop builds from. Fabrication requires a shop certification PowSys does not hold, so build work goes to a certified shop. PowSys can review the shop drawings, witness the factory acceptance test and verify the finished panel against the design.',
+      },
+      {
+        q: 'What information is needed to start a control panel design?',
+        a: 'The minimum useful starting point is a control narrative or sequence of operations, an instrument list, the available power supply, and the installed environment including any hazardous area classification. Where those do not exist yet, defining them is usually the first part of the scope, because every later decision — enclosure rating, I/O count, device selection — depends on them.',
+      },
+      {
+        q: 'How much spare I/O capacity should a control panel be designed with?',
+        a: 'There is no single correct figure, and it depends on how likely the process is to change. What matters more than the percentage is deciding it deliberately and recording the decision, because spare capacity is cheap at design stage and expensive once the enclosure is populated and the cable schedule is fixed.',
+      },
+      {
+        q: 'How does hazardous area classification affect control panel design?',
+        a: 'Classification determines the enclosure type, the protection technique and the certification the installed equipment must carry, so it has to be established before enclosure selection rather than after. Where a panel sits in a classified area, equipment selection, entry devices and the verification records all follow from the zone, gas group and temperature class assigned to that location.',
+      },
+    ],
+  },
+
+  bcmi: {
+    tagline: 'Control, monitoring and instrumentation for buildings.',
+    seoTitle: 'Building Control, Monitoring & Instrumentation | BCMI',
+    seoDescription:
+      'BCMI engineering in Calgary — building control and automation design, metering and energy monitoring, life safety interfaces, and commissioning verification.',
+    intro:
+      'Building control, monitoring and instrumentation (BCMI) is the engineering of the systems that control a building, measure how it is performing, and prove that it is safe. PowSys Engineering designs, specifies and verifies BCMI systems for commercial, institutional and light-industrial facilities across Canada and the United States.',
+    challenge:
+      'A building accumulates systems from different eras and different contractors, each commissioned in isolation and each with its own idea of what a fault means. The failure mode is rarely one broken system; it is two compliant systems that were never proven to work together, discovered at the worst possible moment. Monitoring makes that visible before it matters, but only if the instrumentation was specified to measure something useful in the first place.',
+    groups: [
+      {
+        title: 'Control & automation',
+        items: [
+          'Building control and automation system design',
+          'Control narratives and sequences of operation',
+          'Interface and integration requirements between systems',
+          'Control panel design and specification',
+        ],
+      },
+      {
+        title: 'Monitoring & metering',
+        items: [
+          'Metering and sub-metering design',
+          'Energy monitoring',
+          'Power quality monitoring',
+          'Trending, alarming and reporting requirements',
+        ],
+      },
+      {
+        title: 'Instrumentation',
+        items: [
+          'Instrumentation selection and specification',
+          'Measurement point selection and placement',
+          'Signal and I/O schedules',
+          'Calibration and verification requirements',
+        ],
+      },
+      {
+        title: 'Life safety & supporting infrastructure',
+        items: [
+          'Life safety system interfaces and integration',
+          'Fire alarm and emergency power interface coordination',
+          'Telecommunications and network infrastructure led by RCDD-certified designers',
+          'Electrical system assessment and design for buildings',
+        ],
+      },
+      {
+        title: 'Commissioning & verification',
+        items: [
+          'Commissioning support',
+          'Functional verification against the control narrative',
+          'Post-occupancy verification of installed systems',
+          'Documentation and as-built records',
+        ],
+      },
+    ],
+    deliverables: [
+      'A control narrative the building operator can actually follow',
+      'Points list, I/O schedule and instrumentation specification',
+      'Metering and monitoring design with stated measurement intent',
+      'Interface schedules between control, life safety and power systems',
+      'Functional verification procedures and completed records',
+      'As-built documentation handed over in a usable form',
+    ],
+    faqs: [
+      {
+        q: 'What does BCMI stand for?',
+        a: 'BCMI stands for building control, monitoring and instrumentation. It covers the systems that control building services, the instrumentation that measures how those services are performing, and the monitoring that turns those measurements into something an operator can act on. It sits between traditional building automation and electrical engineering, and draws on both.',
+      },
+      {
+        q: 'How is BCMI different from a building automation system?',
+        a: 'A building automation system is one part of BCMI. Automation controls the plant; BCMI also covers what is measured, how well it is measured, how that measurement is reported, and how the control system interfaces with life safety and power systems. A building can have a fully functional automation system and still have no reliable idea what it is consuming or whether its interfaces work.',
+      },
+      {
+        q: 'When in a project should BCMI be considered?',
+        a: 'Before the instrumentation is bought. Measurement intent determines sensor type, placement and accuracy, and those decisions are effectively fixed once devices are installed. Retrofitting useful monitoring onto a building instrumented only for control is possible, but consistently more expensive than specifying it at design stage.',
+      },
+      {
+        q: 'Can PowSys verify a BCMI system installed by someone else?',
+        a: 'Yes. Functional verification against the control narrative is a distinct scope from designing the system, and it is often where the value is, because it is the point at which assumptions made during installation get tested. Where no control narrative exists, reconstructing one from the installed system is usually the first step.',
       },
     ],
   },

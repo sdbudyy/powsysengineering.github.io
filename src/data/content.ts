@@ -107,6 +107,40 @@ export const services = [
     detail:
       'Building control, monitoring and instrumentation (BCMI) · Life safety systems · Telecommunications infrastructure led by RCDD-certified designers · Electrical system assessment, design and implementation · Targeted upgrades through to fully integrated infrastructure · Compliant, resilient and future-ready outcomes in safety-critical, highly regulated environments',
   },
+  {
+    slug: 'control-panel-design',
+    title: 'Instrumentation & Control Panels',
+    summary:
+      'Panel design and specification — from I/O schedule and enclosure rating through to a fabrication-ready drawing package.',
+    threeWords: 'Specify. Draw. Verify.',
+    points: [
+      'Control and instrumentation panel design',
+      'I/O schedules, loop drawings and termination design',
+      'Enclosure, ingress and hazardous area rating selection',
+      'Component specification and bill of materials',
+      'Factory acceptance test procedures and witness support',
+    ],
+    detailLabel: 'Full scope',
+    detail:
+      'Control and instrumentation panel design · Panel general arrangement and layout · I/O schedules and loop drawings · Termination and wiring schedules · Enclosure selection, ingress protection and environmental rating · Hazardous area enclosure and equipment selection · Component specification and bill of materials · Control and protection device selection · Power supply and distribution within the panel · Earthing, segregation and arc flash considerations · Labelling and identification schedules · Design review against the Canadian Electrical Code and project specification · Factory acceptance test procedures and witness support · As-built drawing packages. Panels are designed and specified by PowSys; fabrication is carried out by certified panel shops.',
+  },
+  {
+    slug: 'bcmi',
+    title: 'Building Control & Monitoring (BCMI)',
+    summary:
+      'Design, integration and verification of the control, monitoring and instrumentation that keeps a building safe, measurable and provable.',
+    threeWords: 'Design. Integrate. Verify.',
+    points: [
+      'Building control and automation system design',
+      'Metering, monitoring and trending instrumentation',
+      'Life safety system interfaces and integration',
+      'Power quality and energy monitoring',
+      'Commissioning support and functional verification',
+    ],
+    detailLabel: 'Full scope',
+    detail:
+      'Building control and automation system design · Control narratives and sequences of operation · Instrumentation selection and specification · Metering, sub-metering and energy monitoring · Power quality monitoring · Trending, alarming and reporting requirements · Life safety system interfaces and integration · Fire alarm and emergency power interface coordination · Telecommunications and network infrastructure supporting monitoring, led by RCDD-certified designers · Electrical system assessment and design for buildings · Commissioning support and functional verification · Post-occupancy verification of installed systems',
+  },
 ];
 
 /* --------------------------------------------------------------------------- */
@@ -151,6 +185,16 @@ export const industries = [
     alt: 'High-voltage transmission pylons crossing farmland with a wind turbine behind',
     detail:
       'Power system, generator system and power generation design · Power distribution design, modelling and development · Substation automation · Protection and control · Transmission line switching studies · Grid islanding and load shedding · Transient stability analysis · Full life-cycle management across natural gas, solar PV and diesel generation assets',
+  },
+  {
+    slug: 'commercial-buildings',
+    name: 'Commercial Buildings',
+    blurb:
+      'Offices, institutional and light-industrial facilities where control, monitoring, life safety and telecommunications systems have to work together — and be provable to an authority having jurisdiction.',
+    highlight: 'Building control, monitoring and instrumentation (BCMI) and life safety integration',
+    alt: 'Engineer in a hard hat and high-visibility vest carrying out a site walkdown',
+    detail:
+      'Building control, monitoring and instrumentation (BCMI) · Life safety systems · Telecommunications infrastructure led by RCDD-certified designers · Electrical system assessment, design and implementation · Metering, sub-metering and energy monitoring · Power quality monitoring · Control narratives and sequences of operation · Fire alarm and emergency power interface coordination · Arc flash analysis and protective device coordination for building distribution · Targeted upgrades through to fully integrated infrastructure · Commissioning support and functional verification',
   },
 ];
 
@@ -297,7 +341,7 @@ export const process = [
 export const serviceFaqs = [
   {
     q: 'What electrical and instrumentation engineering services does PowSys Engineering provide?',
-    a: 'PowSys Engineering provides six service lines: engineering and design (including FEED, detailed design and power system studies), compliance and verification, project management, condition-based maintenance, data centre solutions, and commercial sector solutions covering life safety and telecommunications infrastructure. Services are delivered as complete end-to-end projects or as a contractor, vendor or partner within a client project.',
+    a: 'PowSys Engineering provides eight service lines: engineering and design (including FEED, detailed design and power system studies), compliance and verification, project management, condition-based maintenance, instrumentation and control panel design, building control, monitoring and instrumentation (BCMI), data centre solutions, and commercial sector solutions covering life safety and telecommunications infrastructure. Services are delivered as complete end-to-end projects or as a contractor, vendor or partner within a client project.',
   },
   {
     q: 'Can PowSys deliver only part of a project?',
