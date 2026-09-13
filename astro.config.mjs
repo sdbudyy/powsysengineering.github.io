@@ -52,7 +52,10 @@ export default defineConfig({
      is provided, so a harness that assigns a free port is respected. Neither
      the Astro CLI nor Vite reads PORT by itself, hence the explicit wiring.
      Falls back to Astro's usual 4321 for a plain `npm run dev`. */
-  server: { port: Number(process.env.PORT) || 4321 },
+  /* host: true binds every interface, so both 127.0.0.1 and [::1] answer.
+     Node resolves "localhost" to ::1 only on Windows, which meant a client
+     dialling IPv4 got a refused connection while the server was up. */
+  server: { port: Number(process.env.PORT) || 4321, host: true },
 
   integrations: [sitemap()],
   vite: {
