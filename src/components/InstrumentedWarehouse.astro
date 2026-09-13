@@ -101,6 +101,10 @@ const systemsSchema = {
             <div class="k"><span>Building visibility</span><span data-iw="gcount">0 / 6 systems</span></div>
             <div class="v"><span data-iw="gv">0</span><small>% of systems measurable</small></div>
             <div class="bar" data-iw="gbar"></div>
+            <div class="legend" aria-label="Floor key">
+              <span><i class="found"></i>As found — hatched</span>
+              <span><i class="done"></i>Instrumented</span>
+            </div>
             <div class="sim">Readouts in the scene are simulated for illustration.</div>
           </div>
           <div class="iw-cta" data-iw="cta" role="dialog" aria-live="polite">
@@ -192,6 +196,11 @@ const systemsSchema = {
   .iw-gauge .bar i{flex:1;background:var(--color-brand-100);transition:background .5s}
   .iw-gauge .bar i.on{background:var(--color-lime-600)}
   .iw-gauge .bar i.now{background:var(--color-lime)}
+  .iw-gauge .legend{display:flex;gap:12px;margin-top:9px;font:500 10.5px var(--font-sans);color:var(--color-ink-soft)}
+  .iw-gauge .legend span{display:inline-flex;align-items:center;gap:6px}
+  .iw-gauge .legend i{width:16px;height:10px;border-radius:2px;display:inline-block}
+  .iw-gauge .legend i.found{background:repeating-linear-gradient(135deg,var(--iw-waste) 0 2px,rgba(12,32,80,.6) 2px 3.5px)}
+  .iw-gauge .legend i.done{background:var(--color-lime-600)}
   .iw-gauge .sim{font:500 10.5px var(--font-sans);color:var(--color-ink-muted);margin-top:8px}
 
   .iw-tour{position:absolute;left:50%;top:14px;transform:translateX(-50%);display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.94);border:1px solid var(--color-line);border-radius:999px;padding:5px 6px 5px 12px;box-shadow:0 8px 24px -12px rgba(12,32,80,.35);opacity:0;pointer-events:none;transition:opacity .25s}
@@ -294,7 +303,7 @@ const systemsSchema = {
   .iw-mobile .iw-time .k{display:none}
   .iw-mobile .iw-time input{width:90px}
   .iw-mobile .iw-gauge{left:auto;right:14px;bottom:14px;width:auto;padding:8px 12px;border-radius:999px;display:flex;align-items:center;gap:10px}
-  .iw-mobile .iw-gauge .k span:last-child,.iw-mobile .iw-gauge .bar,.iw-mobile .iw-gauge .v small,.iw-mobile .iw-gauge .sim{display:none}
+  .iw-mobile .iw-gauge .k span:last-child,.iw-mobile .iw-gauge .bar,.iw-mobile .iw-gauge .v small,.iw-mobile .iw-gauge .sim,.iw-mobile .iw-gauge .legend{display:none}
   .iw-mobile .iw-gauge .v{font-size:18px;margin:0}
   .iw-mobile .iw-gauge .k{font-size:9.5px}
   .iw-mobile .iw-views{top:56px;left:14px;right:auto}

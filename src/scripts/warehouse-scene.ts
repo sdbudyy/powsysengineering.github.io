@@ -296,7 +296,7 @@ export async function buildScene(host: SceneHost, opts: BuildOptions = {}): Prom
   const hctx = hmCanvas.getContext('2d')!;
   const hmTex = new CanvasTexture(hmCanvas);
   const heat = new Mesh(new PlaneGeometry(46, 28.8), new MeshBasicMaterial({ map: hmTex, transparent: true, opacity: 0.55, depthWrite: false }));
-  heat.rotation.x = -Math.PI / 2; heat.position.set(0, 0.63, 0); scene.add(heat);
+  heat.rotation.x = -Math.PI / 2; heat.position.set(0, 0.68, 0); heat.renderOrder = 2; scene.add(heat);   // above the lamp and skylight pools, so the hatch always reads
   const cWaste = new Color(P.waste), cOn = new Color(P.l600), cCool = new Color(P.b400), tmpC = new Color();
   let heatDrawn = -1;
   function drawHeat(k: number) {
@@ -315,7 +315,7 @@ export async function buildScene(host: SceneHost, opts: BuildOptions = {}): Prom
     // pattern as well as by hue, for anyone who cannot tell amber from lime.
     if (k < 0.98) {
       hctx.save(); hctx.globalCompositeOperation = 'source-atop';
-      hctx.strokeStyle = 'rgba(12,32,80,' + (0.45 * (1 - k)).toFixed(3) + ')'; hctx.lineWidth = 3;
+      hctx.strokeStyle = 'rgba(12,32,80,' + (0.7 * (1 - k)).toFixed(3) + ')'; hctx.lineWidth = 3.5;
       hctx.beginPath(); for (let x = -320; x < 512; x += 22) { hctx.moveTo(x, 0); hctx.lineTo(x + 320, 320); } hctx.stroke();
       hctx.restore();
     }
