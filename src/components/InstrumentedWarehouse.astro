@@ -123,6 +123,10 @@ const contactHref = withBase('/contact');
   .iw-btn.ghost:hover{color:var(--color-brand)}
   .iw-btn.ghost[aria-pressed="true"]{background:var(--color-brand-50);color:var(--color-brand);border-color:var(--color-brand-200)}
   .iw-btn[disabled]{opacity:.5;cursor:default}
+  .iw-btn.is-loading{opacity:1;color:transparent;position:relative}
+  .iw-btn.is-loading::after{content:"";position:absolute;left:50%;top:50%;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;border:2.5px solid rgba(255,255,255,.35);border-top-color:#fff;animation:iw-spin .8s linear infinite}
+  @keyframes iw-spin{to{transform:rotate(360deg)}}
+  .iw-poster.busy{opacity:.55}
 
   .iw-stage{position:relative;border-radius:var(--radius-card);overflow:hidden;background:#EEF3FC;border:1px solid var(--color-line);box-shadow:0 30px 60px -30px rgba(12,32,80,.35);aspect-ratio:16/9;min-height:440px}
   .iw-stage canvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab;outline:none}

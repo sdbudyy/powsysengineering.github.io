@@ -130,11 +130,23 @@ export function mountWarehouse(root: HTMLElement, systems: WarehouseSystem[]) {
   // is only a fast wake-up: some embedded browsers deliver one false reading and then
   // nothing, which would otherwise leave the scene frozen with no event to revive it.
   const rectOnScreen = () => { const r = stage.getBoundingClientRect(); return r.bottom > 0 && r.top < innerHeight; };
-  function ensure3d() {
+  // The scene chunk is fetched and parsed ahead of time - when the stage is
+  // within 800px, or the moment a pointer reaches the launch button - so the
+  // click itself only has to build, not download.
+  let sceneModule: Promise<typeof import('./warehouse-scene')> | null = null;
+  const preload = () => (sceneModule ??= import('./warehouse-scene'));
+  launch.addEventListener('pointerenter', preload, { once: true });
+  launch.addEventListener('focus', preload, { once: true });
+
+  async function ensure3d() {
     if (scene3d || loading) return; loading = true;
-    launch.disabled = true; launchNote.textContent = 'Loading the 3D scene…';
-    import('./warehouse-scene')
-      .then(({ buildScene }) => {
+    launch.disabled = true; launch.classList.add('is-loading'); launch.textContent = 'Loading…';
+    launchNote.textContent = 'Building the scene';
+    try {
+      const { buildScene } = await preload();
+      // let the loading state paint before the build starts; the timeout keeps a
+      // hidden tab (where rAF never fires) from stalling here
+      await new Promise<void>((r) => { let done = false; const go = () => { if (!done) { done = true; r(); } }; requestAnimationFrame(go); setTimeout(go, 80); });
         const host: SceneHost = {
           stage, canvas, pinsEl, systems: HOT, small, reduced, instrumented,
           getSelected: () => selected, select, tourActive: () => tour.active, tourPause, tourTick, tourToggle, resetAll,
@@ -142,13 +154,17 @@ export function mountWarehouse(root: HTMLElement, systems: WarehouseSystem[]) {
           isVisible: () => visible, isOnScreen: () => onScreen, rectOnScreen, setOnScreen: (v) => { onScreen = v; },
           viewButtons: [...root.querySelectorAll<HTMLButtonElement>('[data-view]')],
         };
-        scene3d = buildScene(host);
-        poster.classList.add('gone'); poster.setAttribute('aria-hidden', 'true');
-      })
-      .catch(() => { loading = false; launch.disabled = false; launchNote.textContent = 'The 3D scene could not load — the list below still works.'; });
+        scene3d = await buildScene(host, {
+          onFirstFrame: () => { poster.classList.add('gone'); poster.setAttribute('aria-hidden', 'true'); },
+        });
+    } catch {
+      loading = false; launch.disabled = false; launch.classList.remove('is-loading'); launch.textContent = 'Explore in 3D';
+      launchNote.textContent = 'The 3D scene could not load — the list below still works.';
+    }
   }
   launch.addEventListener('click', ensure3d);
-  new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) ensure3d(); }), { rootMargin: '200px' }).observe(stage);
+  new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) preload(); }), { rootMargin: '800px' }).observe(stage);
+  new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) ensure3d(); }), { rootMargin: '120px' }).observe(stage);
   document.addEventListener('visibilitychange', () => { visible = noPause || !document.hidden; scene3d?.wake(); });
   new IntersectionObserver(() => { onScreen = rectOnScreen(); scene3d?.wake(); }, { threshold: 0.05 }).observe(stage);
   addEventListener('scroll', () => { onScreen = rectOnScreen(); if (onScreen) ensure3d(); scene3d?.wake(); }, { passive: true });

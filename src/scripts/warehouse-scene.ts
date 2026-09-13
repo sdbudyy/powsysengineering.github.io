@@ -40,6 +40,12 @@ export interface SceneHost {
   viewButtons: HTMLButtonElement[];
 }
 
+export interface BuildOptions {
+  /** Called as soon as the first frame has painted, so the poster can fade
+      while the rest of the scene is still being built. */
+  onFirstFrame?: () => void;
+}
+
 export interface SceneApi {
   setSystem(id: string, t: number): void;
   flyTo(pos: [number, number, number]): void;
@@ -53,8 +59,17 @@ type Pin = {
   anchor: Mesh; behind: boolean; off: boolean; lift: number; cw: number; ch: number; sx: number; sy: number;
 };
 
-export function buildScene(host: SceneHost): SceneApi {
+/* Building is split into phases with a yield to the browser between each, so
+   the page never freezes: the shell paints within the first frame, then racks,
+   fittings, movers and callouts arrive over the next few. Geometry and static
+   materials are shared through small caches - the racking alone is ~250 meshes
+   and used to upload ~250 separate buffers. */
+const nextFrame = () => new Promise<void>((r) => { let done = false; const go = () => { if (!done) { done = true; r(); } }; requestAnimationFrame(go); setTimeout(go, 60); });
+
+export async function buildScene(host: SceneHost, opts: BuildOptions = {}): Promise<SceneApi> {
   const { stage, canvas, pinsEl, systems: HOT, small, reduced, instrumented } = host;
+  const mark = (n: string) => performance.mark?.(`iw:${n}`);
+  mark('start');
   const P = {
     brand: 0x1a4194, b400: 0x4e76c8, b700: 0x14357b, b900: 0x0c2050, b200: 0xb9ccf0, b100: 0xdce6f8,
     b50: 0xeef3fc, lime: 0xb0d038, l300: 0xcbe070, l600: 0x89a521, tint: 0xf3f7fd, ink: 0x0e1b33,
@@ -69,6 +84,10 @@ export function buildScene(host: SceneHost): SceneApi {
   scene.background = new Color(P.b50);
   scene.fog = new Fog(P.b50, 100, 190);
   const camera = new PerspectiveCamera(36, 1, 0.1, 400);
+  // Loop state lives up here because input handlers below can call wake()
+  // while later build phases are still running; `ready` keeps the loop from
+  // starting before everything it draws exists.
+  let last = performance.now(), frameNo = 0, running = false, ready = false;
 
   /* ------------------------------------------------------------ navigation */
   const HOME = { yaw: 0.78, pitch: 0.5, dist: small ? 96 : 76, target: new Vector3(0, 3, 0) };
@@ -176,7 +195,7 @@ export function buildScene(host: SceneHost): SceneApi {
   /* ---------------------------------------------------- sun and sky by clock */
   const hemi = new HemisphereLight(0xffffff, P.b200, 0.9); scene.add(hemi);
   const sun = new DirectionalLight(0xffffff, 0.75);
-  sun.position.set(30, 50, 20); sun.castShadow = !small; sun.shadow.mapSize.set(2048, 2048);
+  sun.position.set(30, 50, 20); sun.castShadow = !small; sun.shadow.mapSize.set(1024, 1024);
   Object.assign(sun.shadow.camera, { left: -50, right: 50, top: 50, bottom: -50, near: 1, far: 150 }); scene.add(sun);
   const cNight = new Color(0x0f1a38), cDay = new Color(P.b50), cDusk = new Color(0xf2cfa6), cSunWarm = new Color(0xffd9a0), cSunWhite = new Color(0xffffff), cSkyNight = new Color(0x2a3b66);
   const daylight = { day: 0 };
@@ -197,12 +216,26 @@ export function buildScene(host: SceneHost): SceneApi {
   const occluders: Mesh[] = [];
   const edgeMat = new LineBasicMaterial({ color: P.b900, transparent: true, opacity: 0.2 });
   type MatOpts = { roughness?: number; transparent?: boolean; opacity?: number; edges?: boolean };
-  const mat = (color: number, o: MatOpts = {}) => new MeshStandardMaterial({ color, roughness: o.roughness ?? 0.85, metalness: 0.05, transparent: o.transparent, opacity: o.opacity ?? 1 });
+  // Shared static materials and geometries. Anything animated per frame
+  // (lamps, screens, LEDs, anchors) is created explicitly and never cached.
+  const matCache = new Map<string, MeshStandardMaterial>();
+  const mat = (color: number, o: MatOpts = {}) => {
+    const key = `${color}|${o.roughness ?? 0.85}|${o.transparent ? 1 : 0}|${o.opacity ?? 1}`;
+    let m = matCache.get(key);
+    if (!m) { m = new MeshStandardMaterial({ color, roughness: o.roughness ?? 0.85, metalness: 0.05, transparent: o.transparent, opacity: o.opacity ?? 1 }); matCache.set(key, m); }
+    return m;
+  };
+  const geoCache = new Map<string, BoxGeometry>();
+  const edgeCache = new Map<string, EdgesGeometry>();
+  const boxGeo = (w: number, h: number, d: number) => { const k = `${w}|${h}|${d}`; let g = geoCache.get(k); if (!g) { g = new BoxGeometry(w, h, d); geoCache.set(k, g); } return g; };
   const box = (w: number, h: number, d: number, color: number, x: number, y: number, z: number, o: MatOpts = {}) => {
-    const g = new BoxGeometry(w, h, d); const m = new Mesh(g, mat(color, o)); m.position.set(x, y, z);
+    const g = boxGeo(w, h, d); const m = new Mesh(g, mat(color, o)); m.position.set(x, y, z);
     m.castShadow = m.receiveShadow = !small; scene.add(m);
     if (!o.transparent) occluders.push(m);
-    if (o.edges && !small) { const e = new LineSegments(new EdgesGeometry(g), edgeMat); e.position.copy(m.position); scene.add(e); }
+    if (o.edges && !small) {
+      const k = `${w}|${h}|${d}`; let eg = edgeCache.get(k); if (!eg) { eg = new EdgesGeometry(g); edgeCache.set(k, eg); }
+      const e = new LineSegments(eg, edgeMat); e.position.copy(m.position); scene.add(e);
+    }
     return m;
   };
   const W = 48, D = 30, H = 12, E: MatOpts = { edges: true };
@@ -219,15 +252,23 @@ export function buildScene(host: SceneHost): SceneApi {
     const pool = new Mesh(new PlaneGeometry(44, 5.5), new MeshBasicMaterial({ color: 0xfffbea, transparent: true, opacity: 0, depthWrite: false }));
     pool.rotation.x = -Math.PI / 2; pool.position.set(0, 0.66, z); scene.add(pool); skyPools.push(pool);
   });
+  // Camera and first paint: the empty shell appears within one frame.
+  applyTime(host.clock.get());
+  const sizeOnce = () => { const w = stage.clientWidth, h = stage.clientHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); };
+  sizeOnce(); placeCamera(); mark('shell-built'); renderer.render(scene, camera); mark('first-render'); opts.onFirstFrame?.();
+  await nextFrame();
+
   let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
   [-9, -3, 3, 9].forEach((z) => {
     for (let b = 0; b < 6; b++) {
       const x = -16 + b * 6.4;
       for (const dz of [-1.1, 1.1]) { box(0.35, 7, 0.35, P.brand, x - 2.6, 4.1, z + dz); box(0.35, 7, 0.35, P.brand, x + 2.6, 4.1, z + dz); }
-      for (const y of [1.3, 3.6, 5.9]) box(5.6, 0.18, 2.6, P.b200, x, y + 0.6, z, E);
+      for (const y of [1.3, 3.6, 5.9]) box(5.6, 0.18, 2.6, P.b200, x, y + 0.6, z);
       for (const y of [1.3, 3.6]) { if (rnd() < 0.8) box(2.2, 1.7, 2.0, 0xc7d6f0, x - 1.4 + rnd() * 0.5, y + 1.55, z); if (rnd() < 0.6) box(1.9, 1.5, 2.0, 0xb9ccf0, x + 1.5, y + 1.45, z); }
     }
   });
+
+  mark('racks'); renderer.render(scene, camera); await nextFrame();
 
   /* --------------------------------------------------------------- lighting */
   const lamps: { m: Mesh; x: number; z: number }[] = [], pools: { m: Mesh; x: number; z: number }[] = [];
@@ -285,6 +326,8 @@ export function buildScene(host: SceneHost): SceneApi {
   });
   const strobe = new Mesh(new SphereGeometry(0.3, 12, 12), new MeshStandardMaterial({ color: 0xc8102e, emissive: 0xc8102e, emissiveIntensity: 0.3 }));
   strobe.position.set(W / 2 - 0.7, 8.5, 6); scene.add(strobe);
+
+  mark('fittings'); renderer.render(scene, camera); await nextFrame();
 
   /* ------------------------------------------------------ forklifts, people */
   type Mover = { g: Group; route: number[][]; seg: number; t: number; yaw: number; speed: number; pos: Vector3 };
@@ -352,6 +395,8 @@ export function buildScene(host: SceneHost): SceneApi {
     people.forEach((pe) => { const d = Math.hypot(pe.pos.x - x, pe.pos.z - z); o = Math.max(o, 1 - Math.max(0, Math.min(1, (d - 5) / 5))); });
     return o;
   };
+
+  mark('movers'); renderer.render(scene, camera); await nextFrame();
 
   /* ------------------------------------------------------- per-system state */
   const sys: Record<string, { k: number; t: number }> = Object.fromEntries(HOT.map((h) => [h.id, { k: 0, t: 0 }]));
@@ -443,11 +488,10 @@ export function buildScene(host: SceneHost): SceneApi {
   }
 
   /* --------------------------------------------------------- loop with pause */
-  let last = performance.now(), frameNo = 0, running = false;
   function resize() { const w = stage.clientWidth, h = stage.clientHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); measureChips(); wake(); }
   new ResizeObserver(resize).observe(stage); resize();
   const cWarm = new Color(0xfff3d6), cLimeSoft = new Color(0xeaf3cf);
-  function wake() { if (!running && host.isVisible() && host.isOnScreen()) { running = true; last = performance.now(); requestAnimationFrame(frame); } }
+  function wake() { if (ready && !running && host.isVisible() && host.isOnScreen()) { running = true; last = performance.now(); requestAnimationFrame(frame); } }
   function frame(now: number) {
     if (!host.isVisible() || !host.isOnScreen()) { running = false; return; }
     const dt = Math.min(0.05, (now - last) / 1000); last = now; frameNo++;
@@ -473,6 +517,6 @@ export function buildScene(host: SceneHost): SceneApi {
     renderer.render(scene, camera);
     requestAnimationFrame(frame);
   }
-  applyTime(host.clock.get()); placeCamera(); refreshPins(); wake();
+  mark('done'); ready = true; placeCamera(); refreshPins(); wake();
   return { setSystem, flyTo, resetView, refreshPins, wake };
 }
