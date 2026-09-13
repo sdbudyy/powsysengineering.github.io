@@ -9,6 +9,8 @@ import { services, projects } from '../../data/content';
 import { servicePages, type ServicePage } from '../../data/service-pages';
 import { serviceMedia } from '../../data/service-images';
 import { serviceLinks, getIndustry, getEntry } from '../../data/relations';
+import InstrumentedWarehouse from '../../components/InstrumentedWarehouse.astro';
+import WarehouseTeaser from '../../components/WarehouseTeaser.astro';
 
 export function getStaticPaths() {
   return services.map((service) => ({
@@ -166,6 +168,10 @@ const breadcrumbSchema = {
     </div>
   </section>
 
+  {/* The interactive warehouse belongs to the BCMI page. Its 3D chunk loads
+      only when the stage is reached, so the hero above stays the LCP image. */}
+  {service.slug === 'bcmi' && <InstrumentedWarehouse />}
+
   <!-- =====================================================================
        OVERVIEW
   ====================================================================== -->
@@ -191,6 +197,12 @@ const breadcrumbSchema = {
             </p>
             <p class="mt-3 leading-relaxed text-ink-soft">{page.challenge}</p>
           </div>
+
+          {/* The BMS head-end panel in the warehouse scene is this service's
+              product, so the panel page points at it. */}
+          {service.slug === 'control-panel-design' && (
+            <div class="mt-8"><WarehouseTeaser i={2} /></div>
+          )}
         </div>
       </div>
     </div>

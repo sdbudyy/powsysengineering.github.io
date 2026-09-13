@@ -1,0 +1,273 @@
+---
+/* The Instrumented Warehouse — interactive 3D section on the BCMI page.
+
+   Ships as a static poster plus a real HTML list of the six systems. The
+   Three.js scene (~150 KB gzipped, in its own chunk) loads only when the
+   stage scrolls into view or the visitor presses "Explore in 3D", so it costs
+   nothing on the initial paint and nothing at all on any other page.
+
+   Styles are global under the .iw namespace because the scene creates its
+   callout and readout elements at runtime, which Astro's scoped styles would
+   not reach. */
+import SectionHead from './SectionHead.astro';
+import { withBase } from '../lib/url';
+import { warehouseSystems } from '../data/warehouse';
+
+const contactHref = withBase('/contact');
+---
+
+<section id="warehouse" class="relative scroll-mt-28 py-14 lg:py-20" aria-labelledby="warehouse-heading">
+  <div class="mx-auto max-w-7xl px-5 lg:px-8">
+    <SectionHead
+      id="warehouse-heading"
+      eyebrow="See it working"
+      title="The instrumented warehouse."
+      lead="Every system you visit gets instrumented, and the building's visibility climbs with it. Take the guided tour or wander — either way, by the sixth system you are looking at a building that can be measured. Drag to orbit, scroll or pinch to zoom, slide the clock."
+    />
+
+    <div class="iw reveal mt-10" style="--i:2" data-iw="root">
+      <div class="iw-stage" data-iw="stage">
+        <div class="iw-poster" data-iw="poster">
+          <svg viewBox="0 0 800 450" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <defs><linearGradient id="iw-pg" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#EEF3FC"/><stop offset="1" stop-color="#E3EAF5"/></linearGradient></defs>
+            <rect width="800" height="450" fill="url(#iw-pg)"/>
+            <g fill="none" stroke="#1A4194" stroke-width="2" stroke-linejoin="round" opacity=".55">
+              <polygon points="160,300 470,390 720,270 410,190" fill="#F3F7FD"/>
+              <polyline points="160,300 160,180 410,80 720,160 720,270"/><polyline points="410,80 410,190"/>
+              <line x1="205" y1="196" x2="455" y2="98"/><line x1="255" y1="212" x2="505" y2="114"/><line x1="305" y1="228" x2="555" y2="130"/><line x1="355" y1="244" x2="605" y2="146"/>
+              <polyline points="470,390 470,290 720,170" opacity=".5"/>
+            </g>
+            <g fill="#B0D038" opacity=".9"><circle cx="318" cy="166" r="6"/><circle cx="415" cy="120" r="6"/><circle cx="560" cy="150" r="6"/><circle cx="240" cy="250" r="6"/><circle cx="640" cy="240" r="6"/><circle cx="480" cy="300" r="6"/></g>
+          </svg>
+          <div class="iw-launch">
+            <button class="iw-btn primary" type="button" data-iw="launch">Explore in 3D</button>
+            <small data-iw="launchNote">Loads when you ask, or when this comes into view</small>
+          </div>
+        </div>
+
+        <canvas data-iw="canvas" tabindex="0" aria-label="Interactive 3D warehouse. Arrow keys orbit, plus and minus zoom, number keys 1 to 6 select a system, T starts the tour."></canvas>
+        <div class="iw-pins" data-iw="pins"></div>
+
+        <div class="iw-hud">
+          <div class="iw-tl">
+            <button class="iw-btn primary" type="button" data-iw="tourBtn">▶ Guided tour</button>
+            <button class="iw-btn ghost" type="button" data-iw="allBtn">Instrument all</button>
+            <button class="iw-btn ghost" type="button" data-iw="resetBtn" title="Reset (R)">Reset</button>
+          </div>
+          <div class="iw-views" role="group" aria-label="Preset views">
+            <span class="k">View</span>
+            <button type="button" data-view="overview" aria-pressed="true">Overview</button>
+            <button type="button" data-view="roof" aria-pressed="false">Roof</button>
+            <button type="button" data-view="control" aria-pressed="false">Control room</button>
+            <button type="button" data-view="dock" aria-pressed="false">Dock</button>
+          </div>
+          <div class="iw-tour" data-iw="tour" aria-live="polite">
+            <span class="t" data-iw="tourText">Tour · 1 / 6</span><div class="dots" data-iw="tourDots"></div>
+            <div class="ring"><svg width="26" height="26" viewBox="0 0 26 26"><circle class="bg" cx="13" cy="13" r="10"/><circle class="fg" data-iw="ringFg" cx="13" cy="13" r="10" stroke-dasharray="62.8" stroke-dashoffset="62.8"/></svg></div>
+            <button class="iw-btn ghost" type="button" data-iw="tourPause" style="padding:6px 10px">Pause</button>
+          </div>
+          <div class="iw-card" data-iw="card" role="dialog" aria-live="polite">
+            <div class="grab"></div><div class="swipehint">Swipe for next system · drag down to close</div>
+            <button class="x" type="button" data-iw="cx" aria-label="Close">×</button>
+            <span class="tag"><b data-iw="cn"></b><span data-iw="ct"></span></span>
+            <h3 data-iw="ch"></h3><p data-iw="cp"></p><div class="m" data-iw="cm"></div>
+            <div class="state" data-iw="cstate"><i></i><span data-iw="cstateT"></span></div>
+            <div class="nav"><button type="button" data-iw="prev">← Previous</button><button type="button" data-iw="next">Next →</button></div>
+          </div>
+          <div class="iw-hint">Drag to orbit · Scroll to zoom · <kbd>1</kbd>–<kbd>6</kbd> select · <kbd>T</kbd> tour · <kbd>R</kbd> reset</div>
+          <div class="iw-time">
+            <span class="k">Time of day</span>
+            <input type="range" data-iw="tod" min="0" max="24" step="0.25" value="12" aria-label="Time of day">
+            <span class="t" data-iw="todT">12:00</span>
+            <button class="iw-btn ghost" type="button" data-iw="todPlay" aria-pressed="false">▶ 24 h</button>
+          </div>
+          <div class="iw-gauge" data-iw="gauge">
+            <div class="k"><span>Building visibility</span><span data-iw="gcount">0 / 6 systems</span></div>
+            <div class="v"><span data-iw="gv">0</span><small>% of systems measurable</small></div>
+            <div class="bar" data-iw="gbar"></div>
+            <div class="sim">Readouts in the scene are simulated for illustration.</div>
+          </div>
+          <div class="iw-cta" data-iw="cta" role="dialog" aria-live="polite">
+            <div class="k">Six of six instrumented</div>
+            <h3>This is what an instrumented building looks like.</h3>
+            <p>Every system measurable, every interface written down and proven. PowSys designs, specifies and verifies exactly this — ask us about yours.</p>
+            <div class="row"><a class="iw-btn lime" href={contactHref}>Ask about a BCMI assessment</a><button class="iw-btn ghost" type="button" data-iw="ctaClose">Keep exploring</button></div>
+          </div>
+        </div>
+      </div>
+
+      {/* Real HTML for the six systems: crawlable, and the accessible path
+          into the scene. Numbered to match the callouts and the 1–6 keys. */}
+      <div class="iw-list" data-iw="list" aria-label="The six instrumented systems">
+        {warehouseSystems.map((h, i) => (
+          <button type="button">
+            <span class="n">{i + 1}</span>
+            <span><b>{h.title}</b><span>{h.tag}</span></span>
+          </button>
+        ))}
+      </div>
+      <p class="mt-4 text-sm text-ink-muted">
+        The counts on each card are illustrative. Readouts inside the scene are simulated to show the mechanism, not measured from a real building.
+      </p>
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  .iw{--iw-waste:#E08A2E}
+  .iw-btn{border:0;border-radius:999px;font:600 12.5px var(--font-sans);padding:9px 14px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;text-decoration:none}
+  .iw-btn.primary{background:var(--color-brand);color:#fff;box-shadow:0 10px 26px -12px rgba(26,65,148,.75)}
+  .iw-btn.primary:hover{background:var(--color-brand-700)}
+  .iw-btn.lime{background:var(--color-lime);color:var(--color-brand-900)}
+  .iw-btn.ghost{background:rgba(255,255,255,.92);color:var(--color-ink-soft);border:1px solid var(--color-line)}
+  .iw-btn.ghost:hover{color:var(--color-brand)}
+  .iw-btn.ghost[aria-pressed="true"]{background:var(--color-brand-50);color:var(--color-brand);border-color:var(--color-brand-200)}
+  .iw-btn[disabled]{opacity:.5;cursor:default}
+
+  .iw-stage{position:relative;border-radius:var(--radius-card);overflow:hidden;background:#EEF3FC;border:1px solid var(--color-line);box-shadow:0 30px 60px -30px rgba(12,32,80,.35);aspect-ratio:16/9;min-height:440px}
+  .iw-stage canvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab;outline:none}
+  .iw-stage canvas:focus-visible{box-shadow:inset 0 0 0 3px var(--color-brand-200)}
+  .iw-stage canvas.grabbing{cursor:grabbing}
+  .iw-poster{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#EEF3FC;transition:opacity .5s;z-index:5}
+  .iw-poster svg{position:absolute;inset:0;width:100%;height:100%}
+  .iw-launch{position:relative;text-align:center}
+  .iw-launch .iw-btn{font-size:14px;padding:13px 22px}
+  .iw-launch small{display:block;margin-top:10px;font:500 12px var(--font-sans);color:var(--color-ink-muted)}
+  .iw-poster.gone{opacity:0;pointer-events:none}
+
+  .iw-hud{position:absolute;inset:0;pointer-events:none;z-index:3}
+  .iw-hud>*{pointer-events:auto}
+  .iw-tl{position:absolute;left:14px;top:14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;max-width:70%}
+  .iw-hint{position:absolute;left:14px;bottom:70px;font:500 12px var(--font-sans);color:var(--color-ink-soft);background:rgba(255,255,255,.85);padding:6px 10px;border-radius:8px;border:1px solid var(--color-line)}
+  .iw-hint kbd{font:600 11px var(--font-sans);background:var(--color-brand-50);border:1px solid var(--color-brand-100);border-radius:4px;padding:1px 5px;color:var(--color-brand)}
+  .iw-time{position:absolute;left:14px;bottom:14px;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.94);border:1px solid var(--color-line);border-radius:999px;padding:6px 8px 6px 14px;box-shadow:0 8px 24px -12px rgba(12,32,80,.35);transition:opacity .2s}
+  .iw-time .k{font:600 10.5px var(--font-sans);letter-spacing:.12em;text-transform:uppercase;color:var(--color-ink-muted)}
+  .iw-time input{width:150px;accent-color:var(--color-brand)}
+  .iw-time .t{font:600 13px ui-monospace,Menlo,monospace;color:var(--color-ink);min-width:48px;font-variant-numeric:tabular-nums}
+  .iw-time .iw-btn{padding:6px 10px}
+  .iw-views{position:absolute;left:14px;top:56px;display:flex;background:rgba(255,255,255,.92);border:1px solid var(--color-line);border-radius:999px;padding:3px;gap:2px;box-shadow:0 8px 24px -12px rgba(12,32,80,.35)}
+  .iw-views .k{font:600 10px var(--font-sans);letter-spacing:.12em;text-transform:uppercase;color:var(--color-ink-muted);padding:0 6px 0 10px;align-self:center}
+  .iw-views button{border:0;background:transparent;font:600 11.5px var(--font-sans);color:var(--color-ink-soft);padding:6px 11px;border-radius:999px;cursor:pointer}
+  .iw-views button:hover{color:var(--color-brand)}
+  .iw-views button[aria-pressed="true"]{background:var(--color-brand-50);color:var(--color-brand)}
+
+  .iw-gauge{position:absolute;right:14px;bottom:14px;width:min(290px,46%);background:rgba(255,255,255,.94);border:1px solid var(--color-line);border-radius:12px;padding:12px 14px;box-shadow:0 8px 24px -12px rgba(12,32,80,.35);transition:opacity .2s}
+  .iw-gauge .k{font:600 10.5px var(--font-sans);letter-spacing:.12em;text-transform:uppercase;color:var(--color-ink-muted);display:flex;justify-content:space-between}
+  .iw-gauge .v{font:700 28px/1.1 var(--font-display);color:var(--color-ink);font-variant-numeric:tabular-nums;margin-top:2px}
+  .iw-gauge .v small{font:600 13px var(--font-sans);color:var(--color-ink-muted);margin-left:6px}
+  .iw-gauge .bar{height:8px;border-radius:999px;background:var(--color-brand-100);margin-top:10px;overflow:hidden;display:flex;gap:2px}
+  .iw-gauge .bar i{flex:1;background:var(--color-brand-100);transition:background .5s}
+  .iw-gauge .bar i.on{background:var(--color-lime-600)}
+  .iw-gauge .bar i.now{background:var(--color-lime)}
+  .iw-gauge .sim{font:500 10.5px var(--font-sans);color:var(--color-ink-muted);margin-top:8px}
+
+  .iw-tour{position:absolute;left:50%;top:14px;transform:translateX(-50%);display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.94);border:1px solid var(--color-line);border-radius:999px;padding:5px 6px 5px 12px;box-shadow:0 8px 24px -12px rgba(12,32,80,.35);opacity:0;pointer-events:none;transition:opacity .25s}
+  .iw-tour.show{opacity:1;pointer-events:auto}
+  .iw-tour .dots{display:flex;gap:5px}
+  .iw-tour .dots i{width:8px;height:8px;border-radius:50%;background:var(--color-brand-100);transition:background .25s,transform .25s}
+  .iw-tour .dots i.done{background:var(--color-lime-600)}
+  .iw-tour .dots i.now{background:var(--color-brand);transform:scale(1.35)}
+  .iw-tour .t{font:600 12px var(--font-sans);color:var(--color-ink-soft)}
+  .iw-tour .ring{position:relative;width:26px;height:26px}
+  .iw-tour .ring svg{transform:rotate(-90deg)}
+  .iw-tour .ring circle{fill:none;stroke-width:3}
+  .iw-tour .ring .bg{stroke:var(--color-brand-100)}
+  .iw-tour .ring .fg{stroke:var(--color-brand);stroke-linecap:round;transition:stroke-dashoffset .2s linear}
+
+  .iw-pins{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:2}
+  .iw-pin{position:absolute;left:0;top:0;transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;pointer-events:none;transition:opacity .25s;will-change:transform}
+  .iw-chip{position:relative;pointer-events:auto;display:flex;align-items:center;gap:7px;background:#fff;border:1.5px solid var(--color-brand-200);border-radius:999px;padding:4px 10px 4px 4px;box-shadow:0 8px 20px -10px rgba(12,32,80,.5);cursor:pointer;white-space:nowrap;transition:transform .18s,border-color .18s,background .18s;transform-origin:50% 100%;font:inherit}
+  .iw-chip b{width:20px;height:20px;border-radius:50%;background:var(--color-brand);color:#fff;font:700 11px/20px var(--font-display);text-align:center;transition:background .18s;position:relative}
+  .iw-chip i{font:600 12px var(--font-sans);font-style:normal;color:var(--color-ink)}
+  .iw-chip::after{content:attr(data-tip);position:absolute;left:50%;bottom:calc(100% + 8px);transform:translate(-50%,4px);background:var(--color-brand-900);color:#fff;font:500 11px/1.2 var(--font-sans);padding:5px 9px;border-radius:7px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s,transform .15s;box-shadow:0 8px 20px -10px rgba(12,32,80,.6)}
+  .iw-chip:hover::after,.iw-chip:focus-visible::after{opacity:1;transform:translate(-50%,0)}
+  .iw-pin.sel .iw-chip::after{display:none}
+  .iw-stem{width:1.5px;height:var(--lift,22px);background:linear-gradient(180deg,var(--color-brand-400),var(--color-lime));opacity:.9}
+  .iw-dot{width:10px;height:10px;border-radius:50%;background:var(--color-brand-200);box-shadow:0 0 0 3px #fff,0 0 0 5px var(--color-brand-100);transform:translateY(5px);transition:transform .18s,background .4s,box-shadow .4s}
+  .iw-pin.done .iw-dot{background:var(--color-lime);box-shadow:0 0 0 3px #fff,0 0 0 5px var(--color-lime-300)}
+  .iw-pin.done .iw-chip b{background:var(--color-lime-deep)}
+  .iw-pin.done .iw-chip b::after{content:"✓";position:absolute;right:-5px;top:-5px;width:12px;height:12px;border-radius:50%;background:var(--color-lime);color:var(--color-brand-900);font:700 8px/12px var(--font-sans);box-shadow:0 0 0 1.5px #fff}
+  .iw-chip:hover{transform:scale(1.06);border-color:var(--color-brand-400)}
+  .iw-pin.sel .iw-chip{background:var(--color-brand);border-color:var(--color-brand);transform:scale(1.06)}
+  .iw-pin.sel .iw-chip b{background:var(--color-lime);color:var(--color-brand-900)}
+  .iw-pin.sel .iw-chip i{color:#fff}
+  .iw-pin.sel .iw-dot{transform:translateY(5px) scale(1.35)}
+  .iw-pin.dim{opacity:.55}
+  .iw-pin.behind{opacity:.22}
+  .iw-pin.behind .iw-chip{pointer-events:none}
+  .iw-pin.off{opacity:0}
+  .iw-ro{position:absolute;left:0;top:0;transform:translate(-50%,-50%);background:var(--color-brand-900);color:var(--color-lime);font:600 11px ui-monospace,Menlo,monospace;padding:3px 8px;border-radius:6px;white-space:nowrap;opacity:0;transition:opacity .4s;pointer-events:none;box-shadow:0 6px 16px -8px rgba(12,32,80,.7);letter-spacing:.02em}
+  .iw-ro small{color:var(--color-brand-200);font-weight:500;margin-right:5px}
+  .iw-ro.on{opacity:1}
+
+  .iw-card{position:absolute;right:14px;top:14px;width:min(330px,52%);background:#fff;border:1px solid var(--color-line);border-radius:14px;padding:16px 18px;box-shadow:0 18px 40px -18px rgba(12,32,80,.45);transform:translateY(-6px);opacity:0;transition:opacity .25s,transform .25s;color:var(--color-ink);pointer-events:none}
+  .iw-card.show{opacity:1;transform:none;pointer-events:auto}
+  .iw-card .tag{display:inline-flex;align-items:center;gap:6px;font:600 10.5px var(--font-sans);letter-spacing:.1em;text-transform:uppercase;color:var(--color-lime-deep);background:var(--color-lime-50);border:1px solid var(--color-lime-300);padding:3px 8px 3px 3px;border-radius:999px;margin-bottom:8px}
+  .iw-card .tag b{width:16px;height:16px;border-radius:50%;background:var(--color-brand);color:#fff;font:700 10px/16px var(--font-display);text-align:center;letter-spacing:0}
+  .iw-card h3{color:var(--color-ink);font:600 15px/1.3 var(--font-display);margin:0 0 6px;letter-spacing:0;text-wrap:balance}
+  .iw-card p{font-size:13.5px;color:var(--color-ink-soft);margin:0 0 8px;line-height:1.5}
+  .iw-card .m{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;border-top:1px dashed var(--color-line);padding-top:10px;margin-top:4px}
+  .iw-card .m b{display:block;font:700 18px/1 var(--font-display);color:var(--color-brand)}
+  .iw-card .m span{font:500 11px var(--font-sans);color:var(--color-ink-muted)}
+  .iw-card .state{display:flex;align-items:center;gap:8px;margin-top:10px;font:600 12px var(--font-sans);color:var(--color-ink-muted)}
+  .iw-card .state.on{color:var(--color-lime-deep)}
+  .iw-card .state i{width:8px;height:8px;border-radius:50%;background:var(--iw-waste)}
+  .iw-card .state.on i{background:var(--color-lime-600)}
+  .iw-card .x{position:absolute;right:10px;top:8px;border:0;background:transparent;font-size:18px;color:var(--color-ink-muted);cursor:pointer;line-height:1}
+  .iw-card .nav{display:flex;gap:6px;margin-top:10px}
+  .iw-card .nav button{flex:1;border:1px solid var(--color-line);background:var(--color-brand-50);color:var(--color-brand);font:600 12px var(--font-sans);padding:7px 10px;border-radius:8px;cursor:pointer}
+  .iw-card .grab,.iw-card .swipehint{display:none}
+
+  .iw-cta{position:absolute;left:50%;bottom:14px;transform:translate(-50%,16px);width:min(520px,92%);background:var(--color-brand-900);color:#fff;border-radius:14px;padding:18px 20px;box-shadow:0 24px 60px -20px rgba(12,32,80,.7);opacity:0;pointer-events:none;transition:opacity .35s,transform .35s;z-index:4}
+  .iw-cta.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+  .iw-cta .k{font:600 10.5px var(--font-sans);letter-spacing:.12em;text-transform:uppercase;color:var(--color-lime)}
+  .iw-cta h3{color:#fff;font:600 18px/1.25 var(--font-display);margin:4px 0 6px;letter-spacing:0}
+  .iw-cta p{color:#C9D4EA;font-size:13.5px;margin:0 0 12px;line-height:1.5}
+  .iw-cta .row{display:flex;gap:8px;flex-wrap:wrap}
+  .iw-cta .iw-btn.ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.25)}
+
+  .iw-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:14px}
+  .iw-list button{text-align:left;background:rgba(255,255,255,.78);border:1px solid var(--color-line);border-radius:12px;padding:12px 14px;cursor:pointer;font:inherit;color:var(--color-ink);display:flex;gap:10px;align-items:flex-start}
+  .iw-list button:hover,.iw-list button:focus-visible{border-color:var(--color-brand-400);outline:none;box-shadow:0 0 0 3px var(--color-brand-100)}
+  .iw-list button.sel{border-color:var(--color-brand);box-shadow:0 0 0 3px var(--color-brand-100)}
+  .iw-list .n{flex:none;width:22px;height:22px;border-radius:50%;background:var(--color-brand);color:#fff;font:700 12px/22px var(--font-display);text-align:center}
+  .iw-list button.done .n{background:var(--color-lime-deep)}
+  .iw-list b{display:block;font:600 14px var(--font-display);margin-bottom:2px;letter-spacing:0}
+  .iw-list b+span{font-size:12.5px;color:var(--color-ink-muted)}
+  @media (prefers-reduced-motion:reduce){.iw-card,.iw-pin,.iw-chip,.iw-cta,.iw-tour,.iw-gauge .bar i,.iw-ro{transition:none}}
+
+  /* mobile: portrait stage, dots-only callouts, bottom sheet */
+  .iw-mobile .iw-stage{aspect-ratio:4/5;min-height:0}
+  .iw-mobile .iw-chip i{display:none}
+  .iw-mobile .iw-chip{padding:3px;min-width:34px;min-height:34px;justify-content:center}
+  .iw-mobile .iw-chip b{width:22px;height:22px;line-height:22px;font-size:12px}
+  .iw-mobile .iw-hint{display:none}
+  .iw-mobile .iw-tl{max-width:calc(100% - 28px)}
+  .iw-mobile .iw-tl .iw-btn{font-size:11.5px;padding:8px 11px}
+  .iw-mobile .iw-time{padding:5px 6px 5px 10px;gap:6px}
+  .iw-mobile .iw-time .k{display:none}
+  .iw-mobile .iw-time input{width:90px}
+  .iw-mobile .iw-gauge{left:auto;right:14px;bottom:14px;width:auto;padding:8px 12px;border-radius:999px;display:flex;align-items:center;gap:10px}
+  .iw-mobile .iw-gauge .k span:last-child,.iw-mobile .iw-gauge .bar,.iw-mobile .iw-gauge .v small,.iw-mobile .iw-gauge .sim{display:none}
+  .iw-mobile .iw-gauge .v{font-size:18px;margin:0}
+  .iw-mobile .iw-gauge .k{font-size:9.5px}
+  .iw-mobile .iw-views{top:56px;left:14px;right:auto}
+  .iw-mobile .iw-views .k{display:none}
+  .iw-mobile .iw-views button{font-size:11px;padding:6px 9px}
+  .iw-mobile .iw-tour{top:96px;left:14px;right:14px;transform:none;justify-content:space-between}
+  .iw-mobile .iw-hud:has(.iw-card.show) .iw-gauge,.iw-mobile .iw-hud:has(.iw-card.show) .iw-time{opacity:0;pointer-events:none}
+  .iw-mobile .iw-card{top:auto;right:0;left:0;bottom:0;width:100%;border-radius:16px 16px 0 0;transform:translateY(100%);padding:12px 16px 16px;max-height:62%;overflow:auto}
+  .iw-mobile .iw-card.show{transform:none}
+  .iw-mobile .iw-card .grab{display:block;width:40px;height:4px;border-radius:2px;background:var(--color-brand-100);margin:0 auto 10px}
+  .iw-mobile .iw-card .swipehint{display:block;text-align:center;font:500 11px var(--font-sans);color:var(--color-ink-muted);margin:-4px 0 8px}
+  .iw-mobile .iw-card .nav{position:sticky;bottom:0;background:#fff;padding-top:8px}
+  .iw-mobile .iw-cta{bottom:0;width:100%;border-radius:16px 16px 0 0;transform:translate(-50%,100%)}
+  .iw-mobile .iw-cta.show{transform:translate(-50%,0)}
+  .iw-mobile .iw-ro{font-size:10px;padding:2px 6px}
+</style>
+
+<script>
+  import { mountWarehouse } from '../scripts/warehouse-ui';
+  import { warehouseSystems } from '../data/warehouse';
+  document.querySelectorAll<HTMLElement>('[data-iw="root"]').forEach((root) => mountWarehouse(root, warehouseSystems));
+</script>

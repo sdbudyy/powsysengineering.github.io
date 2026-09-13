@@ -8,6 +8,7 @@ import { site } from '../../data/site';
 import { industries, projects } from '../../data/content';
 import { industryPages, type IndustryPage } from '../../data/industry-pages';
 import { industryHeroes } from '../../data/industry-images';
+import WarehouseTeaser from '../../components/WarehouseTeaser.astro';
 import { serviceLinks, industryServices, getService, getEntry } from '../../data/relations';
 
 export function getStaticPaths() {
@@ -196,6 +197,12 @@ const breadcrumbSchema = {
       </div>
     </div>
   </section>
+
+  {industry.slug === 'commercial-buildings' && (
+    <section class="relative pb-4" aria-label="Interactive warehouse">
+      <div class="mx-auto max-w-7xl px-5 lg:px-8"><WarehouseTeaser i={1} /></div>
+    </section>
+  )}
 
   <!-- =====================================================================
        CAPABILITY GROUPS
