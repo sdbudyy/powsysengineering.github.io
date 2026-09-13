@@ -14,7 +14,23 @@ import { withBase } from '../lib/url';
 import { warehouseSystems } from '../data/warehouse';
 
 const contactHref = withBase('/contact');
+
+/* The six systems as an ItemList, so answer engines can lift them as a set. */
+const systemsSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Building systems instrumented under BCMI',
+  itemListOrder: 'https://schema.org/ItemListOrderAscending',
+  numberOfItems: warehouseSystems.length,
+  itemListElement: warehouseSystems.map((h, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: h.title,
+    description: h.body,
+  })),
+};
 ---
+<script type="application/ld+json" set:html={JSON.stringify(systemsSchema)} />
 
 <section id="warehouse" class="relative py-14 lg:py-20" aria-labelledby="warehouse-heading">
   <div class="mx-auto max-w-7xl px-5 lg:px-8">
@@ -71,7 +87,7 @@ const contactHref = withBase('/contact');
             <button class="x" type="button" data-iw="cx" aria-label="Close">×</button>
             <span class="tag"><b data-iw="cn"></b><span data-iw="ct"></span></span>
             <h3 data-iw="ch"></h3><p data-iw="cp"></p><div class="m" data-iw="cm"></div>
-            <div class="state" data-iw="cstate"><i></i><span data-iw="cstateT"></span></div>
+            <div class="state" data-iw="cstate"><i aria-hidden="true"></i><span data-iw="cstateT"></span></div>
             <div class="nav"><button type="button" data-iw="prev">← Previous</button><button type="button" data-iw="next">Next →</button></div>
           </div>
           <div class="iw-hint">Drag to orbit · Scroll to zoom · <kbd>1</kbd>–<kbd>6</kbd> select · <kbd>T</kbd> tour · <kbd>R</kbd> reset</div>
@@ -96,16 +112,29 @@ const contactHref = withBase('/contact');
         </div>
       </div>
 
-      {/* Real HTML for the six systems: crawlable, and the accessible path
-          into the scene. Numbered to match the callouts and the 1–6 keys. */}
-      <div class="iw-list" data-iw="list" aria-label="The six instrumented systems">
+      {/* The six systems as real content - title, tag, body and metrics all in
+          the HTML - so the section reads without the scene and search engines
+          index the substance, not just six labels. Numbered to match the
+          callouts and the 1–6 keys. */}
+      <h3 class="mt-12 font-display text-[0.72rem] font-bold uppercase tracking-[0.13em] text-brand">The six systems</h3>
+      <ol class="iw-list" data-iw="list" aria-label="The six instrumented systems">
         {warehouseSystems.map((h, i) => (
-          <button type="button">
-            <span class="n">{i + 1}</span>
-            <span><b>{h.title}</b><span>{h.tag}</span></span>
-          </button>
+          <li class="iw-sys" data-id={h.id}>
+            <div class="head">
+              <span class="n" aria-hidden="true">{i + 1}</span>
+              <div>
+                <h4>{h.title}</h4>
+                <p class="tag">{h.tag}</p>
+              </div>
+            </div>
+            <p class="body">{h.body}</p>
+            <ul class="metrics" aria-label="Scope">
+              {h.metrics.map(([v, l]) => (<li><b>{v}</b><span>{l}</span></li>))}
+            </ul>
+            <button type="button" data-iw="show">Show in the scene <span aria-hidden="true">→</span></button>
+          </li>
         ))}
-      </div>
+      </ol>
       <p class="mt-4 text-sm text-ink-muted">
         The counts on each card are illustrative. Readouts inside the scene are simulated to show the mechanism, not measured from a real building.
       </p>
@@ -215,8 +244,11 @@ const contactHref = withBase('/contact');
   .iw-card .m span{font:500 11px var(--font-sans);color:var(--color-ink-muted)}
   .iw-card .state{display:flex;align-items:center;gap:8px;margin-top:10px;font:600 12px var(--font-sans);color:var(--color-ink-muted)}
   .iw-card .state.on{color:var(--color-lime-deep)}
-  .iw-card .state i{width:8px;height:8px;border-radius:50%;background:var(--iw-waste)}
-  .iw-card .state.on i{background:var(--color-lime-600)}
+  /* as found = hollow amber ring; instrumented = filled lime disc with a tick.
+     Shape carries the meaning, so the two states read without the hue. */
+  .iw-card .state i{width:14px;height:14px;border-radius:50%;border:2px solid var(--iw-waste);background:transparent;display:inline-flex;align-items:center;justify-content:center;flex:none}
+  .iw-card .state.on i{background:var(--color-lime-600);border-color:var(--color-lime-600)}
+  .iw-card .state.on i::after{content:"✓";color:#fff;font:700 9px/1 var(--font-sans)}
   .iw-card .x{position:absolute;right:10px;top:8px;border:0;background:transparent;font-size:18px;color:var(--color-ink-muted);cursor:pointer;line-height:1}
   .iw-card .nav{display:flex;gap:6px;margin-top:10px}
   .iw-card .nav button{flex:1;border:1px solid var(--color-line);background:var(--color-brand-50);color:var(--color-brand);font:600 12px var(--font-sans);padding:7px 10px;border-radius:8px;cursor:pointer}
@@ -230,14 +262,24 @@ const contactHref = withBase('/contact');
   .iw-cta .row{display:flex;gap:8px;flex-wrap:wrap}
   .iw-cta .iw-btn.ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.25)}
 
-  .iw-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:14px}
-  .iw-list button{text-align:left;background:rgba(255,255,255,.78);border:1px solid var(--color-line);border-radius:12px;padding:12px 14px;cursor:pointer;font:inherit;color:var(--color-ink);display:flex;gap:10px;align-items:flex-start}
-  .iw-list button:hover,.iw-list button:focus-visible{border-color:var(--color-brand-400);outline:none;box-shadow:0 0 0 3px var(--color-brand-100)}
-  .iw-list button.sel{border-color:var(--color-brand);box-shadow:0 0 0 3px var(--color-brand-100)}
-  .iw-list .n{flex:none;width:22px;height:22px;border-radius:50%;background:var(--color-brand);color:#fff;font:700 12px/22px var(--font-display);text-align:center}
-  .iw-list button.done .n{background:var(--color-lime-deep)}
-  .iw-list b{display:block;font:600 14px var(--font-display);margin-bottom:2px;letter-spacing:0}
-  .iw-list b+span{font-size:12.5px;color:var(--color-ink-muted)}
+  .iw-list{list-style:none;margin:12px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+  @media (max-width:900px){.iw-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media (max-width:600px){.iw-list{grid-template-columns:1fr}}
+  .iw-sys{background:rgba(255,255,255,.78);border:1px solid var(--color-line);border-radius:var(--radius-card);padding:16px 18px;display:flex;flex-direction:column;gap:10px;transition:border-color .2s,box-shadow .2s;cursor:pointer}
+  .iw-sys:hover{border-color:var(--color-brand-400)}
+  .iw-sys.sel{border-color:var(--color-brand);box-shadow:0 0 0 3px var(--color-brand-100)}
+  .iw-sys .head{display:flex;gap:10px;align-items:flex-start}
+  .iw-sys .n{flex:none;width:24px;height:24px;border-radius:50%;background:var(--color-brand);color:#fff;font:700 12px/24px var(--font-display);text-align:center;position:relative}
+  .iw-sys.done .n{background:var(--color-lime-deep)}
+  .iw-sys.done .n::after{content:"✓";position:absolute;right:-5px;top:-5px;width:13px;height:13px;border-radius:50%;background:var(--color-lime);color:var(--color-brand-900);font:700 8px/13px var(--font-sans);box-shadow:0 0 0 1.5px #fff}
+  .iw-sys h4{font:600 15px/1.25 var(--font-display);color:var(--color-ink);margin:0;letter-spacing:0;text-wrap:balance}
+  .iw-sys .tag{font:600 10.5px var(--font-sans);letter-spacing:.1em;text-transform:uppercase;color:var(--color-lime-deep);margin:4px 0 0}
+  .iw-sys .body{font-size:13.5px;line-height:1.55;color:var(--color-ink-soft);margin:0}
+  .iw-sys .metrics{list-style:none;margin:0;padding:10px 0 0;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;border-top:1px dashed var(--color-line)}
+  .iw-sys .metrics b{display:block;font:700 17px/1 var(--font-display);color:var(--color-brand)}
+  .iw-sys .metrics span{font:500 11px var(--font-sans);color:var(--color-ink-muted)}
+  .iw-sys button{margin-top:auto;align-self:flex-start;border:1px solid var(--color-line);background:var(--color-brand-50);color:var(--color-brand);font:600 12px var(--font-sans);padding:7px 11px;border-radius:8px;cursor:pointer}
+  .iw-sys button:hover,.iw-sys button:focus-visible{border-color:var(--color-brand-400);outline:none;box-shadow:0 0 0 3px var(--color-brand-100)}
   @media (prefers-reduced-motion:reduce){.iw-card,.iw-pin,.iw-chip,.iw-cta,.iw-tour,.iw-gauge .bar i,.iw-ro{transition:none}}
 
   /* mobile: portrait stage, dots-only callouts, bottom sheet */

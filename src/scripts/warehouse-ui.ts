@@ -39,11 +39,11 @@ export function mountWarehouse(root: HTMLElement, systems: WarehouseSystem[]) {
   q('ctaClose').addEventListener('click', () => cta.classList.remove('show'));
 
   const list = q('list');
-  const listButtons = [...list.querySelectorAll<HTMLButtonElement>('button')];
-  listButtons.forEach((b, i) => b.addEventListener('click', () => { select(HOT[i].id); stage.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'center' }); }));
+  const listItems = [...list.querySelectorAll<HTMLElement>('.iw-sys')];
+  listItems.forEach((li, i) => li.addEventListener('click', () => { select(HOT[i].id); stage.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'center' }); }));
   const card = q('card');
   function renderCard() {
-    listButtons.forEach((b, i) => { b.classList.toggle('sel', HOT[i].id === selected); b.classList.toggle('done', instrumented.has(HOT[i].id)); });
+    listItems.forEach((li, i) => { li.classList.toggle('sel', HOT[i].id === selected); li.classList.toggle('done', instrumented.has(HOT[i].id)); });
     if (!selected) { card.classList.remove('show'); return; }
     const i = HOT.findIndex((h) => h.id === selected), h = HOT[i], on = instrumented.has(h.id);
     q('cn').textContent = String(i + 1); q('ct').textContent = h.tag; q('ch').textContent = h.title; q('cp').textContent = h.body;

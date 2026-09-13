@@ -292,7 +292,7 @@ export async function buildScene(host: SceneHost, opts: BuildOptions = {}): Prom
     hvac.push({ blade });
   });
   const ZONES = [{ x: -12, z: -7, demand: 0.35, found: 0.9 }, { x: 12, z: -7, demand: 0.9, found: 0.55 }, { x: -12, z: 7, demand: 0.2, found: 0.75 }, { x: 12, z: 7, demand: 0.6, found: 1.0 }];
-  const hmCanvas = document.createElement('canvas'); hmCanvas.width = 256; hmCanvas.height = 160;
+  const hmCanvas = document.createElement('canvas'); hmCanvas.width = 512; hmCanvas.height = 320;   // 2x so the hatch stays crisp
   const hctx = hmCanvas.getContext('2d')!;
   const hmTex = new CanvasTexture(hmCanvas);
   const heat = new Mesh(new PlaneGeometry(46, 28.8), new MeshBasicMaterial({ map: hmTex, transparent: true, opacity: 0.55, depthWrite: false }));
@@ -301,15 +301,24 @@ export async function buildScene(host: SceneHost, opts: BuildOptions = {}): Prom
   let heatDrawn = -1;
   function drawHeat(k: number) {
     if (Math.abs(k - heatDrawn) < 0.02) return; heatDrawn = k;
-    hctx.clearRect(0, 0, 256, 160);
+    hctx.clearRect(0, 0, 512, 320);
     ZONES.forEach((zn) => {
-      const px = (zn.x + 23) / 46 * 256, py = (zn.z + 14.4) / 28.8 * 160;
+      const px = (zn.x + 23) / 46 * 512, py = (zn.z + 14.4) / 28.8 * 320;
       tmpC.copy(cOn).lerp(cCool, zn.demand); const c = new Color().copy(cWaste).lerp(tmpC, k);
-      const alpha = (0.35 + 0.55 * zn.found) * (1 - k) + 0.55 * k, r = 62 + 22 * k;
+      const alpha = (0.35 + 0.55 * zn.found) * (1 - k) + 0.55 * k, r = 124 + 44 * k;
       const rgb = `${(c.r * 255) | 0},${(c.g * 255) | 0},${(c.b * 255) | 0}`;
-      const g = hctx.createRadialGradient(px, py, 4, px, py, r); g.addColorStop(0, `rgba(${rgb},${alpha})`); g.addColorStop(1, `rgba(${rgb},0)`);
-      hctx.fillStyle = g; hctx.fillRect(0, 0, 256, 160);
+      const g = hctx.createRadialGradient(px, py, 8, px, py, r); g.addColorStop(0, `rgba(${rgb},${alpha})`); g.addColorStop(1, `rgba(${rgb},0)`);
+      hctx.fillStyle = g; hctx.fillRect(0, 0, 512, 320);
     });
+    // Diagonal hatch over the as-found zones, drawn only where the blobs already
+    // are and fading out as the system is instrumented - so "waste" reads by
+    // pattern as well as by hue, for anyone who cannot tell amber from lime.
+    if (k < 0.98) {
+      hctx.save(); hctx.globalCompositeOperation = 'source-atop';
+      hctx.strokeStyle = 'rgba(12,32,80,' + (0.45 * (1 - k)).toFixed(3) + ')'; hctx.lineWidth = 3;
+      hctx.beginPath(); for (let x = -320; x < 512; x += 22) { hctx.moveTo(x, 0); hctx.lineTo(x + 320, 320); } hctx.stroke();
+      hctx.restore();
+    }
     hmTex.needsUpdate = true;
   }
 
