@@ -176,6 +176,22 @@ const allSchema = [organizationSchema, websiteSchema, ...schema];
     <script>
       const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+      /* --- Fragment landing --------------------------------------------
+         With `scroll-behavior: smooth` on <html>, the browser's own jump to
+         a #fragment on a fresh load is animated, and it restarts every time
+         layout settles while the page is still loading. In practice that can
+         leave the page at the top with the hash in the URL and the target
+         nowhere in view. Re-apply the jump ourselves, instantly, once the
+         page has finished loading and again a frame later for late fonts. */
+      if (location.hash.length > 1) {
+        const jump = () => {
+          const el = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+          if (el) el.scrollIntoView({ behavior: 'instant', block: 'start' });
+        };
+        if (document.readyState === 'complete') jump(); else addEventListener('load', jump, { once: true });
+        addEventListener('load', () => requestAnimationFrame(jump), { once: true });
+      }
+
       /* --- Scroll reveal -------------------------------------------------
          Elements are visible by default; we only hide them once we know the
          observer is running, so a JS failure degrades to "no animation"
